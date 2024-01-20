@@ -6,8 +6,17 @@
         <meta charset="UFT-8">
         <meta name="viewport" content="width=device-width", initial-scale="1.0">
         <meta name="description" content="It's actually quite shrimple (wordle but shrimp)">
-        <body>
-        <h1>Shrimple</h1>
-        </body>
     </head>
+    <body>
+        <h1>Shrimple</h1>
+        <input hx-post="/test" hx-trigger="input changed delay:15ms"/>
+        <script>
+        async function get_shrimps() {
+            response = await fetch("/shrimps");
+            shrimps = await response.json();
+            console.log(shrimps);
+        }
+        get_shrimps();
+        </script>
+    </body
 </html>

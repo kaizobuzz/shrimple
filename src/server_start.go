@@ -4,10 +4,13 @@ import(
     "log"
 )
 func Start_Server(){
+    port := "17212"
     fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
     http.HandleFunc("/test", testHandler)
-    if err := http.ListenAndServe(":17212", nil); err != nil{ 
+    http.HandleFunc("/shrimps", GetShrimps)
+    print("Starting Server on port " + port)
+    if err := http.ListenAndServe(":" + port, nil); err != nil{ 
 	    log.Fatal(err)
     }
 }

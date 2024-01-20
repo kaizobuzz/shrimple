@@ -1,0 +1,25 @@
+{
+    "shrimps": [
+        {
+            "name": "Giant Tiger Prawn",
+            "habitat": "Saltwater",
+            "length_male": 25,
+            "length_female": 30,
+            "coloration": "yellow"
+        },
+        {
+            "name": "Whiteleg Shrimp",
+            "habitat": "Saltwater",
+            "length_male": 23,
+            "length_female": 23,
+            "coloration": "white"
+        },
+        {
+            "name": "Cherry Shrimp",
+            "habitat": "Freshwater",
+            "length_male": 4,
+            "length_female": 4,
+            "coloration": "red"
+        }
+    ]
+}
