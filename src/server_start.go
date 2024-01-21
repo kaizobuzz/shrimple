@@ -9,6 +9,7 @@ func Start_Server(){
 	http.Handle("/", fileServer)
     http.HandleFunc("/test", testHandler)
     http.HandleFunc("/shrimps", GetShrimps)
+    http.HandleFunc("/dailyshrimp", DailyShrimpName)
     print("Starting Server on port " + port)
     if err := http.ListenAndServe(":" + port, nil); err != nil{ 
 	    log.Fatal(err)
