@@ -40,7 +40,7 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request){
         }
         s := rand.NewSource(time.Now().UTC().UnixMilli() % (1000 * 60 * 60 * 24))
         r := rand.New(s)
-        print("NUMBER OF SHRIMPS",  shrimplist.shrimps, "\n")
+        println("NUMBER OF SHRIMPS ",  len(shrimplist.shrimps))
         i := r.Intn(len(shrimplist.shrimps))
         w.Write([]byte(shrimplist.shrimps[i].name))
         
