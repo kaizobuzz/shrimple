@@ -1,5 +1,5 @@
 function autofill_shrimps(e) {
-    let input=e.target.value;
+    let input=e.target.value.toLowerCase();
     var search_results=document.getElementById('autofill-results');
     console.log(input);
     var valid_shrimps=[];
