@@ -1,9 +1,11 @@
 function autofill_shrimps(e) {
     let input=e.target.value;
+    var search_results=document.getElementById('autofill-results');
     console.log(input);
     var valid_shrimps=[];
     if (input.length==0){
-        return valid_shrimps;
+        search_results.innerHTML="";
+        return;
     }
     var i=0;
     console.log(shrimp_list);
@@ -16,7 +18,6 @@ function autofill_shrimps(e) {
     } 
     console.log(valid_shrimps);
     console.log(valid_shrimps.length);
-    var search_results=document.getElementById('autofill-results');
     var html_to_render="";
     for (index in valid_shrimps){
         let shrimp=valid_shrimps[index];
