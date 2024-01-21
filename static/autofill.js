@@ -43,7 +43,11 @@ async function get_shrimps() {
     console.log(shrimps);
     return shrimps;
 }
-
+async function get_daily_shrimp() {
+    response=await fetch("/dailyshrimp");
+    dailyshrimp=await response.text();
+    return dailyshrimp;
+}
 let shrimp_list_promise=get_shrimps();
 var shrimp_list;
 var shrimp_names_lowercase=[];
@@ -52,6 +56,12 @@ shrimp_list_promise.then((shrimps) =>{
     for (index in shrimp_list){
         shrimp_names_lowercase.push(shrimp_list[index].name.toLowerCase());
     }
+})
+let daily_shrimp_promise=get_daily_shrimp()
+var daily_shrimp;
+daily_shrimp_promise.then((daily) =>{
+    daily_shrimp=daily;
+    console.log(daily_shrimp);
 })
 console.log(shrimp_list_promise);
 document.getElementById("player-guess").addEventListener("input", autofill_shrimps);
