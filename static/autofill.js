@@ -10,7 +10,7 @@ function get_valid_autofill_results(input){
             let position=shrimp_list[i].name.search(input);
         //console.log(position);
             if (position != -1){
-                valid_shrimps.push([shrimp_list[i], position]);
+                valid_shrimps.push([shrimp_list[i].name, position]);
             }
             i++;
         } 
