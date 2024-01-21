@@ -20,14 +20,7 @@ type ShrimpJson struct {
     Shrimps []ShrimpData
 }
 func DailyShrimpName(w http.ResponseWriter, r *http.Request){
-    /*mode_bytes, err := io.ReadAll(r.Body)
-    var mode string = string(mode_bytes)
-    r.Body.Close()
-    if err != nil {
-        w.WriteHeader(500)
-        return
-    }*/
-    mode := "shrimple"
+    mode := r.URL.Query().Get("mode")
     if mode == "shrimple" {
         shrimps_json, err := os.ReadFile("data/shrimps.json")
         fmt.Println(json.Valid(shrimps_json));
