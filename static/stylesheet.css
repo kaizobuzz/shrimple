@@ -2,10 +2,24 @@ body {
   background-color:#2F2E30;
   color: #C6C9CD;
 }
+.form-control {
+  background-color: #535054; 
+  border-color: #4B484C;
+  color: #C6C9CD;
+  width: 400px;
+}
 ul {
     list-style-type: none;
 }
+li {
+    background-color: #515052;
+}
+#autofill-results {
+    position: relative;
+    right: 40px;
+    width: 400px;
+}
 mark {
-  background-color: transparent;
-  color: #FF7A7A;
+    background-color: transparent;
+    color: #FF7A7A;
 }
