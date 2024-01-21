@@ -28,7 +28,7 @@ function autofill_shrimps(e) {
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length)+
-            " <input type=hidden value="+shrimp.name+"/>"+
+            " <input type=hidden value=\""+shrimp.name+"\"/>"+
             " </li>";
     }
     console.log(html_to_render);
