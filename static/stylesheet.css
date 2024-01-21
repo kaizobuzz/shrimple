@@ -2,3 +2,6 @@ body {
   background-color:#2F2E30;
   color: #C6C9CD;
 }
+ul {
+    list-style-type: none;
+}

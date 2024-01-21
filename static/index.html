@@ -9,14 +9,10 @@
     </head>
     <body>
         <h1>Shrimple</h1>
-        <input hx-post="/test" hx-trigger="input changed delay:15ms"/>
-        <script>
-        async function get_shrimps() {
-            response = await fetch("/shrimps");
-            shrimps = await response.json();
-            console.log(shrimps);
-        }
-        get_shrimps();
-        </script>
+        <input id="player-guess" value=""/>
+        <ul id="search-results">
+            
+        </ul>
+        <script src="/autofill.js"></script>
     </body
 </html>
