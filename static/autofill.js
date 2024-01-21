@@ -8,7 +8,7 @@ function autofill_shrimps(e) {
     var i=0;
     console.log(shrimp_list);
     while (i<shrimp_list.length){
-        let position=shrimp_list[i].name.indexOf(input);
+        let position=shrimp_names_lowercase[i].indexOf(input);
         if (position != -1){
             valid_shrimps.push({name: shrimp_list[i].name, pos: position});
         }
@@ -45,8 +45,13 @@ async function get_shrimps() {
 
 let shrimp_list_promise=get_shrimps();
 var shrimp_list;
+var shrimp_names_lowercase=[];
 shrimp_list_promise.then((shrimps) =>{
-    shrimp_list=shrimps.shrimps;})
+    shrimp_list=shrimps.shrimps;
+    for (index in shrimp_list){
+        shrimp_names_lowercase.push(shrimp_list[index].name.toLowerCase());
+    }
+})
 console.log(shrimp_list_promise);
 document.getElementById("player-guess").addEventListener("input", autofill_shrimps);
 document.getElementById("autofill-results").addEventListener("click", use_autofill); 
