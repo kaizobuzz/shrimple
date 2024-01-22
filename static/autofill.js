@@ -1,5 +1,6 @@
 function autofill_shrimps(e) {
     var search_results=document.getElementById('autofill-results');
+    search_results.hidden=false;
     let input=e.target.value.toLowerCase();
     if (input==last_input){
         search_results.hidden=false;
@@ -40,11 +41,21 @@ function autofill_shrimps(e) {
     search_results.innerHTML=html_to_render;
 }
 function hide_autofill(){
-   document.getElementById("autofill-results").hidden=true; 
+    document.getElementById("autofill-results").hidden=true; 
 }
 function use_autofill(e){
-    console.log(e.target.value);
-} 
+    console.log(e.target.textContent);
+    if (e.target.textContent!=""){
+        player_guess.value=e.target.textContent;
+    }
+}
+function check_if_clicked_off(e){
+    if (input_container.contains(e.target)&&e.target.value!=undefined){
+        use_autofill(e);
+    } else{
+        hide_autofill();
+    }
+}
 async function get_shrimps() {
     response = await fetch("/shrimps");
     shrimps = await response.json();
@@ -74,7 +85,7 @@ daily_shrimp_promise.then((daily) =>{
 console.log(shrimp_list_promise);
 let player_guess=document.getElementById("player-guess")
 var last_input="";
+let input_container=document.querySelector("#player-input");
 player_guess.addEventListener("input", autofill_shrimps);
 player_guess.addEventListener("click", autofill_shrimps);
-player_guess.addEventListener("blur", hide_autofill);
-document.getElementById("autofill-results").addEventListener("click", use_autofill);
+document.addEventListener("click", check_if_clicked_off);
