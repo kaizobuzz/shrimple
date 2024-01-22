@@ -21,8 +21,6 @@ function autofill_shrimps(e) {
         }
         i++;
     } 
-    console.log(valid_shrimps);
-    console.log(valid_shrimps.length);
     var html_to_render="";
     for (index in valid_shrimps){
         let shrimp=valid_shrimps[index];
@@ -63,7 +61,7 @@ async function get_shrimps() {
 }
 async function get_daily_shrimp() {
     response=await fetch("/dailyshrimp");
-    dailyshrimp=await response.text();
+    let dailyshrimp=await response.text();
     return dailyshrimp;
 }
 let shrimp_list_promise=get_shrimps();
@@ -79,7 +77,7 @@ let daily_shrimp_promise=get_daily_shrimp()
 var daily_shrimp;
 daily_shrimp_promise.then((daily) =>{
     daily_shrimp=daily;
-    console.log(daily_shrimp);
+    console.log("daily shrimp:", daily_shrimp);
 })
 console.log(shrimp_list_promise);
 let player_guess=document.getElementById("player-guess")
