@@ -1,16 +1,15 @@
 function autofill_shrimps(e) {
-    var search_results=document.getElementById('autofill-results');
-    search_results.hidden=false;
+    autofill_results.hidden=false;
     let input=e.target.value.toLowerCase();
     if (input==last_input){
-        search_results.hidden=false;
+        autofill_results.hidden=false;
         return
     }
     last_input=input;
     console.log(input);
     var valid_shrimps=[];
     if (input.length==0){
-        search_results.innerHTML="";
+        autofill_results.innerHTML="";
         return;
     }
     var i=0;
@@ -30,23 +29,23 @@ function autofill_shrimps(e) {
         console.log(Object.keys(shrimp));
         pos=shrimp.pos;
         html_to_render+=
-            "<li> "+
+            "<li>"+
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length)+
-            " <input type=hidden value=\""+shrimp.name+"\"/>"+
-            " </li>";
+            "</li>";
     }
     console.log(html_to_render);
-    search_results.innerHTML=html_to_render;
+    autofill_results.innerHTML=html_to_render;
 }
 function hide_autofill(){
-    document.getElementById("autofill-results").hidden=true; 
+    autofill_results.hidden=true; 
 }
 function use_autofill(e){
     console.log(e.target.textContent);
     if (e.target.textContent!=""){
         player_guess.value=e.target.textContent;
+        autofill_results.hidden=true;
     }
 }
 function check_if_clicked_off(e){
@@ -84,6 +83,7 @@ daily_shrimp_promise.then((daily) =>{
 })
 console.log(shrimp_list_promise);
 let player_guess=document.getElementById("player-guess")
+let autofill_results=document.getElementById("autofill-results");
 var last_input="";
 let input_container=document.querySelector("#player-input");
 player_guess.addEventListener("input", autofill_shrimps);
