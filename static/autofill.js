@@ -1,17 +1,5 @@
-function autofill_shrimps(e) {
-    autofill_results.hidden=false;
-    let input=e.target.value.toLowerCase();
-    if (input==last_input){
-        autofill_results.hidden=false;
-        return
-    }
-    last_input=input;
-    console.log(input);
+function get_valid_shrimps(input) {
     var valid_shrimps=[];
-    if (input.length==0){
-        autofill_results.innerHTML="";
-        return;
-    }
     var i=0;
     console.log(shrimp_list);
     while (i<shrimp_list.length){
@@ -21,6 +9,21 @@ function autofill_shrimps(e) {
         }
         i++;
     } 
+    return valid_shrimps;
+}
+function autofill_shrimps(e) {
+    autofill_results.hidden=false;
+    let input=e.target.value.toLowerCase();
+    if (input==last_input){
+        return
+    }
+    last_input=input;
+    if (input.length==0){
+        autofill_results.innerHTML="";
+        return;
+    }
+    console.log(input);
+    let valid_shrimps=get_valid_shrimps(input);
     var html_to_render="";
     for (index in valid_shrimps){
         let shrimp=valid_shrimps[index];
