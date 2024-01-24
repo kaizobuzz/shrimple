@@ -56,6 +56,36 @@ function check_if_clicked_off(e){
         hide_autofill();
     }
 }
+const greater_than=1;
+const equal=0;
+const smaller_than=-1;
+function field_comparison(field, field1){
+    if (typeof(field)==Number){
+        if (field>field1){
+            return greater_than 
+        }
+        if (field<field1){
+            return less_than
+        }
+        return equal
+    }
+    if (field==field1){
+        return true;
+    }
+    return false;
+}
+function check_against_daily_shrimp(input){
+    let index=shrimp_index_by_name[input.toLowerCase()];
+    if (index==undefined){
+        return;
+    }
+    let shrimp_guess=shrimp_list[index];
+    var comparisons;
+    for (key in Object.keys(shrimp_guess)){
+        comparisons[key]=field_comparison(shrimp_guess[key], daily_shrimp[key]);
+    }
+    return comparisons
+} 
 async function get_shrimps() {
     response = await fetch("/shrimps");
     shrimps = await response.json();
@@ -70,17 +100,20 @@ async function get_daily_shrimp() {
 let shrimp_list_promise=get_shrimps();
 var shrimp_list;
 var shrimp_names_lowercase=[];
+var shrimp_index_by_name={};
+let daily_shrimp_promise=get_daily_shrimp()
+var daily_shrimp;
 shrimp_list_promise.then((shrimps) =>{
     shrimp_list=shrimps.shrimps;
     for (index in shrimp_list){
-        shrimp_names_lowercase.push(shrimp_list[index].name.toLowerCase());
+        let shrimp_lowercase=shrimp_list[index].name.toLowerCase();
+        shrimp_index_by_name[shrimp_lowercase]=index;
+        shrimp_names_lowercase.push(shrimp_lowercase);
     }
-})
-let daily_shrimp_promise=get_daily_shrimp()
-var daily_shrimp;
-daily_shrimp_promise.then((daily) =>{
-    daily_shrimp=daily;
+    daily_shrimp_promise.then((daily) =>{
+    daily_shrimp=shrimp_list[shrimp_index_by_name[daily.toLowerCase()]];
     console.log("daily shrimp:", daily_shrimp);
+    })
 })
 console.log(shrimp_list_promise);
 let player_guess=document.getElementById("player-guess")
