@@ -2,6 +2,9 @@
 <html lang="en">  
     <head>
         <script src="/htmx.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/stylesheet.css?v=1">
         <meta charset="UFT-8">
         <meta name="viewport" content="width=device-width", initial-scale="1.0">
@@ -9,9 +12,14 @@
         <meta name="description" content="It's actually quite shrimple (wordle but shrimp)">
     </head>
     <body>
+
         <h1>Shrimple</h1>
-        <div id="player-input">
-        <input class=form-control id="player-guess" value=""/>
+        <div id="guesses">
+        </div>
+        <div id="shrimp-search">
+            <div id="player-input">
+            <input class=form-control id="player-guess" value="" placeholder="Search for a shrimp..."/>
+            </div>
         <ul id="autofill-results">
             
         </ul>

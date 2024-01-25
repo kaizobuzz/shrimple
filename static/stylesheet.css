@@ -1,23 +1,46 @@
 body {
-  background-color:#2F2E30;
-  color: #C6C9CD;
+    text-align: center;
+    background-color:#2F2E30;
+    color: #C6C9CD;
+    font-family: "Mooli", sans-serif;
 }
 .form-control {
-  background-color: #535054; 
-  border-color: #4B484C;
-  color: #C6C9CD;
-  width: 400px;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    background-color: #535054; 
+    border-color: #4B484C;
+    color: #C6C9CD;
+    width: 23em;
+    font-size: large; 
+    font-family: "Mooli", sans-serif;
+}
+#player-input {
+    display: block;
+    text-align: center;
+}
+#player-guess {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
 }
 ul {
     list-style-type: none;
+    right: 1em;
 }
 li {
     background-color: #515052;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
 }
 #autofill-results {
+    text-align: left;
+    bottom: 0.8em;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    right: 40px;
-    width: 400px;
+    width: 24em;
+    font-size: large;
 }
 mark {
     background-color: transparent;

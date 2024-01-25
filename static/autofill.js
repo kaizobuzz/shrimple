@@ -119,7 +119,7 @@ console.log(shrimp_list_promise);
 let player_guess=document.getElementById("player-guess")
 let autofill_results=document.getElementById("autofill-results");
 var last_input="";
-let input_container=document.querySelector("#player-input");
+let input_container=document.querySelector("#shrimp-search");
 player_guess.addEventListener("input", autofill_shrimps);
 player_guess.addEventListener("click", autofill_shrimps);
 document.addEventListener("click", check_if_clicked_off);
