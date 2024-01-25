@@ -32,8 +32,11 @@ li {
     background-color: #515052;
     padding-right: 0.5em;
     padding-left: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
 }
 #autofill-results {
+    cursor: pointer;
     text-align: left;
     bottom: 0.8em;
     margin-left: auto;

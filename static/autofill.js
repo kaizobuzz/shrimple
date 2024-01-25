@@ -74,18 +74,30 @@ function field_comparison(field, field1){
     }
     return false;
 }
-function check_against_daily_shrimp(input){
-    let index=shrimp_index_by_name[input.toLowerCase()];
-    if (index==undefined){
-        return;
+function is_input_shrimp_valid(input){
+    if (shrimp_index_by_name[input.toLowerCase()]==undefined){
+        return false;
     }
+    return true;
+}
+function check_against_daily_shrimp(input_lowercase){
+    let index=shrimp_index_by_name[input_lowercase];
     let shrimp_guess=shrimp_list[index];
     var comparisons;
     for (key in Object.keys(shrimp_guess)){
         comparisons[key]=field_comparison(shrimp_guess[key], daily_shrimp[key]);
     }
     return comparisons
-} 
+}
+function submit_answer(){
+    let input=player_guess.value.toLowerCase();
+    console.log(input);
+    if (!is_input_shrimp_valid){
+        return;
+    }
+    let comparisons=check_against_daily_shrimp(input);
+
+}
 async function get_shrimps() {
     response = await fetch("/shrimps");
     shrimps = await response.json();
