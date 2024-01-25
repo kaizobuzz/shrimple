@@ -30,7 +30,7 @@ function autofill_shrimps(e) {
         console.log(Object.keys(shrimp));
         pos=shrimp.pos;
         html_to_render+=
-            "<li>"+
+            "<li title=\""+shrimp.name+"\">"+
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length)+
