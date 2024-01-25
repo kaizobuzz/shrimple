@@ -2,6 +2,7 @@ package src
 import (
     "encoding/json"
     "os"
+    "errors"
 )
 
 var UserMap map[string]*User
@@ -14,6 +15,23 @@ type User struct {
     Friends []int64 //list of user ids
     IncomingFriendRequests []int64 // list of user ids
     OutgoingFriendRequests []int64 // list of user ids
+}
+
+func CreateUser(username, password string) error {
+    if UserMap[username] != nil {
+        return errors.New("Account already exists with that name")
+    }
+    hash := hashPassword(username, password)   
+    UserMap[username]=&User{
+        Username: username,
+        Id: int64(len(UserMap)), //should be a mutex to avoid duplicate ids but oh well
+        PasswordHash: hash,
+        Experience: 0,
+        Friends: []int64{},
+        IncomingFriendRequests: []int64{},
+        OutgoingFriendRequests: []int64{},
+    }
+    return nil
 }
 
 func serializeUser(user User) (*[]byte, error) {
