@@ -1,7 +1,9 @@
 package src
-import(
-    "net/http"
+
+import (
+	"net/http"
 )
-func testHandler(w http.ResponseWriter, r *http.Request){ 
-    w.Write([]byte("meow"))
+
+func testHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("meow"))
 }
