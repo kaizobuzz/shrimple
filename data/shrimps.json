@@ -20,6 +20,27 @@
             "length_male": 4,
             "length_female": 4,
             "coloration": "red"
+        },
+        {
+            "name": "European Sand Shrimp",
+            "habitat": "Saltwater",
+            "length_male": 8,
+            "length_female": 8,
+            "coloration": "brown"
+        },
+        {
+            "name": "Tiger Pistol Shrimp",
+            "habitat": "Saltwater",
+            "length_male": 5,
+            "length_female": 5,
+            "coloration": "yellow"
+        },
+        {
+            "name": "Fairy Shrimp",
+            "habitat": "Saltwater",
+            "length_male": 2.5,
+            "length_female": 2.5,
+            "coloration": "orange"
         }
     ]
 }
