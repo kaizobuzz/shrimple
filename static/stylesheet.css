@@ -26,6 +26,18 @@ body {
     margin-right: auto;
     text-align: left;
 }
+#input-submit{
+    background-color: #92cea0;
+    position: relative;
+    left: 20em;
+    bottom: 2em;
+}
+#input-submit:hover{
+    background-color: #aedfba;
+}
+#input-submit:disabled{
+    background-color: #b5b5b5;
+}
 ul {
     list-style-type: none;
     right: 1em;
@@ -36,6 +48,9 @@ li {
     padding-left: 0.5em;
     padding-top: 0.2em;
     padding-bottom: 0.2em;
+}
+li:hover{
+    background-color: #676668;
 }
 #autofill-results {
     cursor: pointer;
