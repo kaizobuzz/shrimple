@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "os"
     "errors"
+    "fmt"
 )
 
 var UserMap map[string]*User
@@ -19,7 +20,7 @@ type User struct {
 }
 
 func CreateUser(username, password string) error {
-    if UserMap[username] != nil {
+    if UsernameTaken(username){
         return errors.New("Account already exists with that name")
     }
     hash := hashPassword(username, password)   
@@ -31,6 +32,11 @@ func CreateUser(username, password string) error {
         Friends: []int64{},
         IncomingFriendRequests: []int64{},
         OutgoingFriendRequests: []int64{},
+    }
+    err := WriteUsersToFile()
+    if err != nil {
+        fmt.Print(err)
+        return err
     }
     return nil
 }
@@ -113,7 +119,7 @@ func WriteUsersToFile() error {
 		return err
 	}
 
-	file, err := os.Open("data/temp_users.json")
+	file, err := os.Create("data/temp_users.json")
 	if err != nil {
 		return err
 	}
@@ -131,6 +137,7 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
+    UserMap = make(map[string]*User)
 	var jsonuserlist []jsonUser
 
 	file, err := os.ReadFile("data/users.json")
@@ -147,4 +154,11 @@ func ReadUsersFromFile() error {
 		UserMap[user.Username] = user
 	}
 	return nil
+}
+
+func UsernameTaken(username string) bool {
+    if UserMap[username] != nil {
+        return true
+    }
+    return false
 }
