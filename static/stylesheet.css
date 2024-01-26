@@ -29,8 +29,9 @@ body {
 #input-submit{
     background-color: #92cea0;
     position: relative;
-    left: 20em;
-    bottom: 2em;
+    left: 15em;
+    bottom: 1.7em;
+    font-size: large;
 }
 #input-submit:hover{
     background-color: #aedfba;
@@ -55,7 +56,7 @@ li:hover{
 #autofill-results {
     cursor: pointer;
     text-align: left;
-    bottom: 0.8em;
+    bottom: 2.2em;
     margin-left: auto;
     margin-right: auto;
     position: relative;
