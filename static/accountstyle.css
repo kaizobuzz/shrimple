@@ -4,3 +4,9 @@
 .success-message{
     color: #92cea0;; 
 }
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 10px;
+}
