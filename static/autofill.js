@@ -102,6 +102,7 @@ function check_against_daily_shrimp(input_lowercase){
     return comparisons
 }
 function submit_answer(){
+    guesses+=1;
     let input=player_input.value.toLowerCase();
     console.log(input);
     if (!is_input_shrimp_valid){
@@ -164,6 +165,7 @@ shrimp_list_promise.then((shrimps) =>{
     })
 })
 console.log(shrimp_list_promise);
+var num_guesses;
 let guesses=document.getElementById("guesses");
 let player_input=document.getElementById("player-guess")
 let autofill_results=document.getElementById("autofill-results");
