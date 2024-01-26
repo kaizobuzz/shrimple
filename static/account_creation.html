@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="/stylesheet.css">
+        <script src="/htmx.min.js"></script>
+        <title id=""> Create an Account (Shrimple) </title>
+    </head>
+    <body>
+    <p> Create Your Account </p>
+    <form hx-post="/signup" hx-target="signup-status-message">
+        <input name="username" type="text" placeholder="username" required/>
+        <input name="password" type="text" placeholder="password" required/>
+        <input name="confirmpassword" type="text" placeholder="confirm password" required/>
+        <input type="submit">Create Account</input>
+    </form>
+    <div id="signup-status-message"></div>
+    </body>
+</html>

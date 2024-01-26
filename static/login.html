@@ -2,17 +2,20 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="/stylesheet.css">
-        <script src="/htmx.min.js"/>
-        <title> Login (shrimple) </title>
+        <script src="/htmx.min.js"></script>
+        <title id=""> Login (Shrimple) </title>
     </head>
     <body>
     <p>login screen !!</p>
     <form hx-post="/login" hx-target="login-status-message">
-        <input type="text" placeholder="username"/>
-        <input type="text" placeholder="password"/>
-        <input type="text" placeholder="confirm password"/>
-        <input type="submit">Login</input>
+        <input type="text" placeholder="username" required/>
+        <input type="text" placeholder="password" required/>
+        <input id="login-button" type="submit"/>
+        <label for="login-button"> Login </label>
     </form>
     <div id="login-status-message"></div>
+    <a href="account_creation.html"> 
+        <button> Don't have an account? Sign up now! </button>
+    </a>
     </body>
 </html>

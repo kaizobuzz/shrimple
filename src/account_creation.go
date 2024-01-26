@@ -3,9 +3,11 @@ import (
     "net/http"
     "log"
 )
+
 func AccountCreationHandler(w http.ResponseWriter, r *http.Request) error {
     if err:=r.ParseForm(); err!=nil{
         log.Fatal(err)
+        w.WriteHeader(INTERNAL_SERVER_ERROR)
     }
     var username string = r.FormValue("username")
     var password string = r.FormValue("password")
