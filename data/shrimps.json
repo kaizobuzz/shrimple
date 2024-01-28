@@ -3,44 +3,114 @@
         {
             "name": "Giant Tiger Prawn",
             "habitat": "Saltwater",
-            "length_male": 25,
-            "length_female": 30,
-            "coloration": "yellow"
+            "length": 30,
+            "coloration": ["red", "white"],
+            "weight": 197.5,
+            "max_depth": 110
         },
         {
             "name": "Whiteleg Shrimp",
             "habitat": "Saltwater",
-            "length_male": 23,
-            "length_female": 23,
-            "coloration": "white"
+            "length": 23,
+            "coloration": ["white"],
+            "weight": 105,
+            "max_depth": 72,
         },
         {
             "name": "Cherry Shrimp",
             "habitat": "Freshwater",
-            "length_male": 4,
-            "length_female": 4,
-            "coloration": "red"
-        },
-        {
-            "name": "European Sand Shrimp",
-            "habitat": "Saltwater",
-            "length_male": 8,
-            "length_female": 8,
-            "coloration": "brown"
+            "length": 4,
+            "coloration": ["red"],
+            "weight": 4,
+            "max_depth": null 
         },
         {
             "name": "Tiger Pistol Shrimp",
             "habitat": "Saltwater",
-            "length_male": 5,
-            "length_female": 5,
-            "coloration": "yellow"
+            "length": 5,
+            "coloration": ["brown", "yellow"],
+            "weight": 25,
+            "max_depth": 20
         },
         {
             "name": "Fairy Shrimp",
             "habitat": "Saltwater",
-            "length_male": 2.5,
-            "length_female": 2.5,
-            "coloration": "orange"
+            "length": 2.5,
+            "coloration": ["orange", "white"],
+            "weight": 15,
+            "max_depth": null 
+        },
+        {
+            "name": "Smooth Bay Shrimp",
+            "habitat": "Saltwater",
+            "length": 6,
+            "coloration": ["brown", "gray"],
+            "weight": null,
+            "max_depth": 47
+        },
+        {
+            "name": "Dock Shrimp", 
+            "habitat": "Saltwater",
+            "length": 14,
+            "coloration": ["blue", "brown", "red"],
+            "weight": null,
+            "max_depth": 263
+        },
+        {
+            "name": "Stout Shrimp",
+            "habitat": "Saltwater",
+            "length": 6,
+            "coloration": ["brown", "green", "orange", "red", "white"],
+            "weight": null,
+            "max_depth": 128
+        },
+        {
+            "name": "Shorthorn Shrimp",
+            "habitat": "Saltwater",
+            "length": 2.8,
+            "coloration": ["brown", "green", "white"],
+            "weight": null,
+            "max_depth": 13
+        },
+        {
+            "name": "Barred Shrimp",
+            "habitat": "Saltwater",
+            "length": 2,
+            "coloration": ["red", "yellow"],
+            "weight": null,
+            "max_depth": 18
+        },
+        {
+            "name": "Sitka Shrimp",
+            "habitat": "Saltwater",
+            "length": 3.3,
+            "coloration": ["brown, green"],
+            "weight": null,
+            "max_depth": 12
+        },
+        {
+            "name": "Smalleyed Shrimp",
+            "habitat": "Saltwater",
+            "length": 6,
+            "coloration": ["green", "red"],
+            "weight": null,
+            "max_depth": 27
+        },
+        {
+            "name": "Blue Mud Shrimp",
+            "habitat": "Saltwater",
+            "length": 10,
+            "coloration": ["blue", "gray"],
+            "weight": null,
+            "max_depth": 20
+        },
+        {
+            "name": "Bay Ghost Shrimp",
+            "habitat": "Saltwater",
+            "length": 12,
+            "coloration": ["orange", "pink"],
+            "weight": null,
+            "max_depth": 26
         }
     ]
 }
