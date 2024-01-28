@@ -41,7 +41,6 @@ body {
 }
 ul {
     list-style-type: none;
-    right: 1em;
 }
 li {
     background-color: #515052;
@@ -62,6 +61,7 @@ li:hover{
     position: relative;
     width: 24em;
     font-size: large;
+    right: 1.05em;
 }
 mark {
     background-color: transparent;

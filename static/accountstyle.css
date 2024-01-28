@@ -10,3 +10,26 @@
     gap: 10px;
     padding-top: 10px;
 }
+.acc-field{
+    display: inline block;
+    font-size: large;
+    background-color: #535054; 
+    border-color: #4B484C;
+    color: #C6C9CD;
+}
+.acc-label{
+    display: inline-block;
+    text-align: left;
+}
+form{
+    display: inline-block;
+    text-align: left;
+}
+.login-form{
+    font-size: large;
+    color: #C6C9CD;
+}
+.login{
+    display: block;
+    text-align: center;
+}

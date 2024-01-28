@@ -7,13 +7,24 @@
         <title id=""> Create an Account (Shrimple) </title>
     </head>
     <body>
-    <p> Create Your Account </p>
-    <form hx-post="/signup" hx-target="#signup-status-message">
-        <input name="username" type="text" placeholder="username" required/>
-        <input name="password" type="password" placeholder="password" required/>
-        <input name="confirmpassword" type="password" placeholder="confirm password" required/>
-        <input type="submit">Create Account</input>
+    <h2> Create Your Account </h2>
+    <div class="login">
+    <form class="login-form" hx-post="/signup" hx-target="#signup-status-message">
+        <label class="acc-label">Username:</label>
+        <br>
+        <input class="acc-field" name="username" type="text" placeholder="username" required/>
+        <br><br>
+        <label class="acc-label">Password:</label>
+        <br>
+        <input class="acc-field" name="password" type="password" placeholder="password" required/>
+        <br><br>
+        <label class="acc-label">Confirm Password:</label>
+        <br>
+        <input class="acc-field" name="confirmpassword" type="password" placeholder="confirm password" required/>
+        <br><br>
+        <input type="submit" value="Create Account">
     </form>
+    </div>
     <div id="signup-status-message"></div>
     </body>
 </html>
