@@ -29,8 +29,7 @@ function autofill_shrimps(e) {
     console.log(input);
     let valid_shrimps=get_valid_shrimps(input);
     var html_to_render="";
-    for (index in valid_shrimps){
-        let shrimp=valid_shrimps[index];
+    for (let shrimp of valid_shrimps){
         console.log(Object.keys(shrimp));
         pos=shrimp.pos;
         html_to_render+=
@@ -43,8 +42,7 @@ function autofill_shrimps(e) {
             html_to_render+=
             "<br><span class=shrimp-info>";
             let keys=Object.keys(shrimp_stats);
-            for (index in keys){
-                let key=keys[index];
+            for (const key of keys){
                 if (key!="name"){
                     html_to_render+=shrimp_stats[key];
                     if (typeof(shrimp_stats[key])=='number'){
@@ -60,26 +58,34 @@ function autofill_shrimps(e) {
     }
     console.log(html_to_render);
     autofill_results.innerHTML=html_to_render;
+    add_list_eners();
+}
+function add_list_eners(){
+    let list_items=document.querySelectorAll("li");
+    console.log(list_items);
+    for (const list_item of list_items){
+        list_item.addEventListener("click", use_autofill);
+    }
 }
 function hide_autofill(){
     autofill_results.hidden=true; 
 }
-function use_autofill(e){
-    //console.log(e.target.getElementsByTagName("input")[0].value);
+function use_autofill(){
+    console.log(this.getElementsByTagName("input")[0].value);
     //console.log(e.target.value);
-    if (e.target.getElementsByTagName("input")[0]!=undefined){
-        player_input.value=e.target.getElementsByTagName("input")[0].value;
+    if (this.getElementsByTagName("input")[0]!=undefined){
+        player_input.value=this.getElementsByTagName("input")[0].value;
         submit_button.disabled=false;
         autofill_results.hidden=true;
     }
 }
 function check_if_clicked_off(e){
-    if (input_container.contains(e.target)&&e.target.value!=undefined){
+    if (input_container.contains(e.target)&&(e.target.value!=undefined||e.target.textContent!="")){
         if (e.target.textContent=="submit"){
             submit_answer();
             return;
         }
-        use_autofill(e);
+        //use_autofill(e);
     } else{
         hide_autofill();
     }
@@ -112,9 +118,7 @@ function check_against_daily_shrimp(input_lowercase){
     let index=shrimp_index_by_name[input_lowercase];
     let shrimp_guess=shrimp_list[index];
     var comparisons={};
-    let keys=Object.keys(shrimp_guess);
-    for (index in Object.keys(shrimp_guess)){
-        let key=keys[index];
+    for (let key of Object.keys(shrimp_guess)){
         console.log(shrimp_guess[key], daily_shrimp[key], key);
         comparisons[key]=field_comparison(shrimp_guess[key], daily_shrimp[key]);
     }
@@ -130,8 +134,7 @@ function submit_answer(){
     let comparisons=check_against_daily_shrimp(input);
     var html_to_render="<p> Guess: "+player_input.value+" ";
     let keys=Object.keys(comparisons);
-    for (index in keys){
-        let key=keys[index];
+    for (const key in keys){
         html_to_render+=key+": ";
         if (typeof(comparisons[key])=='number'){
             if (comparisons[key]==greater_than){
