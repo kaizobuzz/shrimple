@@ -11,15 +11,30 @@
     padding-top: 10px;
 }
 .acc-field{
-    display: inline block;
     font-size: large;
     background-color: #535054; 
     border-color: #4B484C;
     color: #C6C9CD;
 }
-.acc-label{
-    display: inline-block;
-    text-align: left;
+.submit-button{
+    font-size: large;
+    text-align: center;
+    padding-left: 3.1em;
+    padding-right: 3.1em;
+    position: relative;
+    left: 0.3em;
+    background-color: #535054; 
+    border-color: #4B484C;
+    color: #C6C9CD;
+}
+#login-button{
+    padding-left: 5.3em;
+    padding-right: 5.3em;
+}
+.submit-button:hover{
+    background-color: #807387; 
+    border-color: #4B484C;
+    color: #C6C9CD;
 }
 form{
     display: inline-block;
@@ -32,4 +47,16 @@ form{
 .login{
     display: block;
     text-align: center;
+}
+.new-link:link{
+    color:#997994;
+}
+.new-link:visited{
+    color:#997994;
+}
+.new-link:hover{
+    color:#997f95;
+}
+.new-link:active{
+    color:#997f95;
 }

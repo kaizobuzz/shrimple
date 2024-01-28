@@ -10,21 +10,23 @@
     <h2> Create Your Account </h2>
     <div class="login">
     <form class="login-form" hx-post="/signup" hx-target="#signup-status-message">
-        <label class="acc-label">Username:</label>
+        <label>Username:</label>
         <br>
         <input class="acc-field" name="username" type="text" placeholder="username" required/>
         <br><br>
-        <label class="acc-label">Password:</label>
+        <label>Password:</label>
         <br>
         <input class="acc-field" name="password" type="password" placeholder="password" required/>
         <br><br>
-        <label class="acc-label">Confirm Password:</label>
+        <label>Confirm Password:</label>
         <br>
         <input class="acc-field" name="confirmpassword" type="password" placeholder="confirm password" required/>
         <br><br>
-        <input type="submit" value="Create Account">
+        <input class="submit-button" type="submit" value="Create Account">
     </form>
     </div>
     <div id="signup-status-message"></div>
+    <br>Already have an account?<br>
+        <a class="new-link" href="login.html">Sign in</a>
     </body>
 </html>
