@@ -21,17 +21,22 @@
     text-align: left;
 }
 #input-submit{
-    background-color: #92cea0;
+    font-family: "Mooli", sans-serif;
+    background-color: #92cea0; 
+    border-color: #92cea0;
     position: relative;
     left: 15em;
     bottom: 1.7em;
     font-size: large;
+    border-radius: 0.25em;
 }
 #input-submit:hover{
     background-color: #aedfba;
+    border-color: #aedfba;
 }
 #input-submit:disabled{
     background-color: #b5b5b5;
+    border-color: #b5b5b5;
 }
 ul {
     list-style-type: none;
