@@ -80,7 +80,8 @@ function use_autofill(){
     }
 }
 function check_if_clicked_off(e){
-    if (input_container.contains(e.target)&&(e.target.value!=undefined||e.target.textContent!="")){
+    console.log(e.target);
+    if (input_container.contains(e.target)&&(e.target.value!=undefined||e.target.childNodes.length==0)){
         if (e.target.textContent=="submit"){
             submit_answer();
             return;
