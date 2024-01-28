@@ -48,15 +48,4 @@ form{
     display: block;
     text-align: center;
 }
-.new-link:link{
-    color:#997994;
-}
-.new-link:visited{
-    color:#997994;
-}
-.new-link:hover{
-    color:#997f95;
-}
-.new-link:active{
-    color:#997f95;
-}
+

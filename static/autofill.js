@@ -34,10 +34,28 @@ function autofill_shrimps(e) {
         console.log(Object.keys(shrimp));
         pos=shrimp.pos;
         html_to_render+=
-            "<li title=\""+shrimp.name+"\">"+
+            "<li>"+
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
-            shrimp.name.slice(pos+input.length)+
+            shrimp.name.slice(pos+input.length);
+        if (show_stats){
+            let shrimp_stats=shrimp_list[shrimp_index_by_name[shrimp.name.toLowerCase()]];
+            html_to_render+=
+            "<br><span class=shrimp-info>";
+            let keys=Object.keys(shrimp_stats);
+            for (index in keys){
+                let key=keys[index];
+                if (key!="name"){
+                    html_to_render+=shrimp_stats[key];
+                    if (typeof(shrimp_stats[key])=='number'){
+                        html_to_render+="cm";
+                    }
+                    html_to_render+=", ";
+                }
+            }
+            html_to_render+="</span>";
+        }
+        html_to_render+="<input type=\"hidden\" value=\""+shrimp.name+"\"/>"+
             "</li>";
     }
     console.log(html_to_render);
@@ -47,9 +65,10 @@ function hide_autofill(){
     autofill_results.hidden=true; 
 }
 function use_autofill(e){
-    console.log(e.target.textContent);
-    if (e.target.textContent!=""){
-        player_input.value=e.target.textContent;
+    //console.log(e.target.getElementsByTagName("input")[0].value);
+    //console.log(e.target.value);
+    if (e.target.getElementsByTagName("input")[0]!=undefined){
+        player_input.value=e.target.getElementsByTagName("input")[0].value;
         submit_button.disabled=false;
         autofill_results.hidden=true;
     }
@@ -135,6 +154,14 @@ function submit_answer(){
     html_to_render+="</p>";
     guesses.innerHTML+=(html_to_render);
 }
+function toggle_info(e){
+    console.log(e.target.value);
+    if (e.target.checked==true){
+        show_stats=true;
+        return;
+    }
+    show_stats=false;
+}
 async function get_shrimps() {
     response = await fetch("/shrimps");
     shrimps = await response.json();
@@ -172,6 +199,12 @@ let autofill_results=document.getElementById("autofill-results");
 let submit_button=document.getElementById("input-submit");
 var last_input="";
 let input_container=document.querySelector("#shrimp-search");
+let info_checkbox=document.getElementById("info-toggle");
+var show_stats=false;
+if (info_checkbox.checked){
+    show_stats=true;
+}
+info_checkbox.addEventListener("input", toggle_info);
 player_input.addEventListener("input", autofill_shrimps);
 player_input.addEventListener("click", autofill_shrimps);
 document.addEventListener("click", check_if_clicked_off);
