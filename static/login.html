@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
-        <link rel="stylesheet" type="text/css" href="/css/accountstyle.css">
-        <script src="/js/htmx.min.js"></script>
-        <title id=""> Login (Shrimple) </title>
-    </head>
-    <body>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="/css/accountstyle.css">
+    <script src="/js/htmx.min.js"></script>
+    <title id=""> Login (Shrimple) </title>
+</head>
+
+<body>
     <h2>login screen !!</h2>
     <div class="login">
-    <form class="login-form" hx-post="/login" hx-target="#login-status-message">
-        <label>Username:</label>
-        <br>
-        <input class="acc-field" name="username" type="text" placeholder="username" required/>
-        <br><br>
-        <label>Password:</label>
-        <br>
-        <input class="acc-field" name="password" type="password" placeholder="password" required/>
-        <br><br>
-        <input class="submit-button" id="login-button" value="Login" type="submit"/>
-    </form>
+        <form class="login-form" hx-post="/login" hx-target="#login-status-message">
+            <label>Username:</label>
+            <br>
+            <input class="acc-field" name="username" type="text" placeholder="username" required />
+            <br><br>
+            <label>Password:</label>
+            <br>
+            <input class="acc-field" name="password" type="password" placeholder="password" required />
+            <br><br>
+            <input class="submit-button" id="login-button" value="Login" type="submit" />
+        </form>
     </div>
     <div id="login-status-message"></div>
     <br>
-    Don't have an account?<br>
+    Don't have an account?
+    <br>
     <a class="new-link" href="account_creation.html">Sign up now!</a>
-    </body>
+</body>
+
 </html>
