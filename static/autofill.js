@@ -102,7 +102,7 @@ function check_against_daily_shrimp(input_lowercase){
     return comparisons
 }
 function submit_answer(){
-    guesses+=1;
+    num_guesses+=1;
     let input=player_input.value.toLowerCase();
     console.log(input);
     if (!is_input_shrimp_valid){
