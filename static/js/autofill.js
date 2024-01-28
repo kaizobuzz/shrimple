@@ -14,18 +14,15 @@ function get_valid_shrimps(input) {
 function autofill_shrimps(e) {
     autofill_results.hidden=false;
     let input=e.target.value.toLowerCase();
+    update_submit_button(input);
     if (input==last_input){
         return
     }
     last_input=input;
     if (input.length==0){
-        submit_button.disabled=true;
         autofill_results.innerHTML="";
         return;
-    }
-    if (shrimp_index_by_name[input]==undefined){
-        autofill_results.disabled=true;
-    }
+    } 
     console.log(input);
     let valid_shrimps=get_valid_shrimps(input);
     var html_to_render="";
@@ -84,7 +81,7 @@ function use_autofill(){
     //console.log(e.target.value);
     if (this.getElementsByTagName("input")[0]!=undefined){
         player_input.value=this.getElementsByTagName("input")[0].value;
-        submit_button.disabled=false;
+        update_submit_button(player_input.value);
         autofill_results.hidden=true;
     }
 }
@@ -104,7 +101,6 @@ function toggle_info(e){
 }
 let player_input=document.getElementById("player-guess")
 let autofill_results=document.getElementById("autofill-results");
-let submit_button=document.getElementById("input-submit");
 var last_input="";
 let input_container=document.querySelector("#shrimp-search");
 let info_checkbox=document.getElementById("info-toggle");
