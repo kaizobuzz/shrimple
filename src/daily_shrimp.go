@@ -15,9 +15,10 @@ import (
 type ShrimpData struct {
 	Name          string
 	Habitat       string
-	Length_male   json.Number
-	Length_female json.Number
-	Coloration    string
+    Length        json.Number
+	Coloration    []string
+    Weight        json.Number
+    MaxDepth      json.Number
 }
 type ShrimpJson struct {
 	Shrimps []ShrimpData
