@@ -1,5 +1,5 @@
 async function get_shrimps() {
-    response = await fetch("/shrimps");
+    response = await fetch("data/shrimps.json");
     shrimps = await response.json();
     console.log(shrimps);
     return shrimps;

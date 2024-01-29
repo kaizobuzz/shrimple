@@ -23,7 +23,7 @@ type ShrimpData struct {
 type ShrimpJson struct {
 	Shrimps []ShrimpData
 }
-
+const SHRIMP_DATA_PATH="static/data/shrimps.json"
 func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	mode := r.URL.Query().Get("mode")
 	u := &url.URL{}
@@ -34,7 +34,7 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	}
 	mode = u.Query().Get("mode")
 	if mode == "shrimple" {
-		shrimps_json, err := os.ReadFile("data/shrimps.json")
+		shrimps_json, err := os.ReadFile(SHRIMP_DATA_PATH)
 		fmt.Println(json.Valid(shrimps_json))
 		if err != nil {
 			w.WriteHeader(INTERNAL_SERVER_ERROR) // internal server error
