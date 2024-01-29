@@ -15,10 +15,6 @@ function autofill_shrimps(e) {
     autofill_results.hidden=false;
     let input=e.target.value.toLowerCase();
     update_submit_button(input);
-    if (input==last_input){
-        return
-    }
-    last_input=input;
     if (input.length==0){
         autofill_results.innerHTML="";
         return;
@@ -101,7 +97,6 @@ function toggle_info(e){
 }
 let player_input=document.getElementById("player-guess")
 let autofill_results=document.getElementById("autofill-results");
-var last_input="";
 let input_container=document.querySelector("#shrimp-search");
 let info_checkbox=document.getElementById("info-toggle");
 var show_stats=false;
