@@ -23,5 +23,6 @@ func Start_Server() {
 }
 
 func Initialize() {
+    GetPepper()
     ReadUsersFromFile()
 }
