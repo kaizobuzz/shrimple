@@ -2,8 +2,10 @@ package src
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
+
 	//"io"
 	"encoding/json"
 	"math/rand"
@@ -29,14 +31,15 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	u := &url.URL{}
 	err := u.UnmarshalBinary([]byte(r.Referer()))
 	if err != nil {
+        log.Println(err)
 		w.WriteHeader(INTERNAL_SERVER_ERROR)
 		return
 	}
 	mode = u.Query().Get("mode")
 	if mode == "shrimple" {
 		shrimps_json, err := os.ReadFile(SHRIMP_DATA_PATH)
-		fmt.Println(json.Valid(shrimps_json))
 		if err != nil {
+            log.Println(err)
 			w.WriteHeader(INTERNAL_SERVER_ERROR) // internal server error
 			return
 		}
@@ -44,6 +47,7 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 		err = json.Unmarshal(shrimps_json, &shrimplist)
 		fmt.Println(shrimplist)
 		if err != nil {
+            log.Println(err)
 			w.WriteHeader(INTERNAL_SERVER_ERROR) // internal server error
 			return
 		}

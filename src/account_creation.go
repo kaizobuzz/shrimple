@@ -1,7 +1,9 @@
 package src
+
 import (
-    "net/http"
-    "shrimple/src/templates"
+	"log"
+	"net/http"
+	"shrimple/src/templates"
 )
 
 func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
@@ -9,6 +11,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
     if err:=r.ParseForm(); err!=nil{
         err := templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
         if err != nil {
+            log.Println(err)
             w.WriteHeader(INTERNAL_SERVER_ERROR)
         }
         return 
@@ -21,6 +24,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
     if UsernameTaken(username) {
         err := templates.UseStringTemplate("Username Already Taken!", templates.ErrorMessage, &w)
         if err != nil {
+            log.Println(err)
             w.WriteHeader(INTERNAL_SERVER_ERROR)
         }
         return
@@ -29,6 +33,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
     if password != confirmpassword {
         err := templates.UseStringTemplate("Passwords do not match!", templates.ErrorMessage, &w)
         if err != nil {
+            log.Println(err)
             w.WriteHeader(INTERNAL_SERVER_ERROR)
         }
         return
@@ -36,8 +41,12 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 
     err := CreateUser(username, password)
     if err != nil {
-        templates.UseStringTemplate("Account Creation Failed", templates.ErrorMessage, &w)
-        //w.WriteHeader(INTERNAL_SERVER_ERROR)
+        log.Println(err)
+        err:=templates.UseStringTemplate("Account Creation Failed", templates.ErrorMessage, &w)
+        if err!=nil{
+            log.Println(err)        
+        }
+        w.WriteHeader(INTERNAL_SERVER_ERROR)
     }
     return 
 }

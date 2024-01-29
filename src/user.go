@@ -4,7 +4,6 @@ import (
     "encoding/json"
     "os"
     "errors"
-    "fmt"
 )
 
 var UserMap map[string]*User
@@ -35,7 +34,6 @@ func CreateUser(username, password string) error {
     }
     err := WriteUsersToFile()
     if err != nil {
-        fmt.Print(err)
         return err
     }
     return nil
