@@ -8,7 +8,7 @@ function submit_answer(){
     let comparisons=check_against_daily_shrimp(input);
     var html_to_render="<p> Guess: "+player_input.value+" ";
     let keys=Object.keys(comparisons);
-    for (const key in keys){
+    for (const key of keys){
         html_to_render+=key+": ";
         if (typeof(comparisons[key])=='number'){
             if (comparisons[key]==greater_than){
