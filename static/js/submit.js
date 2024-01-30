@@ -14,20 +14,21 @@ function submit_answer(){
     for (const key of keys){
         html_to_render+=key+": ";
         if(comparisons[key] == greater_than) {
-            html_to_render += "too high"
+            html_to_render += "⬇️"
         } else if(comparisons[key] == smaller_than) {
-            html_to_render += "too_low"
+            html_to_render += "⬆️"
         } else if(comparisons[key] == equal) {
-            html_to_render += "correct :3"
+            html_to_render += "🟩"
         } else if(comparisons[key] == partial_equal) {
-            html_to_render += "sorta correct"
+            html_to_render += "🟨"
         } else if(comparisons[key] == unknown_comparison) {
-            html_to_render += "???"
+            html_to_render += "🟪"
         } else if(comparisons[key] == not_equal) {
-            html_to_render += "incorrect 3:"
+            html_to_render += "🟥"
         } else {
             html_to_render += "uh there was an error"
         }
+        html_to_render += " "
     }
     html_to_render+="</p>";
     guesses.innerHTML+=(html_to_render);
