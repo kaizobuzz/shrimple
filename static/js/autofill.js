@@ -1,17 +1,20 @@
 function get_valid_shrimps(input) {
     var valid_shrimps=[];
     var i=0;
-    console.log(shrimp_list);
-    while (i<shrimp_list.length){
-        let position=shrimp_names_lowercase[i].indexOf(input);
+    console.log(game.shrimp_list);
+    while (i<game.shrimp_list.length){
+        let position=game.shrimp_names_lowercase[i].indexOf(input);
         if (position != -1){
-            valid_shrimps.push({name: shrimp_list[i].name, pos: position});
+            valid_shrimps.push({name: game.shrimp_list[i].name, pos: position});
         }
         i++;
     } 
     return valid_shrimps;
 }
 function autofill_shrimps(e) {
+    if(!game.initialized) {
+        return;
+    }
     autofill_results.hidden=false;
     let input=e.target.value.toLowerCase();
     update_submit_button(input);
@@ -31,7 +34,7 @@ function autofill_shrimps(e) {
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length);
         if (show_stats){
-            let shrimp_stats=shrimp_list[shrimp_index_by_name[shrimp.name.toLowerCase()]];
+            let shrimp_stats=game.shrimp_list[game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
             html_to_render+=
             "<br><span class=shrimp-info>";
             let keys=Object.keys(shrimp_stats);
@@ -103,7 +106,12 @@ var show_stats=false;
 if (info_checkbox.checked){
     show_stats=true;
 }
-info_checkbox.addEventListener("input", toggle_info);
-player_input.addEventListener("input", autofill_shrimps);
-player_input.addEventListener("click", autofill_shrimps);
-document.addEventListener("click", check_if_clicked_off);
+
+function initialize_autofill() {
+    info_checkbox.addEventListener("input", toggle_info);
+    player_input.addEventListener("input", autofill_shrimps);
+    player_input.addEventListener("click", autofill_shrimps);
+    document.addEventListener("click", check_if_clicked_off);
+}
+
+initialize_autofill();
