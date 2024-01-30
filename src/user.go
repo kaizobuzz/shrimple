@@ -1,9 +1,9 @@
 package src
 
 import (
-    "encoding/json"
-    "os"
-    "errors"
+	"encoding/json"
+	"errors"
+	"os"
 )
 
 var UserMap map[string]*User
@@ -34,6 +34,7 @@ func CreateUser(username, password string) error {
     }
     err := WriteUsersToFile()
     if err != nil {
+        delete(UserMap, username)
         return err
     }
     return nil
