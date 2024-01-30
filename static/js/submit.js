@@ -23,6 +23,8 @@ function submit_answer(){
             html_to_render += "sorta correct"
         } else if(comparisons[key] == unknown_comparison) {
             html_to_render += "???"
+        } else if(comparisons[key] == not_equal) {
+            html_to_render += "incorrect 3:"
         } else {
             html_to_render += "uh there was an error"
         }
