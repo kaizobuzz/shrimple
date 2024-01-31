@@ -13,7 +13,6 @@ func Start_Server() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
 	http.HandleFunc("/test", testHandler)
-	http.HandleFunc("/shrimps", GetShrimps)
 	http.HandleFunc("/dailyshrimp", DailyShrimpName)
     http.HandleFunc("/signup", AccountCreationHandler)
 	println("Starting Server on port " + port)
@@ -23,5 +22,9 @@ func Start_Server() {
 }
 
 func Initialize() {
-    ReadUsersFromFile()
+    GetPepper()
+    err:=ReadUsersFromFile()
+    if err!=nil{
+        log.Fatal(err)
+    }
 }
