@@ -31,7 +31,7 @@ function check_against_daily_shrimp(input_lowercase){
     let index=game.shrimp_index_by_name[input_lowercase];
     let shrimp_guess=game.shrimp_list[index];
     var comparisons={};
-   for (const key of Object.keys(shrimp_guess)){
+    for (const key of Object.keys(shrimp_guess)){
         console.log(shrimp_guess[key], game.daily_shrimp[key], key);
         comparisons[key]=compare_statistic(shrimp_guess[key], game.daily_shrimp[key]);
     }
