@@ -13,17 +13,17 @@ function submit_answer(){
     let keys=Object.keys(comparisons);
     for (const key of keys){
         html_to_render+=key+": ";
-        if(comparisons[key] == greater_than) {
+        if(comparisons[key] == TooLarge) {
             html_to_render += "⬇️"
-        } else if(comparisons[key] == smaller_than) {
+        } else if(comparisons[key] == TooSmall) {
             html_to_render += "⬆️"
-        } else if(comparisons[key] == equal) {
+        } else if(comparisons[key] == Equal) {
             html_to_render += "🟩"
-        } else if(comparisons[key] == partial_equal) {
+        } else if(comparisons[key] == PartialEqual) {
             html_to_render += "🟨"
-        } else if(comparisons[key] == unknown_comparison) {
+        } else if(comparisons[key] == UnknownComparison) {
             html_to_render += "🟪"
-        } else if(comparisons[key] == not_equal) {
+        } else if(comparisons[key] == NotEqual) {
             html_to_render += "🟥"
         } else {
             html_to_render += "uh there was an error"
