@@ -1,7 +1,6 @@
 package src
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -25,7 +24,19 @@ type ShrimpData struct {
 type ShrimpJson struct {
 	Shrimps []ShrimpData
 }
+
 const SHRIMP_DATA_PATH="static/data/shrimps.json"
+var ShrimpList ShrimpJson
+
+func GetShrimpJson() error{
+    shrimps_json, err:=os.ReadFile(SHRIMP_DATA_PATH)
+    if err!=nil{
+        return err
+    }
+    err = json.Unmarshal(shrimps_json, &ShrimpList)
+    log.Println("shrimplist: ", ShrimpList) 
+    return nil
+}
 func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	mode := r.URL.Query().Get("mode")
 	u := &url.URL{}
@@ -37,26 +48,11 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	}
 	mode = u.Query().Get("mode")
 	if mode == "shrimple" {
-		shrimps_json, err := os.ReadFile(SHRIMP_DATA_PATH)
-		if err != nil {
-            log.Println(err)
-			w.WriteHeader(INTERNAL_SERVER_ERROR) // internal server error
-			return
-		}
-		var shrimplist ShrimpJson
-		err = json.Unmarshal(shrimps_json, &shrimplist)
-		fmt.Println(shrimplist)
-		if err != nil {
-            log.Println(err)
-			w.WriteHeader(INTERNAL_SERVER_ERROR) // internal server error
-			return
-		}
 		s := rand.NewSource(time.Now().UTC().UnixMilli() / (1000 * 60 * 60 * 24))
 		r := rand.New(s)
-		println("NUMBER OF SHRIMPS ", len(shrimplist.Shrimps))
-		i := r.Intn(len(shrimplist.Shrimps))
-		w.Write([]byte(shrimplist.Shrimps[i].Name))
-
+		log.Println("NUMBER OF SHRIMPS ", len(ShrimpList.Shrimps))
+		i := r.Intn(len(ShrimpList.Shrimps))
+		w.Write([]byte(ShrimpList.Shrimps[i].Name))
 	} else if mode == "clamplicated" {
 		w.WriteHeader(NOT_IMPLEMENTED) // not implemented
 	} else if mode == "shrimpossible" {

@@ -6,15 +6,14 @@ import (
 )
 
 func Start_Server() {
-
-    Initialize()
+	Initialize()
 
 	port := "17212"
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/dailyshrimp", DailyShrimpName)
-    http.HandleFunc("/signup", AccountCreationHandler)
+	http.HandleFunc("/signup", AccountCreationHandler)
 	println("Starting Server on port " + port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
@@ -22,9 +21,11 @@ func Start_Server() {
 }
 
 func Initialize() {
-    GetPepper()
-    err:=ReadUsersFromFile()
-    if err!=nil{
+	GetPepper()
+    if err:= GetShrimpJson(); err!=nil{
         log.Fatal(err)
     }
+	if err := ReadUsersFromFile(); err!=nil{
+        log.Fatal(err)
+    }	
 }
