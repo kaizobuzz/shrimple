@@ -91,7 +91,6 @@ function check_if_clicked_off(e){
     }
 }
 function toggle_info(e){
-    console.log(e.target.value);
     if (e.target.checked==true){
         show_stats=true;
         return;

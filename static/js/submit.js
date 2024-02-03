@@ -2,7 +2,7 @@ function submit_answer(){
     if(!game.initialized){
         return;
     }
-    num_guesses+=1;
+    game.num_guesses+=1;
     let input=player_input.value.toLowerCase();
     console.log(input);
     if (!is_input_shrimp_valid(input)){
