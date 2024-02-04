@@ -36,7 +36,7 @@ function initialize_game_variables_from_server(){
         console.log("DAILY SHRIMP")
         console.log(game.daily_shrimp)
 
-        game.initialized = true;
+        game.active = true;
     });
 }
 
