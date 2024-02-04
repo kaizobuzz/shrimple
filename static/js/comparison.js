@@ -26,16 +26,18 @@ function compare_statistic(guess_statistic, answer_statistic){
     }
     return NotEqual;
 }
-
-function check_against_daily_shrimp(input_lowercase){
+function check_against_shrimp(input_lowercase, comparison_shrimp){
     let index=game.shrimp_index_by_name[input_lowercase];
     let shrimp_guess=game.shrimp_list[index];
     var comparisons={};
     for (const key of Object.keys(shrimp_guess)){
-        console.log(shrimp_guess[key], game.daily_shrimp[key], key);
-        comparisons[key]=compare_statistic(shrimp_guess[key], game.daily_shrimp[key]);
+        console.log(shrimp_guess[key], comparison_shrimp[key], key);
+        comparisons[key]=compare_statistic(shrimp_guess[key], comparison_shrimp[key]);
     }
     return comparisons
+}
+function check_against_daily_shrimp(input_lowercase){
+    return check_against_shrimp(input_lowercase, game.daily_shrimp);
 }
 
 function compare_array_statistic(guess_array, answer_array){

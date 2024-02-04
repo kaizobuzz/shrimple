@@ -8,7 +8,16 @@ function submit_answer(){
     if (!is_input_shrimp_valid(input)){
         return;
     }
-    let comparisons=check_against_daily_shrimp(input);
+    if (submit_override.active==true){
+        submit_override.submit_function(input);
+        return;
+    }
+    var comparisons=[];
+    if (submit_override.comparison_shrimp!=null){
+        comparisons=check_against_shrimp(input, submit_override.comparison_shrimp); 
+    } else{
+        comparisons=check_against_daily_shrimp(input);
+    }
     var html_to_render="<p> Guess: "+player_input.value+" ";
     let keys=Object.keys(comparisons);
     for (const key of keys){
@@ -34,6 +43,9 @@ function submit_answer(){
     guesses.innerHTML+=(html_to_render);
 }
 function is_input_shrimp_valid(input){
+    if (submit_override.active==true){
+        return submit_override.can_submit_function(input);
+    }
     if (game.shrimp_index_by_name[input.toLowerCase()]==undefined){
         return false;
     }
@@ -46,6 +58,12 @@ function update_submit_button(input){
     }
     submit_button.disabled=true;
 }
+var submit_override={
+    comparison_shrimp: null,
+    active: false,
+    submit_function: null,
+    can_submit_function: null,
+};
 var num_guesses;
 let submit_button=document.getElementById("input-submit");
 let guesses=document.getElementById("guesses");

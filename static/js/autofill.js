@@ -12,7 +12,7 @@ function get_valid_shrimps(input) {
     return valid_shrimps;
 }
 function autofill_shrimps(e) {
-    if(!game.active) {
+    if(!game.active||autofill_disabled) {
         return;
     }
     autofill_results.hidden=false;
@@ -102,6 +102,7 @@ let autofill_results=document.getElementById("autofill-results");
 let input_container=document.querySelector("#shrimp-search");
 let info_checkbox=document.getElementById("info-toggle");
 var show_stats=false;
+var autofill_disabled=false;
 if (info_checkbox.checked){
     show_stats=true;
 }
