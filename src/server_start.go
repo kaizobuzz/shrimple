@@ -3,6 +3,8 @@ package src
 import (
 	"log"
 	"net/http"
+	"shrimple/multiplayer"
+	"shrimple/src/shared"
 )
 
 func Start_Server() {
@@ -10,6 +12,7 @@ func Start_Server() {
 
 	port := "17212"
 	fileServer := http.FileServer(http.Dir("./static"))
+    multiplayer.MultiplayerHandlers()
 	http.Handle("/", fileServer)
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/dailyshrimp", DailyShrimpName)
@@ -22,7 +25,7 @@ func Start_Server() {
 
 func Initialize() {
 	GetPepper()
-    if err:= GetShrimpJson(); err!=nil{
+    if err:= shared.GetShrimpJson(); err!=nil{
         log.Fatal(err)
     }
 	if err := ReadUsersFromFile(); err!=nil{
