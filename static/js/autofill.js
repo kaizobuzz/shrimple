@@ -12,7 +12,7 @@ function get_valid_shrimps(input) {
     return valid_shrimps;
 }
 function autofill_shrimps(e) {
-    if(!game.initialized) {
+    if(!game.active) {
         return;
     }
     autofill_results.hidden=false;

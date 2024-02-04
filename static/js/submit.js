@@ -1,5 +1,5 @@
 function submit_answer(){
-    if(!game.initialized){
+    if(!game.active){
         return;
     }
     game.num_guesses+=1;

@@ -1,7 +1,7 @@
 
 var game = {
     awaiting_promises: [],
-    initialized: false,
+    active: false,
     num_guesses: 0,
     shrimp_list: null, 
     daily_shrimp_name: null,
