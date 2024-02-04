@@ -3,7 +3,6 @@ package src
 import (
 	"log"
 	"net/http"
-	"shrimple/multiplayer"
 	"shrimple/src/shared"
 )
 
@@ -12,7 +11,6 @@ func Start_Server() {
 
 	port := "17212"
 	fileServer := http.FileServer(http.Dir("./static"))
-    multiplayer.MultiplayerHandlers()
 	http.Handle("/", fileServer)
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/dailyshrimp", DailyShrimpName)
