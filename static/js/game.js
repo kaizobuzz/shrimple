@@ -17,7 +17,6 @@ function fill_in_game_value_with_promise(promise, key, processing_function){
     game.awaiting_promises.push(promise);
     promise.then((value) => {
         game[key] = processing_function(value);
-        game.awaiting_promises -= 1;
     });
 }
 
