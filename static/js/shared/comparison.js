@@ -27,6 +27,7 @@ function compare_statistic(guess_statistic, answer_statistic){
     return NotEqual;
 }
 function get_comparison_html(comparisons){
+    var html_to_render="";
     let keys=Object.keys(comparisons);
     for (const key of keys){
         html_to_render+=key+": ";
