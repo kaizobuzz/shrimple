@@ -4,6 +4,7 @@ const TooLarge=2;
 const TooSmall=3;
 const PartialEqual=4;
 const UnknownComparison=5;
+const HiddenComparison=6;
 function compare_statistic(guess_statistic, answer_statistic){
     if(guess_statistic == null || answer_statistic == null) {
         return UnknownComparison;
@@ -41,6 +42,8 @@ function get_comparison_html(comparisons){
             html_to_render += "🟨"
         } else if(comparisons[key] == UnknownComparison) {
             html_to_render += "🟪"
+        } else if(comparisons[key]==HiddenComparison){ 
+            html_to_render += "⬛"
         } else if(comparisons[key] == NotEqual) {
             html_to_render += "🟥"
         } else {
@@ -50,18 +53,24 @@ function get_comparison_html(comparisons){
     }
     return html_to_render;
 }
-function check_against_shrimp(input_lowercase, comparison_shrimp){
-    let index=game.shrimp_index_by_name[input_lowercase];
-    let shrimp_guess=game.shrimp_list[index];
+function check_against_shrimp(shrimp_guess, comparison_shrimp){
     var comparisons={};
-    for (const key of Object.keys(shrimp_guess)){
-        console.log(shrimp_guess[key], comparison_shrimp[key], key);
-        comparisons[key]=compare_statistic(shrimp_guess[key], comparison_shrimp[key]);
+    if (shrimp_guess.name===comparison_shrimp.name){
+        for (const key of Object.keys(shrimp_guess)){
+            comparisons[key]=Equal;
+        }
+    } else{
+        for (const key of Object.keys(shrimp_guess)){
+            console.log(shrimp_guess[key], comparison_shrimp[key], key);
+            comparisons[key]=compare_statistic(shrimp_guess[key], comparison_shrimp[key]);
+        }
     }
     return comparisons
 }
 function check_against_daily_shrimp(input_lowercase){
-    return check_against_shrimp(input_lowercase, game.daily_shrimp);
+    let index=game.shrimp_index_by_name[input_lowercase];
+    let shrimp_guess=game.shrimp_list[index];
+    return check_against_shrimp(shrimp_guess, game.daily_shrimp);
 }
 
 function compare_array_statistic(guess_array, answer_array){
