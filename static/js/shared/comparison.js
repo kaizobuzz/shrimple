@@ -26,6 +26,29 @@ function compare_statistic(guess_statistic, answer_statistic){
     }
     return NotEqual;
 }
+function get_comparison_html(comparisons){
+    let keys=Object.keys(comparisons);
+    for (const key of keys){
+        html_to_render+=key+": ";
+        if(comparisons[key] == TooLarge) {
+            html_to_render += "⬇️"
+        } else if(comparisons[key] == TooSmall) {
+            html_to_render += "⬆️"
+        } else if(comparisons[key] == Equal) {
+            html_to_render += "🟩"
+        } else if(comparisons[key] == PartialEqual) {
+            html_to_render += "🟨"
+        } else if(comparisons[key] == UnknownComparison) {
+            html_to_render += "🟪"
+        } else if(comparisons[key] == NotEqual) {
+            html_to_render += "🟥"
+        } else {
+            html_to_render += "uh there was an error"
+        }
+        html_to_render += " "
+    }
+    return html_to_render;
+}
 function check_against_shrimp(input_lowercase, comparison_shrimp){
     let index=game.shrimp_index_by_name[input_lowercase];
     let shrimp_guess=game.shrimp_list[index];

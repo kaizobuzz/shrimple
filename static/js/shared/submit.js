@@ -19,26 +19,7 @@ function submit_answer(){
         comparisons=check_against_daily_shrimp(input);
     }
     var html_to_render="<p> Guess: "+player_input.value+" ";
-    let keys=Object.keys(comparisons);
-    for (const key of keys){
-        html_to_render+=key+": ";
-        if(comparisons[key] == TooLarge) {
-            html_to_render += "⬇️"
-        } else if(comparisons[key] == TooSmall) {
-            html_to_render += "⬆️"
-        } else if(comparisons[key] == Equal) {
-            html_to_render += "🟩"
-        } else if(comparisons[key] == PartialEqual) {
-            html_to_render += "🟨"
-        } else if(comparisons[key] == UnknownComparison) {
-            html_to_render += "🟪"
-        } else if(comparisons[key] == NotEqual) {
-            html_to_render += "🟥"
-        } else {
-            html_to_render += "uh there was an error"
-        }
-        html_to_render += " "
-    }
+    html_to_render+=get_comparison_html(comparisons); 
     html_to_render+="</p>";
     guesses.innerHTML+=(html_to_render);
 }
