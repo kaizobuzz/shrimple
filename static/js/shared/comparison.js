@@ -5,7 +5,7 @@ const TooSmall=3;
 const PartialEqual=4;
 const UnknownComparison=5;
 const HiddenComparison=6;
-function compare_statistic(guess_statistic, answer_statistic){
+function compareStatistic(guess_statistic, answer_statistic){
     if(guess_statistic == null || answer_statistic == null) {
         return UnknownComparison;
     }
@@ -21,13 +21,13 @@ function compare_statistic(guess_statistic, answer_statistic){
         }
         return Equal
     } else if(guess_statistic.constructor == Array){ // what the heck is this why is js like this
-        return compare_array_statistic(guess_statistic, answer_statistic);
+        return compareArrayStatistic(guess_statistic, answer_statistic);
     } else if (guess_statistic==answer_statistic){
         return Equal;
     }
     return NotEqual;
 }
-function get_comparison_html(comparisons){
+function getComparisonHtml(comparisons){
     var html_to_render="";
     let keys=Object.keys(comparisons);
     for (const key of keys){
@@ -53,7 +53,7 @@ function get_comparison_html(comparisons){
     }
     return html_to_render;
 }
-function check_against_shrimp(shrimp_guess, comparison_shrimp){
+function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
     var comparisons={};
     if (shrimp_guess.name===comparison_shrimp.name){
         for (const key of Object.keys(shrimp_guess)){
@@ -62,18 +62,18 @@ function check_against_shrimp(shrimp_guess, comparison_shrimp){
     } else{
         for (const key of Object.keys(shrimp_guess)){
             console.log(shrimp_guess[key], comparison_shrimp[key], key);
-            comparisons[key]=compare_statistic(shrimp_guess[key], comparison_shrimp[key]);
+            comparisons[key]=compareStatistic(shrimp_guess[key], comparison_shrimp[key]);
         }
     }
     return comparisons
 }
-function check_against_daily_shrimp(input_lowercase){
+function checkAgainstDailyShrimp(input_lowercase){
     let index=game.shrimp_index_by_name[input_lowercase];
     let shrimp_guess=game.shrimp_list[index];
-    return check_against_shrimp(shrimp_guess, game.daily_shrimp);
+    return checkAgainstShrimp(shrimp_guess, game.daily_shrimp);
 }
 
-function compare_array_statistic(guess_array, answer_array){
+function compareArrayStatistic(guess_array, answer_array){
     //return NotEqual if the arrays share no elements.
     //return PartialEqual if the arrays share at least one element.
     //return equal if they contain exactly the same elements

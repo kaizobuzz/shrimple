@@ -1,11 +1,11 @@
-async function get_shrimps() {
+async function getShrimps() {
     response = await fetch("data/shrimps.json");
     shrimps = response.json();
     console.log(shrimps);
     return shrimps;
 }
 
-async function get_daily_shrimp() {
+async function getDailyShrimp() {
     response=await fetch("/dailyshrimp");
     let dailyshrimp=response.text();
     return dailyshrimp;
