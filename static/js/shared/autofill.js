@@ -1,4 +1,4 @@
-function get_valid_shrimps(input) {
+function getValidShrimps(input) {
     var valid_shrimps=[];
     var i=0;
     console.log(game.shrimp_list);
@@ -11,19 +11,19 @@ function get_valid_shrimps(input) {
     } 
     return valid_shrimps;
 }
-function autofill_shrimps(e) {
+function autofillShrimps(e) {
     if(!game.active||autofill_disabled) {
         return;
     }
     autofill_results.hidden=false;
     let input=e.target.value.toLowerCase();
-    update_submit_button(input);
+    updateSubmitButton(input);
     if (input.length==0){
         autofill_results.innerHTML="";
         return;
     } 
     console.log(input);
-    let valid_shrimps=get_valid_shrimps(input);
+    let valid_shrimps=getValidShrimps(input);
     var html_to_render="";
     for (let shrimp of valid_shrimps){
         console.log(Object.keys(shrimp));
@@ -63,34 +63,34 @@ function autofill_shrimps(e) {
     }
     console.log(html_to_render);
     autofill_results.innerHTML=html_to_render;
-    add_list_eners();
+    addListEners();
 }
-function add_list_eners(){
+function addListEners(){
     let list_items=document.querySelectorAll("li");
     console.log(list_items);
     for (const list_item of list_items){
-        list_item.addEventListener("click", use_autofill);
+        list_item.addEventListener("click", useAutofill);
     }
 }
-function hide_autofill(){
+function hideAutofill(){
     autofill_results.hidden=true; 
 }
-function use_autofill(){
+function useAutofill(){
     console.log(this.getElementsByTagName("input")[0].value);
     //console.log(e.target.value);
     if (this.getElementsByTagName("input")[0]!=undefined){
         player_input.value=this.getElementsByTagName("input")[0].value;
-        update_submit_button(player_input.value);
+        updateSubmitButton(player_input.value);
         autofill_results.hidden=true;
     }
 }
-function check_if_clicked_off(e){
+function checkIfClickedOff(e){
     console.log(e.target);
     if (!input_container.contains(e.target)||(e.target.value==undefined&&e.target.childNodes.length!=0)){
-       hide_autofill() 
+       hideAutofill() 
     }
 }
-function toggle_info(e){
+function toggleInfo(e){
     if (e.target.checked==true){
         show_stats=true;
         return;
@@ -107,11 +107,11 @@ if (info_checkbox.checked){
     show_stats=true;
 }
 
-function initialize_autofill() {
-    info_checkbox.addEventListener("input", toggle_info);
-    player_input.addEventListener("input", autofill_shrimps);
-    player_input.addEventListener("click", autofill_shrimps);
-    document.addEventListener("click", check_if_clicked_off);
+function initializeAutofill() {
+    info_checkbox.addEventListener("input", toggleInfo);
+    player_input.addEventListener("input", autofillShrimps);
+    player_input.addEventListener("click", autofillShrimps);
+    document.addEventListener("click", checkIfClickedOff);
 }
 
-initialize_autofill();
+initializeAutofill();

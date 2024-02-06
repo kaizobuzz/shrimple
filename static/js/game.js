@@ -10,21 +10,20 @@ var game = {
     shrimp_index_by_name: {},
 }
 
-function fill_in_game_value_with_promise(promise, key, processing_function){
+function fillInGameValueWithPromise(promise, key, processing_function){
     if(processing_function == undefined) {
         processing_function = function(x){return x};
     }
     game.awaiting_promises.push(promise);
     promise.then((value) => {
         game[key] = processing_function(value);
-        game.awaiting_promises -= 1;
     });
 }
 
 
-function initialize_game_variables_from_server(){
-    fill_in_game_value_with_promise(get_shrimps(), "shrimp_list", (x) => {return x.shrimps});
-    fill_in_game_value_with_promise(get_daily_shrimp(), "daily_shrimp_name")
+function initializeGameVariablesFromServer(){
+    fillInGameValueWithPromise(getShrimps(), "shrimp_list", (x) => {return x.shrimps});
+    fillInGameValueWithPromise(getDailyShrimp(), "daily_shrimp_name")
 
     Promise.all(game.awaiting_promises).then(() => {
         for (index in game.shrimp_list) {
@@ -40,6 +39,5 @@ function initialize_game_variables_from_server(){
     });
 }
 
-initialize_game_variables_from_server();
-
+initializeGameVariablesFromServer();
 
