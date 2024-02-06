@@ -1,31 +1,28 @@
 function getValidShrimps(input) {
-    var valid_shrimps=[];
-    var i=0;
-    console.log(game.shrimp_list);
-    while (i<game.shrimp_list.length){
-        let position=game.shrimp_names_lowercase[i].indexOf(input);
+    let valid_shrimps=[];
+    for (const index in Game.shrimp_list){
+        const position=Game.shrimp_names_lowercase[index].indexOf(input);
         if (position != -1){
-            valid_shrimps.push({name: game.shrimp_list[i].name, pos: position});
+            valid_shrimps.push({name: Game.shrimp_list[index].name, pos: position});
         }
-        i++;
     } 
     return valid_shrimps;
 }
 function autofillShrimps(e) {
-    if(!game.active||autofill_disabled) {
+    if(!Game.active||AutofillDisabled) {
         return;
     }
-    autofill_results.hidden=false;
+    AutofillResults.hidden=false;
     let input=e.target.value.toLowerCase();
     updateSubmitButton(input);
     if (input.length==0){
-        autofill_results.innerHTML="";
+        AutofillResults.innerHTML="";
         return;
     } 
     console.log(input);
-    let valid_shrimps=getValidShrimps(input);
-    var html_to_render="";
-    for (let shrimp of valid_shrimps){
+    const valid_shrimps=getValidShrimps(input);
+    let html_to_render="";
+    for (const shrimp of valid_shrimps){
         console.log(Object.keys(shrimp));
         pos=shrimp.pos;
         html_to_render+=
@@ -33,11 +30,11 @@ function autofillShrimps(e) {
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length);
-        if (show_stats){
-            let shrimp_stats=game.shrimp_list[game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
+        if (ShowStats){
+            const shrimp_stats=Game.shrimp_list[Game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
             html_to_render+=
             "<br><span class=shrimp-info>";
-            let keys=Object.keys(shrimp_stats);
+            const keys=Object.keys(shrimp_stats);
             for (const key of keys){
                 if (key=="name"){
                     continue;
@@ -62,7 +59,7 @@ function autofillShrimps(e) {
             "</li>";
     }
     console.log(html_to_render);
-    autofill_results.innerHTML=html_to_render;
+    AutofillResults.innerHTML=html_to_render;
     addListEners();
 }
 function addListEners(){
@@ -73,44 +70,44 @@ function addListEners(){
     }
 }
 function hideAutofill(){
-    autofill_results.hidden=true; 
+    AutofillResults.hidden=true; 
 }
 function useAutofill(){
     console.log(this.getElementsByTagName("input")[0].value);
     //console.log(e.target.value);
     if (this.getElementsByTagName("input")[0]!=undefined){
-        player_input.value=this.getElementsByTagName("input")[0].value;
-        updateSubmitButton(player_input.value);
-        autofill_results.hidden=true;
+        PlayerInput.value=this.getElementsByTagName("input")[0].value;
+        updateSubmitButton(PlayerInput.value);
+        AutofillResults.hidden=true;
     }
 }
 function checkIfClickedOff(e){
     console.log(e.target);
-    if (!input_container.contains(e.target)||(e.target.value==undefined&&e.target.childNodes.length!=0)){
+    if (!InputContainer.contains(e.target)||(e.target.value==undefined&&e.target.childNodes.length!=0)){
        hideAutofill() 
     }
 }
 function toggleInfo(e){
     if (e.target.checked==true){
-        show_stats=true;
+        ShowStats=true;
         return;
     }
-    show_stats=false;
+    ShowStats=false;
 }
-let player_input=document.getElementById("player-guess")
-let autofill_results=document.getElementById("autofill-results");
-let input_container=document.querySelector("#shrimp-search");
-let info_checkbox=document.getElementById("info-toggle");
-var show_stats=false;
-var autofill_disabled=false;
-if (info_checkbox.checked){
-    show_stats=true;
+let PlayerInput=document.getElementById("player-guess")
+let AutofillResults=document.getElementById("autofill-results");
+let InputContainer=document.querySelector("#shrimp-search");
+let InfoCheckbox=document.getElementById("info-toggle");
+let ShowStats=false;
+let AutofillDisabled=false;
+if (InfoCheckbox.checked){
+    ShowStats=true;
 }
 
 function initializeAutofill() {
-    info_checkbox.addEventListener("input", toggleInfo);
-    player_input.addEventListener("input", autofillShrimps);
-    player_input.addEventListener("click", autofillShrimps);
+    InfoCheckbox.addEventListener("input", toggleInfo);
+    PlayerInput.addEventListener("input", autofillShrimps);
+    PlayerInput.addEventListener("click", autofillShrimps);
     document.addEventListener("click", checkIfClickedOff);
 }
 

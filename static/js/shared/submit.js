@@ -1,76 +1,87 @@
 const MAX_GUESSES=6;
 
 function submitAnswer(){
-    if(!game.active){
+    if(!Game.active){
         return;
     }
-    let input=player_input.value.toLowerCase();
+    const input=PlayerInput.value.toLowerCase();
     console.log(input);
     if (!isInputShrimpValid(input)){
         return;
     }
-    if (submit_override.active==true){
-        submit_override.submit_function(input);
+    if (SubmitOverride.active==true){
+        SubmitOverride.submit_function(input);
         return;
     }
-    var comparisons=[];
-    if (submit_override.comparison_shrimp!=null){
+    let comparisons=[];
+    if (SubmitOverride.comparison_shrimp!=null){
         comparisons=checkAgainstShrimp(
-        game.shrimp_list[game.shrimp_index_by_name[input]], 
-        submit_override.comparison_shrimp); 
+        Game.shrimp_list[Game.shrimp_index_by_name[input]], 
+        SubmitOverride.comparison_shrimp); 
     } else{
         comparisons=checkAgainstDailyShrimp(input);
     }
-    var html_to_render="<p> Guess: "+player_input.value+" ";
+    let html_to_render="<p> Guess: "+PlayerInput.value+" ";
     html_to_render+=getComparisonHtml(comparisons); 
     html_to_render+="</p>";
-    guesses.innerHTML+=(html_to_render);
+    GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
 }
 function isInputShrimpValid(input){
-    if (submit_override.active==true){
-        return submit_override.can_submit_function(input);
+    if (SubmitOverride.active==true){
+        return SubmitOverride.can_submit_function(input);
     }
-    if (game.shrimp_index_by_name[input.toLowerCase()]==undefined){
+    if (Game.shrimp_index_by_name[input.toLowerCase()]==undefined){
         return false;
     }
     return true;
 }
 function updateSubmitButton(input){
     if (isInputShrimpValid(input)){
-        submit_button.disabled=false;
+        SubmitButton.disabled=false;
         return;
     }
-    submit_button.disabled=true;
+    SubmitButton.disabled=true;
 }
 function checkAnswer(comparisons){
     if (comparisons.name==Equal){
-        game.num_guesses+=1;
-        //TODO now do the win thing
+        Game.num_guesses+=1;
+        if (GameOverRide.active){
+            GameOverRide.win_function();
+            return;
+        }
         return;
     }
     addGuesses(1); 
 }
 function addGuesses(num_new_guesses){
-    game.num_guesses+=num_new_guesses;
-    if (game.num_guesses>=MAX_GUESSES){
-       //TODO do the opposite of win thing 
+    Game.num_guesses+=num_new_guesses;
+    if (Game.num_guesses>=MAX_GUESSES){
+        if (GameOverRide.active){
+            GameOverRide.lose_function();
+            return;
+        }
+        //TODO popup
     }
 }
-var submit_override={
+let SubmitOverride={
     comparison_shrimp: null,
     active: false,
     submit_function: null,
     can_submit_function: null,
 };
-
+let GameOverRide={
+    active: false,
+    win_function: null,
+    lose_function: null,
+}
 function disableSubmitFunctionOverride(){
-    submit_override.active=false;
-    submit_override.submit_function=null;
-    submit_override.can_submit_function=null;
+    SubmitOverride.active=false;
+    SubmitOverride.submit_function=null;
+    SubmitOverride.can_submit_function=null;
 }
 
-var num_guesses;
-let submit_button=document.getElementById("input-submit");
-let guesses=document.getElementById("guesses");
-submit_button.addEventListener("click", submitAnswer);
+let NumGuesses;
+let SubmitButton=document.getElementById("input-submit");
+let GuessResultsDiv=document.getElementById("guesses");
+SubmitButton.addEventListener("click", submitAnswer);

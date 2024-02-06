@@ -28,8 +28,8 @@ function compareStatistic(guess_statistic, answer_statistic){
     return NotEqual;
 }
 function getComparisonHtml(comparisons){
-    var html_to_render="";
-    let keys=Object.keys(comparisons);
+    let html_to_render="";
+    const keys=Object.keys(comparisons);
     for (const key of keys){
         html_to_render+=key+": ";
         if(comparisons[key] == TooLarge) {
@@ -54,7 +54,7 @@ function getComparisonHtml(comparisons){
     return html_to_render;
 }
 function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
-    var comparisons={};
+    let comparisons={};
     if (shrimp_guess.name===comparison_shrimp.name){
         for (const key of Object.keys(shrimp_guess)){
             comparisons[key]=Equal;
@@ -68,17 +68,17 @@ function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
     return comparisons
 }
 function checkAgainstDailyShrimp(input_lowercase){
-    let index=game.shrimp_index_by_name[input_lowercase];
-    let shrimp_guess=game.shrimp_list[index];
-    return checkAgainstShrimp(shrimp_guess, game.daily_shrimp);
+    const index=Game.shrimp_index_by_name[input_lowercase];
+    const shrimp_guess=Game.shrimp_list[index];
+    return checkAgainstShrimp(shrimp_guess, Game.daily_shrimp);
 }
 
 function compareArrayStatistic(guess_array, answer_array){
     //return NotEqual if the arrays share no elements.
     //return PartialEqual if the arrays share at least one element.
     //return equal if they contain exactly the same elements
-    var num_shared = 0;
-    var num_not_shared = 0;
+    let num_shared = 0;
+    let num_not_shared = 0;
     for(const guess_item of guess_array){
         if(answer_array.includes(guess_item)){
             num_shared += 1;
