@@ -15,7 +15,9 @@ function submit_answer(){
     }
     var comparisons=[];
     if (submit_override.comparison_shrimp!=null){
-        comparisons=check_against_shrimp(input, submit_override.comparison_shrimp); 
+        comparisons=check_against_shrimp(
+        game.shrimp_list[game.shrimp_index_by_name[input]], 
+        submit_override.comparison_shrimp); 
     } else{
         comparisons=check_against_daily_shrimp(input);
     }
