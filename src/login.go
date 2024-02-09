@@ -1,6 +1,7 @@
 package src
 
 import (
+    "encoding/base64"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -41,6 +42,34 @@ func GetPepper(){
     }
 }
 
+func CreateCookie(username string) (*http.Cookie, error) {
+   
+    var expiration = time.Now().Add(time.Hour * 24)
+    
+    token, err := Tokenfromdata(TokenData{Username: username, Expiration: expiration})
+    if err != nil {
+        return nil, errors.New("Failed to create auth token")
+    }      
+
+    json_token, err := json.Marshal(token)
+    if err != nil {
+        return nil, errors.New("Failed to serialize auth token")
+    }
+    
+    var base64_token string = base64.StdEncoding.EncodeToString(json_token)
+
+    var cookie = http.Cookie{
+        Name: "sessiontoken",
+        Value: base64_token,
+        Path: "/",
+        MaxAge: 86400,
+        HttpOnly: false,
+        Secure: false,
+        SameSite: http.SameSiteLaxMode,
+    };
+    return &cookie, nil
+}
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) { 
     if err:=r.ParseForm(); err!=nil{
         log.Println(err)
@@ -64,20 +93,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     }
     
     // generate token
-    var expiration = time.Now().Add(time.Hour * 24)
-    token, err := Tokenfromdata(TokenData{username: username, expiration: expiration})
+    cookie, err := CreateCookie(username)
     if err != nil {
-        err := templates.UseStringTemplate("Failed to create auth token", templates.ErrorMessage, &w)
-        if err != nil {
-            log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
-        }
-        return
-    }      
-    
-    json_token, err := json.Marshal(token)  
-    if err != nil {
-        err := templates.UseStringTemplate("Failed to serialize auth token", templates.ErrorMessage, &w)
+        err := templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
         if err != nil {
             log.Println(err)
             w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
@@ -85,15 +103,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    var cookie = http.Cookie{
-        Name: "sessiontoken",
-        Value: string(json_token),
-        Path: "/",
-        MaxAge: 86400,
-        HttpOnly: false,
-        Secure: false,
-        SameSite: http.SameSiteLaxMode,
-    };
+    http.SetCookie(w, cookie)
 
     err = templates.UseStringTemplate("You are now logged in!", templates.SuccessMessage, &w)
     if err != nil {
@@ -101,7 +111,5 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
         return
     }
-
-    http.SetCookie(w, &cookie)
     return
 }

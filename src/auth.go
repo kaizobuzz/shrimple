@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"time"
 )
@@ -24,27 +25,30 @@ func generate_private_key() error {
 }
 
 type TokenData struct{
-    username string 
-    expiration time.Time
+    Username string 
+    Expiration time.Time
 }
 
 type Token struct {
-    tokendata TokenData
-    signature []byte
-    signed_password []byte
+    Tokendata TokenData
+    Signature []byte
+    Signed_password []byte
 }
 
 func Tokenfromdata(data TokenData) (*Token, error){
-    signature, err := SignTokenData(data)   
+    Signature, err := SignTokenData(data)   
     if err != nil {
         return nil, err
     }
-    var passwordhash = sha256.Sum256([]byte(UserMap[data.username].PasswordHash))
+    var passwordhash = sha256.Sum256([]byte(UserMap[data.Username].PasswordHash))
     signed_password, err := SignWithServerPrivateKey(passwordhash)
+    if err != nil {
+        return nil, err
+    }
     return &Token{
-        tokendata: data,
-        signature: signature,
-        signed_password: signed_password,
+        Tokendata: data,
+        Signature: Signature,
+        Signed_password: signed_password,
     }, nil
 }
 
@@ -60,10 +64,10 @@ func SignWithServerPrivateKey(data [32]byte) ([]byte, error) {
             return nil, err
         }
     }
-    signature, err := rsa.SignPKCS1v15(nil, SERVER_PRITAVE_KEY, crypto.SHA256, data[0:])
+    Signature, err := rsa.SignPKCS1v15(nil, SERVER_PRITAVE_KEY, crypto.SHA256, data[0:])
     if err != nil {
         return nil, err
     }
 
-    return signature, nil
+    return Signature, nil
 }
