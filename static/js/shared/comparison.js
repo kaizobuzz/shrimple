@@ -61,16 +61,14 @@ function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
         }
     } else{
         for (const key of Object.keys(shrimp_guess)){
-            console.log(shrimp_guess[key], comparison_shrimp[key], key);
+            //console.log(shrimp_guess[key], comparison_shrimp[key], key);
             comparisons[key]=compareStatistic(shrimp_guess[key], comparison_shrimp[key]);
         }
     }
     return comparisons
 }
-function checkAgainstDailyShrimp(input_lowercase){
-    const index=Game.shrimp_index_by_name[input_lowercase];
-    const shrimp_guess=Game.shrimp_list[index];
-    return checkAgainstShrimp(shrimp_guess, Game.daily_shrimp);
+function checkAgainstDailyShrimp(input_shrimp){
+    return checkAgainstShrimp(input_shrimp, Game.daily_shrimp);
 }
 
 function compareArrayStatistic(guess_array, answer_array){

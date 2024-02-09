@@ -5,10 +5,11 @@ function submitAnswer(){
         return;
     }
     const input=PlayerInput.value.toLowerCase();
-    console.log(input);
+    //console.log(input);
     if (!isInputShrimpValid(input)){
         return;
     }
+    let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     if (SubmitOverride.active==true){
         SubmitOverride.submit_function(input);
         return;
@@ -16,32 +17,43 @@ function submitAnswer(){
     let comparisons=[];
     if (SubmitOverride.comparison_shrimp!=null){
         comparisons=checkAgainstShrimp(
-        Game.shrimp_list[Game.shrimp_index_by_name[input]], 
+        input_shrimp, 
         SubmitOverride.comparison_shrimp); 
     } else{
-        comparisons=checkAgainstDailyShrimp(input);
+        comparisons=checkAgainstDailyShrimp(input_shrimp);
     }
-    let html_to_render="<p> Guess: "+PlayerInput.value+" ";
-    html_to_render+=getComparisonHtml(comparisons); 
+    let html_to_render="<p> Guess: "+input_shrimp.name+" ";
+    html_to_render+=getComparisonHtml(comparisons);
+    Game.guesses.push(getComparisonHtml(comparisons));
     html_to_render+="</p>";
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
-}
-function isInputShrimpValid(input){
-    if (SubmitOverride.active==true){
-        return SubmitOverride.can_submit_function(input);
+    if (SubmitOverride.after_submit!=null){
+        console.log("?");
+        SubmitOverride.after_submit();
     }
+    PlayerInput.value="";
+    SubmitButton.disabled=true;
+}
+function isInputShrimpValid(input){ 
     if (Game.shrimp_index_by_name[input.toLowerCase()]==undefined){
         return false;
     }
     return true;
 }
 function updateSubmitButton(input){
-    if (isInputShrimpValid(input)){
+    let should_enable;
+    if (SubmitOverride.active==true){
+        should_enable=SubmitOverride.can_submit_function(input);
+    } else{
+        should_enable=isInputShrimpValid(input);
+    }
+    if (should_enable){
         SubmitButton.disabled=false;
         return;
+    } else{
+        SubmitButton.disabled=true;
     }
-    SubmitButton.disabled=true;
 }
 function checkAnswer(comparisons){
     if (comparisons.name==Equal){
@@ -65,6 +77,7 @@ function addGuesses(num_new_guesses){
     }
 }
 let SubmitOverride={
+    after_submit: null,
     comparison_shrimp: null,
     active: false,
     submit_function: null,
@@ -81,7 +94,13 @@ function disableSubmitFunctionOverride(){
     SubmitOverride.can_submit_function=null;
 }
 
-let NumGuesses;
 let SubmitButton=document.getElementById("input-submit");
 let GuessResultsDiv=document.getElementById("guesses");
 SubmitButton.addEventListener("click", submitAnswer);
+addEventListener("keydown", function(e){
+    if (e.key=="Enter"){
+        if (!SubmitButton.disabled){
+            submitAnswer();
+        }
+    }
+});
