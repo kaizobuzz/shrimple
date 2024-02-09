@@ -10,6 +10,7 @@ import (
 )
 
 var SERVER_PRITAVE_KEY *rsa.PrivateKey; 
+
 func generate_private_key() error {
     if SERVER_PRITAVE_KEY != nil {
         return nil 
@@ -23,13 +24,14 @@ func generate_private_key() error {
 }
 
 type TokenData struct{
-    userid int64
+    username string 
     expiration time.Time
 }
 
 type Token struct {
     tokendata TokenData
     signature []byte
+    signed_password []byte
 }
 
 func Tokenfromdata(data TokenData) (*Token, error){
@@ -37,26 +39,31 @@ func Tokenfromdata(data TokenData) (*Token, error){
     if err != nil {
         return nil, err
     }
+    var passwordhash = sha256.Sum256([]byte(UserMap[data.username].PasswordHash))
+    signed_password, err := SignWithServerPrivateKey(passwordhash)
     return &Token{
         tokendata: data,
         signature: signature,
+        signed_password: signed_password,
     }, nil
 }
 
 func SignTokenData(data TokenData) ([]byte, error) {
     var hash = sha256.Sum256([]byte(fmt.Sprint(data)))
+    return SignWithServerPrivateKey(hash)
+}
+
+func SignWithServerPrivateKey(data [32]byte) ([]byte, error) {
     if SERVER_PRITAVE_KEY == nil {
         err := generate_private_key()
         if err != nil {
             return nil, err
         }
     }
-    signature, err := rsa.SignPKCS1v15(nil, SERVER_PRITAVE_KEY, crypto.SHA256, hash[0:])
+    signature, err := rsa.SignPKCS1v15(nil, SERVER_PRITAVE_KEY, crypto.SHA256, data[0:])
     if err != nil {
         return nil, err
     }
 
     return signature, nil
-
-    
 }
