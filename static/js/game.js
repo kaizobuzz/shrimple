@@ -1,8 +1,8 @@
-
 let Game = {
     awaiting_promises: [],
     active: false,
     num_guesses: 0,
+    guesses: [],
     shrimp_list: null, 
     daily_shrimp_name: null,
     daily_shrimp: null,
