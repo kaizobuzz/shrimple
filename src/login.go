@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"shrimple/src/shared"
 	"shrimple/src/templates"
 	"time"
     "encoding/json"
@@ -76,7 +75,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         err := templates.UseStringTemplate("Failed to parse form", templates.ErrorMessage, &w)
         if err != nil {
             log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+            w.WriteHeader(http.StatusInternalServerError)
         }
         return 
     } 
@@ -87,7 +86,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         err := templates.UseStringTemplate("Incorrect Credentials", templates.ErrorMessage, &w)
         if err != nil {
             log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+            w.WriteHeader(http.StatusInternalServerError)
         }
         return //this return is kinda important
     }
@@ -98,7 +97,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         err := templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
         if err != nil {
             log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+            w.WriteHeader(http.StatusInternalServerError)
         }
         return
     }
@@ -108,7 +107,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     err = templates.UseStringTemplate("You are now logged in!", templates.SuccessMessage, &w)
     if err != nil {
         log.Println(err)
-        w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+        w.WriteHeader(http.StatusInternalServerError)
         return
     }
     return
