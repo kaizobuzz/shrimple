@@ -2,6 +2,23 @@ const MAX_GUESSES=6;
 const FLEX_COL="<div class='column'>"
 const FLEX_ROW="<div class='row'>"
 const BIGFONT="<p class='large'>"
+function getGuessResultHtml(input_shrimp, comparisons){
+    let html_to_render="";
+    if (Game.num_guesses==0){
+        html_to_render+=renderKeys(input_shrimp)
+    }
+    html_to_render+=FLEX_ROW+FLEX_COL
+    html_to_render+=(getComparisonHtml(comparisons)).join("</div>"+FLEX_COL);
+    html_to_render+="</div>"
+    Game.guesses.push(getComparisonHtml(comparisons).join("")); 
+    html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
+    html_to_render+="<span class='tooltip_text'>";
+    for (key of Object.keys(input_shrimp)){
+        html_to_render+="<strong>"+key+": </strong>"+getShrimpStat(input_shrimp, key)+"<br>"; 
+    }
+    html_to_render+="</span> </div> </div> </div>";
+    return html_to_render;
+}
 function renderKeys(input_shrimp){
     html_to_render=FLEX_ROW;
     for (key of Object.keys(input_shrimp)){
@@ -34,20 +51,7 @@ function submitAnswer(){
     } else{
         comparisons=checkAgainstDailyShrimp(input_shrimp);
     }
-    let html_to_render="";
-    if (Game.num_guesses==0){
-        html_to_render+=renderKeys(input_shrimp)
-    }
-    html_to_render+=FLEX_ROW+FLEX_COL
-    html_to_render+=(getComparisonHtml(comparisons)).join("</div>"+FLEX_COL);
-    html_to_render+="</div>"
-    Game.guesses.push(getComparisonHtml(comparisons).join("")); 
-    html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
-    html_to_render+="<span class='tooltip_text'>";
-    for (key of Object.keys(input_shrimp)){
-        html_to_render+="<strong>"+key+": </strong>"+getShrimpStat(input_shrimp, key)+"<br>"; 
-    }
-    html_to_render+="</span> </div> </div> </div>";
+    let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
     if (SubmitOverride.after_submit!=null){
