@@ -18,7 +18,7 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	err := u.UnmarshalBinary([]byte(r.Referer()))
 	if err != nil {
         log.Println(err)
-		w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	mode = u.Query().Get("mode")
@@ -29,10 +29,10 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 		i := r.Intn(len(shared.ShrimpList.Shrimps))
 		w.Write([]byte(shared.ShrimpList.Shrimps[i].Name))
 	} else if mode == "clamplicated" {
-		w.WriteHeader(shared.NOT_IMPLEMENTED) // not implemented
+		w.WriteHeader(http.StatusNotImplemented) // not implemented
 	} else if mode == "shrimpossible" {
-		w.WriteHeader(shared.NOT_IMPLEMENTED) // not implemented
+		w.WriteHeader(http.StatusNotImplemented) // not implemented
 	} else {
-		w.WriteHeader(shared.BAD_REQUEST)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }

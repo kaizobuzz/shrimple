@@ -28,28 +28,27 @@ function compareStatistic(guess_statistic, answer_statistic){
     return NotEqual;
 }
 function getComparisonHtml(comparisons){
-    let html_to_render="";
+    let html_to_render=[];
     const keys=Object.keys(comparisons);
     for (const key of keys){
-        html_to_render+=key+": ";
+        //html_to_render+=key+": ";
         if(comparisons[key] == TooLarge) {
-            html_to_render += "⬇️"
+            html_to_render.push("⬇️")
         } else if(comparisons[key] == TooSmall) {
-            html_to_render += "⬆️"
+            html_to_render.push("⬆️")
         } else if(comparisons[key] == Equal) {
-            html_to_render += "🟩"
+            html_to_render.push("🟩")
         } else if(comparisons[key] == PartialEqual) {
-            html_to_render += "🟨"
+            html_to_render.push("🟨")
         } else if(comparisons[key] == UnknownComparison) {
-            html_to_render += "🟪"
+            html_to_render.push("🟪")
         } else if(comparisons[key]==HiddenComparison){ 
-            html_to_render += "⬛"
+            html_to_render.push("⬛")
         } else if(comparisons[key] == NotEqual) {
-            html_to_render += "🟥"
+            html_to_render.push("🟥")
         } else {
-            html_to_render += "uh there was an error"
+            html_to_render.push("uh there was an error")
         }
-        html_to_render += " "
     }
     return html_to_render;
 }

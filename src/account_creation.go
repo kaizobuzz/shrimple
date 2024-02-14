@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"shrimple/src/templates"
-    "shrimple/src/shared"
     "errors"
 )
 func createAccount(username, password, confirmpassword string) error{
@@ -28,7 +27,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
         err := templates.UseStringTemplate("Failed to parse form", templates.ErrorMessage, &w)
         if err != nil {
             log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+            w.WriteHeader(http.StatusInternalServerError)
         }
         return 
     } 
@@ -40,7 +39,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
         err=templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
         if err!=nil{
             log.Println(err)
-            w.WriteHeader(shared.INTERNAL_SERVER_ERROR)
+            w.WriteHeader(http.StatusInternalServerError)
         }
     }
     return 
