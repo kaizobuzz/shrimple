@@ -1,3 +1,22 @@
+function getShrimpStat(input_shrimp, key){ 
+    let result=input_shrimp[key];
+    if (result!=null){
+        switch (key){
+            case "length":
+                result+="cm";
+                break;
+            case "max_depth":
+                result+="m";
+                break;
+            case "weight":
+                result+="g";
+                break;
+            default:
+                break;
+        }
+    }
+    return result;
+}
 function getValidShrimps(input) {
     let valid_shrimps=[];
     for (const index in Game.shrimp_list){
@@ -43,19 +62,8 @@ function autofillShrimps(e) {
                 if (key=="name"){
                     continue;
                 }
-                html_to_render+=shrimp_stats[key];
-                if (shrimp_stats[key]!=null){
-                    if (key=='length'){
-                        html_to_render+="cm";
-                    } 
-                    else if (key=='max_depth'){
-                        html_to_render+='m'; 
-                    }
-                    else if (key=='weight'){
-                        html_to_render+='g';
-                    }
-                }
-                    html_to_render+=", ";
+                html_to_render+=getShrimpStat(shrimp, key); 
+                html_to_render+=", ";
             }
             html_to_render+="</span>";
         }
