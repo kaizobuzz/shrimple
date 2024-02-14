@@ -1,6 +1,7 @@
 package src
 
 import (
+    "encoding/json"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
@@ -70,4 +71,15 @@ func SignWithServerPrivateKey(data [32]byte) ([]byte, error) {
     }
 
     return Signature, nil
+}
+
+func VerifySessionToken(base64_token string) (*string /*username*/, bool /* valid */, error) {
+    var json_token []byte;
+    _, err := base64.StdEncoding.Decode(json_token, []byte(base64_token))
+    if err != nil {
+        return nil, false, err
+    }
+
+    var token Token;
+    json.Unmarshal(json_token, token)
 }
