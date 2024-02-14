@@ -57,12 +57,11 @@ function autofillShrimps(e) {
             const shrimp_stats=Game.shrimp_list[Game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
             html_to_render+=
             "<br><span class=shrimp-info>";
-            const keys=Object.keys(shrimp_stats);
-            for (const key of keys){
+            for (const key of Object.keys(shrimp_stats)){
                 if (key=="name"){
                     continue;
                 }
-                html_to_render+=getShrimpStat(shrimp, key); 
+                html_to_render+=getShrimpStat(shrimp_stats, key); 
                 html_to_render+=", ";
             }
             html_to_render+="</span>";
