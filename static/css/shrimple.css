@@ -43,6 +43,7 @@ ul {
 }
 li {
     background-color: #515052;
+    opacity: 0.9;
     padding-right: 0.5em;
     padding-left: 0.5em;
     padding-top: 0.2em;
@@ -62,13 +63,78 @@ li:hover{
     font-size: large;
     right: 1.05em;
 }
+
 .shrimp-info{
     text-align: center;
     font-size: small;
     color: #acacaf;
 }
 
+#guesses{
+   margin-left: auto;
+   margin-right: auto;
+   width: 36em;
+}
+.tooltip .tooltip_text{
+    visibility: hidden;
+    width: 10em;
+    text-align: center;
+    color: #C6C9CD;
+    background-color: #515052;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 6px;
+    padding: 15px;
+    z-index: 1;
+    position: absolute;
+}
+.tooltip:hover .tooltip_text{
+    visibility: visible;
+    opacity: 1;
+}
+.row {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 0;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    min-width: 5em;
+    max-width: 5em;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+#final-results{
+    width: 36em;
+    z-index: 2;
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    border-color: #676668; 
+    background-color: #3b3a3b;
+    color: #C6C9CD;
+    margin: 3em;
+}
+#clipboard-message{
+    width: 16em;
+    background-color: #242324;
+    z-index: 3;
+    transition: all 0.4s;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 0.3em;
+}
 mark {
     background-color: transparent;
     color: #FF7A7A;
+}
+strong {
+    font-size: 110%;
 }
