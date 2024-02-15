@@ -1,3 +1,22 @@
+function getShrimpStat(input_shrimp, key){ 
+    let result=input_shrimp[key];
+    if (result!=null){
+        switch (key){
+            case "length":
+                result+="cm";
+                break;
+            case "max_depth":
+                result+="m";
+                break;
+            case "weight":
+                result+="g";
+                break;
+            default:
+                break;
+        }
+    }
+    return result;
+}
 function getValidShrimps(input) {
     let valid_shrimps=[];
     for (const index in Game.shrimp_list){
@@ -38,24 +57,12 @@ function autofillShrimps(e) {
             const shrimp_stats=Game.shrimp_list[Game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
             html_to_render+=
             "<br><span class=shrimp-info>";
-            const keys=Object.keys(shrimp_stats);
-            for (const key of keys){
+            for (const key of Object.keys(shrimp_stats)){
                 if (key=="name"){
                     continue;
                 }
-                html_to_render+=shrimp_stats[key];
-                if (shrimp_stats[key]!=null){
-                    if (key=='length'){
-                        html_to_render+="cm";
-                    } 
-                    else if (key=='max_depth'){
-                        html_to_render+='m'; 
-                    }
-                    else if (key=='weight'){
-                        html_to_render+='g';
-                    }
-                }
-                    html_to_render+=", ";
+                html_to_render+=getShrimpStat(shrimp_stats, key); 
+                html_to_render+=", ";
             }
             html_to_render+="</span>";
         }

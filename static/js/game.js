@@ -8,6 +8,7 @@ let Game = {
     daily_shrimp: null,
     shrimp_names_lowercase: [],
     shrimp_index_by_name: {},
+    won: null,
 }
 
 function fillInGameValueWithPromise(promise, key, processing_function){
@@ -22,6 +23,19 @@ function fillInGameValueWithPromise(promise, key, processing_function){
 
 
 function initializeGameVariablesFromServer(){
+    const cached_vals=checkLocalStorage();
+    const cached_game=cached_vals[0];
+    const cached_guess_results=cached_vals[1];
+    if (cached_guess_results!=null){
+        GuessResultsDiv.innerHTML=cached_guess_results;
+    }
+    if (cached_game!=null){
+        Game=JSON.parse(cached_game);
+        if (Game.num_guesses>0&&Game.active==false){
+            renderEndPopup();
+        }
+        return;
+    }
     fillInGameValueWithPromise(getShrimps(), "shrimp_list", (x) => {return x.shrimps});
     fillInGameValueWithPromise(getDailyShrimp(), "daily_shrimp_name")
 

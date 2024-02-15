@@ -2,12 +2,22 @@ const MAX_GUESSES=6;
 const FLEX_COL="<div class='column'>"
 const FLEX_ROW="<div class='row'>"
 const BIGFONT="<p class='large'>"
-async function getTextToCopy(){
-    let text_to_copy="Daily Shrimple "+Game.num_guesses+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n");
-    navigator.clipboard.writeText(text_to_copy);
-    ClipboardMessage.style.opacity=1;
-    await sleep(1);
-    ClipboardMessage.style.opacity=0;
+function getGuessResultHtml(input_shrimp, comparisons){
+    let html_to_render="";
+    if (Game.num_guesses==0){
+        html_to_render+=renderKeys(input_shrimp)
+    }
+    html_to_render+=FLEX_ROW+FLEX_COL
+    html_to_render+=(getComparisonHtml(comparisons)).join("</div>"+FLEX_COL);
+    html_to_render+="</div>"
+    Game.guesses.push(getComparisonHtml(comparisons).join("")); 
+    html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
+    html_to_render+="<span class='tooltip_text'>";
+    for (key of Object.keys(input_shrimp)){
+        html_to_render+="<strong>"+key+": </strong>"+getShrimpStat(input_shrimp, key)+"<br>"; 
+    }
+    html_to_render+="</span> </div> </div> </div>";
+    return html_to_render;
 }
 function renderKeys(input_shrimp){
     html_to_render=FLEX_ROW;
@@ -41,22 +51,10 @@ function submitAnswer(){
     } else{
         comparisons=checkAgainstDailyShrimp(input_shrimp);
     }
-    let html_to_render="";
-    if (Game.num_guesses==0){
-        html_to_render+=renderKeys(input_shrimp)
-    }
-    html_to_render+=FLEX_ROW+FLEX_COL+BIGFONT
-    html_to_render+=(getComparisonHtml(comparisons)).join("</p> </div>"+FLEX_COL+BIGFONT);
-    Game.guesses.push(getComparisonHtml(comparisons).join("")); 
-    html_to_render+="</p> </div>"
-    html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
-    html_to_render+="<span class='tooltip_text'>";
-    for (key of Object.keys(input_shrimp)){
-        html_to_render+="<strong>"+key+": </strong>"+input_shrimp[key]+"<br>"; 
-    }
-    html_to_render+="</span> </div> </div> </div>";
+    let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
+    setLocalStorage();
     if (SubmitOverride.after_submit!=null){
         console.log("?");
         SubmitOverride.after_submit();
@@ -84,30 +82,6 @@ function updateSubmitButton(input){
         SubmitButton.disabled=true;
     }
 }
-function getRemainingTime(){
-    let SecondsInDay=86400;
-    let secondsleft=SecondsInDay-(Math.floor(new Date()/1000)%SecondsInDay);
-    return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s"
-}
-async function renderTimer(html_to_render){
-    while (true){
-        FinalResultsText.innerHTML=html_to_render+getRemainingTime();
-        await sleep(1);
-    }
-}
-function renderEndPopup(){
-    let html_to_render="<p>You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
-    if (Game.num_guesses==1){
-        html_to_render+="guess"
-    } else{
-        html_to_render+="guesses";
-    }
-    html_to_render+="<br><br>Try again in ";
-    renderTimer(html_to_render);
-    FinalResultsText.innerHTML=html_to_render+getRemainingTime();
-    FinalResults.hidden=false;
-    ShareButton.disabled=false;
-}
 function checkAnswer(comparisons){
     if (comparisons.name==Equal){
         Game.num_guesses+=1;
@@ -115,7 +89,7 @@ function checkAnswer(comparisons){
             GameOverRide.win_function();
             return;
         }
-        //alert("Daily Shrimple "+Game.num_guesses+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n"));
+        Game.won=true;
         renderEndPopup();
         Game.active=false;
         return;
@@ -129,7 +103,10 @@ function addGuesses(num_new_guesses){
             GameOverRide.lose_function();
             return;
         }
-        //TODO popup
+        Game.won=false;
+        renderEndPopup();
+        Game.active=false;
+        return;
     }
 }
 let SubmitOverride={
@@ -152,11 +129,6 @@ function disableSubmitFunctionOverride(){
 
 let SubmitButton=document.getElementById("input-submit");
 let GuessResultsDiv=document.getElementById("guesses");
-let FinalResults=document.getElementById("final-results");
-let FinalResultsText=document.getElementById("final-results-text");
-let ShareButton=document.getElementById("share-results");
-let ClipboardMessage=document.getElementById("clipboard-message");
-ShareButton.addEventListener("click", getTextToCopy);
 SubmitButton.addEventListener("click", submitAnswer);
 addEventListener("keydown", function(e){
     if (e.key=="Enter"){
