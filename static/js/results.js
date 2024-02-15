@@ -25,9 +25,16 @@ function renderEndPopup(){
     FinalResults.hidden=false;
     ShareButton.disabled=false;
 }
+async function reloadPage(){
+    await sleep(1);
+    location.reload(); 
+}
 function getRemainingTime(){
     let SecondsInDay=86400;
     let secondsleft=SecondsInDay-(Math.floor(new Date()/1000)%SecondsInDay);
+    if (secondsleft==0){
+        reloadPage();
+    }
     return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s</p>"
 }
 async function renderTimer(html_to_render){

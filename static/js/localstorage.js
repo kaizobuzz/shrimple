@@ -6,7 +6,7 @@ function setLocalStorage(){
     localStorage.setItem("guess_results", GuessResultsDiv.innerHTML); 
 }
 function checkLocalStorage(){
-    let time=localStorage.getItem("time");
+    let time=Number(localStorage.getItem("time"));
     if (time!=null){
         if (Math.floor(Date.now()/MILLISECONDSPERDAY)!=Math.floor(time/MILLISECONDSPERDAY)){
             localStorage.clear();
