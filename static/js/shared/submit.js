@@ -54,6 +54,7 @@ function submitAnswer(){
     let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
+    setLocalStorage();
     if (SubmitOverride.after_submit!=null){
         console.log("?");
         SubmitOverride.after_submit();
