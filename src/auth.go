@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
-	//"encoding/base64"
+	"encoding/base64"
 	"fmt"
 	"time"
 )
@@ -81,5 +81,11 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
     }
 
     var token Token;
-    json.Unmarshal(json_token, token)
+    err = json.Unmarshal(json_token, &token)
+    if err != nil {
+        return nil, false, err
+    }
+    
+    fmt.Printf("%s", json_token)
+    return nil, false, nil
 }
