@@ -1,5 +1,6 @@
 async function getTextToCopy(){
-    let text_to_copy="Daily Shrimple "+Game.num_guesses+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n");
+    let result=Game.won ? Game.num_guesses : "X"; 
+    let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n");
     navigator.clipboard.writeText(text_to_copy);
     ClipboardMessage.style.opacity=1;
     await sleep(1);
@@ -7,11 +8,16 @@ async function getTextToCopy(){
 }
 
 function renderEndPopup(){
-    let html_to_render="<p>You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
-    if (Game.num_guesses==1){
-        html_to_render+="guess"
+    let html_to_render="";
+    if (Game.won){ 
+        html_to_render+="<p>You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
+        if (Game.num_guesses==1){
+            html_to_render+="guess"
+        } else{
+            html_to_render+="guesses";
+        }
     } else{
-        html_to_render+="guesses";
+        html_to_render+="<p>You didn't get today's shrimple"
     }
     html_to_render+="<br><br>Try again in ";
     renderTimer(html_to_render);
@@ -22,7 +28,7 @@ function renderEndPopup(){
 function getRemainingTime(){
     let SecondsInDay=86400;
     let secondsleft=SecondsInDay-(Math.floor(new Date()/1000)%SecondsInDay);
-    return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s"
+    return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s</p>"
 }
 async function renderTimer(html_to_render){
     while (true){

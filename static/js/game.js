@@ -8,6 +8,7 @@ let Game = {
     daily_shrimp: null,
     shrimp_names_lowercase: [],
     shrimp_index_by_name: {},
+    won: null,
 }
 
 function fillInGameValueWithPromise(promise, key, processing_function){

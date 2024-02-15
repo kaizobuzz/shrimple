@@ -89,7 +89,7 @@ function checkAnswer(comparisons){
             GameOverRide.win_function();
             return;
         }
-        //alert("Daily Shrimple "+Game.num_guesses+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n"));
+        Game.won=true;
         renderEndPopup();
         Game.active=false;
         return;
@@ -103,7 +103,10 @@ function addGuesses(num_new_guesses){
             GameOverRide.lose_function();
             return;
         }
-        //TODO popup
+        Game.won=false;
+        renderEndPopup();
+        Game.active=false;
+        return;
     }
 }
 let SubmitOverride={
