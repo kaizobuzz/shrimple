@@ -7,7 +7,14 @@ async function getTextToCopy(){
     await sleep(1);
     ClipboardMessage.style.opacity=String(0);
 }
-
+function winGame(){
+    Game.won=true;
+    renderEndPopup();
+}
+function loseGame(){
+    Game.won=false;
+    renderEndPopup();
+}
 function renderEndPopup(){
     let html_to_render="";
     if (Game.won){ 
@@ -25,6 +32,7 @@ function renderEndPopup(){
     FinalResultsText.innerHTML=html_to_render+getRemainingTime();
     FinalResults.hidden=false;
     ShareButton.disabled=false;
+    Game.active=false;
 }
 async function reloadPage(){
     await sleep(1);
@@ -45,7 +53,8 @@ async function renderTimer(html_to_render){
         await sleep(1);
     }
 }
-
+GameOverFunctions.win_function=winGame;
+GameOverFunctions.lose_function=loseGame;
 let FinalResults=assertNotNull(document.getElementById("final-results"));
 let FinalResultsText=assertNotNull(document.getElementById("final-results-text"));
 let ShareButton=assertButtonElement(document.getElementById("share-results"));

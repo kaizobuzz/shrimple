@@ -74,7 +74,7 @@ function initializeGameVariablesFromServer(){
         Game.daily_shrimp = Game.shrimp_list[Game.shrimp_index_by_name[Game.daily_shrimp_name.toLowerCase()]];
         console.log("DAILY SHRIMP")
         console.log(Game.daily_shrimp)
-
+        SubmitOverride.comparison_shrimp=Game.daily_shrimp;
         Game.active = true;
     });
 }

@@ -95,13 +95,6 @@ function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
     }
     return comparisons
 }
-/**
- *@param {Shrimp} input_shrimp
- *@returns {Comparisons}
- */
-function checkAgainstDailyShrimp(input_shrimp){
-    return checkAgainstShrimp(input_shrimp, assertNotNull(Game.daily_shrimp));
-}
 /** 
  * @param {string[]} guess_array  
  * @param {string[]} answer_array 

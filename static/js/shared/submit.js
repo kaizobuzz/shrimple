@@ -42,22 +42,12 @@ function renderKeys(input_shrimp){
 function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     /** @type Comparisons*/
-    let comparisons;
-    if (SubmitOverride.comparison_shrimp!=null){
-        comparisons=checkAgainstShrimp(
-        input_shrimp, 
-        SubmitOverride.comparison_shrimp); 
-    } else{
-        comparisons=checkAgainstDailyShrimp(input_shrimp);
-    }
+    let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
     let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
     setLocalStorage();
-    if (SubmitOverride.after_submit!=null){
-        console.log("?");
-        SubmitOverride.after_submit();
-    }
+    SubmitOverride.after_submit();
     PlayerInput.value="";
     SubmitButton.disabled=true;
 
@@ -70,12 +60,8 @@ function submitAnswer(){
     //console.log(input);
     if (!isInputShrimpValid(input)){
         return;
-    }
-    if (SubmitOverride.active==true){
-        SubmitOverride.submit_function(input);
-        return;
-    }
-    submitInput(input);
+    } 
+    SubmitOverride.submit_function(input);
 }
 /**@param {string} input*/
 function isInputShrimpValid(input){ 
@@ -86,30 +72,13 @@ function isInputShrimpValid(input){
 }
 /** @param {string} input*/
 function updateSubmitButton(input){
-    let should_enable;
-    if (SubmitOverride.active==true){
-        should_enable=SubmitOverride.can_submit_function(input);
-    } else{
-        should_enable=isInputShrimpValid(input);
-    }
-    if (should_enable){
-        SubmitButton.disabled=false;
-        return;
-    } else{
-        SubmitButton.disabled=true;
-    }
+    SubmitButton.disabled=SubmitOverride.can_submit_function(input)==false;
 }
 /**@param {Comparisons} comparisons*/
 function checkAnswer(comparisons){
     if (comparisons.name==Equal){
         Game.num_guesses+=1;
-        if (GameOverRide.active){
-            GameOverRide.win_function();
-            return;
-        }
-        Game.won=true;
-        renderEndPopup();
-        Game.active=false;
+        GameOverFunctions.win_function();
         return;
     }
     addGuesses(1); 
@@ -118,13 +87,7 @@ function checkAnswer(comparisons){
 function addGuesses(num_new_guesses){
     Game.num_guesses+=num_new_guesses;
     if (Game.num_guesses>=MAX_GUESSES){
-        if (GameOverRide.active){
-            GameOverRide.lose_function();
-            return;
-        }
-        Game.won=false;
-        renderEndPopup();
-        Game.active=false;
+        GameOverFunctions.lose_function(); 
         return;
     }
 }
@@ -133,17 +96,14 @@ let SubmitOverride={
     after_submit: function(){},
     /**@type Shrimp|null*/
     comparison_shrimp: null,
-    active: false,
     submit_function: submitInput,
     can_submit_function: isInputShrimpValid,
 };
-let GameOverRide={
-    active: false,
+let GameOverFunctions={
     win_function: function(){},
     lose_function: function(){},
 }
 function disableSubmitFunctionOverride(){
-    SubmitOverride.active=false;
     SubmitOverride.submit_function=submitInput;
     SubmitOverride.can_submit_function=isInputShrimpValid;
 }
