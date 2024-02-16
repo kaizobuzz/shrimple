@@ -92,18 +92,16 @@ function hideAutofill(){
     AutofillResults.hidden=true; 
 }
 function useAutofill(){
-    //console.log(this.getElementsByTagName("input")[0].value);
-    //console.log(e.target.value);
     if (this.getElementsByTagName("input")[0]!=undefined){
         PlayerInput.value=this.getElementsByTagName("input")[0].value;
         updateSubmitButton(PlayerInput.value);
         AutofillResults.hidden=true;
     }
 }
-
+/**@param {Event} e  */
 function checkIfClickedOff(e){
-    //console.log(e.target);
-    if (!InputContainer.contains(e.target)||(e.target.value==undefined&&e.target.childNodes.length!=0)){
+    let target=/**@type Node */(assertNotNull(e.target));
+    if (!InputContainer.contains(target)||(target["value"]==undefined&&target.childNodes.length!=0)){
        hideAutofill() 
     }
 }
