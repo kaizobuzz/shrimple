@@ -82,7 +82,7 @@ function getComparisonHtml(comparisons){
  * @returns {Comparisons}
  */
 function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
-    let comparisons={};
+    let comparisons=/**@type Comparisons*/({});
     if (shrimp_guess.name===comparison_shrimp.name){
         for (const key of Object.keys(shrimp_guess)){
             comparisons[key]=Equal;

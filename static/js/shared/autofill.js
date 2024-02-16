@@ -6,20 +6,21 @@
  */
 function getShrimpStat(input_shrimp, key){ 
     let result=input_shrimp[key];
-    if (result!=null){
-        switch (key){
-            case "length":
-                result+="cm";
-                break;
-            case "max_depth":
-                result+="m";
-                break;
-            case "weight":
-                result+="g";
-                break;
-            default:
-                break;
-        }
+    if (result==null){
+        return "unknown"
+    }
+    switch (key){
+        case "length":
+            result+="cm";
+            break;
+        case "max_depth":
+            result+="m";
+            break;
+        case "weight":
+            result+="g";
+            break;
+        default:
+            break;
     }
     return result;
 }
