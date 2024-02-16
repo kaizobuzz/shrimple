@@ -1,7 +1,8 @@
+// @ts-check
 const MILLISECONDSPERDAY=1000*60*60*24;
 
 function setLocalStorage(){
-    localStorage.setItem("time", Date.now());
+    localStorage.setItem("time", String(Date.now()));
     localStorage.setItem("game", JSON.stringify(Game));
     localStorage.setItem("guess_results", GuessResultsDiv.innerHTML); 
 }

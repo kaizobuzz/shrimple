@@ -1,10 +1,11 @@
+// @ts-check
 async function getTextToCopy(){
     let result=Game.won ? Game.num_guesses : "X"; 
     let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n");
     navigator.clipboard.writeText(text_to_copy);
-    ClipboardMessage.style.opacity=1;
+    ClipboardMessage.style.opacity=String(1);
     await sleep(1);
-    ClipboardMessage.style.opacity=0;
+    ClipboardMessage.style.opacity=String(0);
 }
 
 function renderEndPopup(){
@@ -31,12 +32,13 @@ async function reloadPage(){
 }
 function getRemainingTime(){
     let SecondsInDay=86400;
-    let secondsleft=SecondsInDay-(Math.floor(new Date()/1000)%SecondsInDay);
+    let secondsleft=SecondsInDay-(Math.floor(Date.now()/1000)%SecondsInDay);
     if (secondsleft==0){
         reloadPage();
     }
     return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s</p>"
 }
+/**@param {string} html_to_render  */
 async function renderTimer(html_to_render){
     while (true){
         FinalResultsText.innerHTML=html_to_render+getRemainingTime();
@@ -44,9 +46,9 @@ async function renderTimer(html_to_render){
     }
 }
 
-let FinalResults=document.getElementById("final-results");
-let FinalResultsText=document.getElementById("final-results-text");
-let ShareButton=document.getElementById("share-results");
-let ClipboardMessage=document.getElementById("clipboard-message");
+let FinalResults=assertNotNull(document.getElementById("final-results"));
+let FinalResultsText=assertNotNull(document.getElementById("final-results-text"));
+let ShareButton=assertButtonElement(document.getElementById("share-results"));
+let ClipboardMessage=assertNotNull(document.getElementById("clipboard-message"));
 ShareButton.addEventListener("click", getTextToCopy);
 

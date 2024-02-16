@@ -1,6 +1,7 @@
+//@ts-check
 async function getShrimps() {
     const response = await fetch("data/shrimps.json");
-    const shrimps = response.json();
+    const shrimps = (await response.json()).shrimps;
     console.log(shrimps);
     return shrimps;
 }

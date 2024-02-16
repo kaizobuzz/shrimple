@@ -1,7 +1,12 @@
+// @ts-check
 const MAX_GUESSES=6;
 const FLEX_COL="<div class='column'>"
 const FLEX_ROW="<div class='row'>"
 const BIGFONT="<p class='large'>"
+/** @param {Shrimp} input_shrimp
+* @param {Comparisons} comparisons 
+* @returns {string}
+*/
 function getGuessResultHtml(input_shrimp, comparisons){
     let html_to_render="";
     if (Game.num_guesses==0){
@@ -13,15 +18,18 @@ function getGuessResultHtml(input_shrimp, comparisons){
     Game.guesses.push(getComparisonHtml(comparisons).join("")); 
     html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
     html_to_render+="<span class='tooltip_text'>";
-    for (key of Object.keys(input_shrimp)){
+    for (const key of Object.keys(input_shrimp)){
         html_to_render+="<strong>"+key+": </strong>"+getShrimpStat(input_shrimp, key)+"<br>"; 
     }
     html_to_render+="</span> </div> </div> </div>";
     return html_to_render;
 }
+/** @param {Shrimp} input_shrimp 
+ * @returns {string}
+ */
 function renderKeys(input_shrimp){
-    html_to_render=FLEX_ROW;
-    for (key of Object.keys(input_shrimp)){
+    let html_to_render=FLEX_ROW;
+    for (const key of Object.keys(input_shrimp)){
         html_to_render+=FLEX_COL;
         html_to_render+=key;
         html_to_render+="</div>"
@@ -29,21 +37,12 @@ function renderKeys(input_shrimp){
     html_to_render+="</div>"
     return html_to_render;
 }
-function submitAnswer(){
-    if(!Game.active){
-        return;
-    }
-    const input=PlayerInput.value.toLowerCase();
-    //console.log(input);
-    if (!isInputShrimpValid(input)){
-        return;
-    }
+/** @param {string} input
+ */
+function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
-    if (SubmitOverride.active==true){
-        SubmitOverride.submit_function(input);
-        return;
-    }
-    let comparisons=[];
+    /** @type Comparisons*/
+    let comparisons;
     if (SubmitOverride.comparison_shrimp!=null){
         comparisons=checkAgainstShrimp(
         input_shrimp, 
@@ -61,13 +60,31 @@ function submitAnswer(){
     }
     PlayerInput.value="";
     SubmitButton.disabled=true;
+
 }
+function submitAnswer(){
+    if(!Game.active){
+        return;
+    }
+    const input=PlayerInput.value.toLowerCase();
+    //console.log(input);
+    if (!isInputShrimpValid(input)){
+        return;
+    }
+    if (SubmitOverride.active==true){
+        SubmitOverride.submit_function(input);
+        return;
+    }
+    submitInput(input);
+}
+/**@param {string} input*/
 function isInputShrimpValid(input){ 
     if (Game.shrimp_index_by_name[input.toLowerCase()]==undefined){
         return false;
     }
     return true;
 }
+/** @param {string} input*/
 function updateSubmitButton(input){
     let should_enable;
     if (SubmitOverride.active==true){
@@ -82,6 +99,7 @@ function updateSubmitButton(input){
         SubmitButton.disabled=true;
     }
 }
+/**@param {Comparisons} comparisons*/
 function checkAnswer(comparisons){
     if (comparisons.name==Equal){
         Game.num_guesses+=1;
@@ -96,6 +114,7 @@ function checkAnswer(comparisons){
     }
     addGuesses(1); 
 }
+/** @param {number} num_new_guesses */
 function addGuesses(num_new_guesses){
     Game.num_guesses+=num_new_guesses;
     if (Game.num_guesses>=MAX_GUESSES){
@@ -109,26 +128,27 @@ function addGuesses(num_new_guesses){
         return;
     }
 }
+
 let SubmitOverride={
-    after_submit: null,
+    after_submit: function(){},
+    /**@type Shrimp|null*/
     comparison_shrimp: null,
     active: false,
-    submit_function: null,
-    can_submit_function: null,
+    submit_function: submitInput,
+    can_submit_function: isInputShrimpValid,
 };
 let GameOverRide={
     active: false,
-    win_function: null,
-    lose_function: null,
+    win_function: function(){},
+    lose_function: function(){},
 }
 function disableSubmitFunctionOverride(){
     SubmitOverride.active=false;
-    SubmitOverride.submit_function=null;
-    SubmitOverride.can_submit_function=null;
+    SubmitOverride.submit_function=submitInput;
+    SubmitOverride.can_submit_function=isInputShrimpValid;
 }
-
-let SubmitButton=document.getElementById("input-submit");
-let GuessResultsDiv=document.getElementById("guesses");
+let SubmitButton = assertButtonElement(document.getElementById("input-submit"));
+let GuessResultsDiv=assertNotNull(document.getElementById("guesses"));
 SubmitButton.addEventListener("click", submitAnswer);
 addEventListener("keydown", function(e){
     if (e.key=="Enter"){
