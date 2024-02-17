@@ -2,7 +2,7 @@
 const MAX_GUESSES=6;
 const FLEX_COL="<div class='column'>"
 const FLEX_ROW="<div class='row'>"
-const BIGFONT="<p class='large'>"
+const IMGCLASS="<img class='comparison' src=\""
 /** @param {Shrimp} input_shrimp
 * @param {Comparisons} comparisons 
 * @returns {string}
@@ -12,9 +12,9 @@ function getGuessResultHtml(input_shrimp, comparisons){
     if (Game.num_guesses==0){
         html_to_render+=renderKeys(input_shrimp)
     }
-    html_to_render+=FLEX_ROW+FLEX_COL
-    html_to_render+=(getComparisonHtml(comparisons)).join("</div>"+FLEX_COL);
-    html_to_render+="</div>"
+    html_to_render+=FLEX_ROW+FLEX_COL+IMGCLASS;
+    html_to_render+=(getComparisonImages(comparisons)).join("\"/> </div>"+FLEX_COL+IMGCLASS);
+    html_to_render+="\"/> </div>"
     Game.guesses.push(getComparisonHtml(comparisons).join("")); 
     html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
     html_to_render+="<span class='tooltip_text'>";

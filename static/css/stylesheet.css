@@ -1,6 +1,7 @@
 body {
     text-align: center;
-    background-color:#2F2E30;
+    /*background-color:#2F2E30;*/ 
+    background-color: #393a3f;
     color: #C6C9CD;
     font-family: "Mooli", sans-serif;
 }
