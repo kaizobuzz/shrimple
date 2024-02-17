@@ -25,7 +25,11 @@ func hashPassword(username, password string) string{
 
 func verifyPassword(username, password string) bool{
     hash:=hashPassword(username, password)
-    if UserMap[username].PasswordHash==hash{
+    var user = GetUserByName(username)  
+    if user == nil {
+        return false
+    }
+    if user.PasswordHash==hash{
         return true;
     }
     return false;

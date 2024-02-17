@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"slices"
 	"time"
@@ -104,7 +105,11 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
 }
 
 func SignedPassword(username string) ([]byte, error) {
-    var passwordhash = sha256.Sum256([]byte(UserMap[username].PasswordHash))
+    var user = GetUserByName(username)
+    if user == nil {
+        return nil, errors.New("User does not exist")
+    }
+    var passwordhash = sha256.Sum256([]byte(user.PasswordHash))
     return SignWithServerPrivateKey(passwordhash)
 }
 
