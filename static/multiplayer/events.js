@@ -4,7 +4,7 @@ async function sendEvent(event){
     console.log(event);
 }
 async function receiveEvents(){
-    const response=await fetch("/getevents");
+    const response=await fetch("/api/v1/getevents");
     const player=await response.json();
     if (!player.hasUnrenderedEvents){
         return;

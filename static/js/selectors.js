@@ -7,7 +7,7 @@ async function getShrimps() {
 }
 
 async function getDailyShrimp() {
-    const response=await fetch("/dailyshrimp");
+    const response=await fetch("/api/v1/dailyshrimp");
     const dailyshrimp=response.text();
     return dailyshrimp;
 }
