@@ -6,7 +6,11 @@ RequiredClick=2,
 NoAutofill=3,  
 ShrimpGarbage=4,
 BombParty=5;
-
+let EffectDuration={
+    GuessStatHide: 4,
+    TimeLimitMinus: 4, 
+    NoAutofill: 4,
+}
 /**@param {string} name  */
 async function displayEffectName(name){
     EffectNameDiv.innerHTML+="<p>"+name+"</p>";
@@ -19,12 +23,15 @@ function renderEffects(effects){
         console.log(effect);
         switch (effect){
             case GuessStatHide:
-                NewEffects.push(new GameEffect(hideRandomFieldsOn, hideRandomFieldsOff, 4));
+                NewEffects.push(new GameEffect(
+                    hideRandomFieldsOn, 
+                    hideRandomFieldsOff, 
+                    EffectDuration.GuessStatHide));
                 displayEffectName("Guess Field Hide");
                 //maybe duration to work around comment below for no autofill
                 break;
             case TimeLimitMinus:
-                NewEffects.push(new GameEffect(speedUpTimerOn, speedUpTimerOff, 4));
+                NewEffects.push(new GameEffect(speedUpTimerOn, speedUpTimerOff, EffectDuration.TimeLimitMinus));
                 displayEffectName("Reduced Time Limit");
                 break;
             case RequiredClick:
@@ -33,7 +40,7 @@ function renderEffects(effects){
                 NewEffects.push(new GameEffect(
                     function(){AutofillDisabled=true}, 
                     function(){AutofillDisabled=false}, 
-                    4));
+                    EffectDuration.NoAutofill));
                 displayEffectName("No Autofill");
                 //this is notable because it also disables showing stats initially so might have to do something about that
                 break;
