@@ -11,7 +11,7 @@
 <body>
     <h2> Create Your Account </h2>
     <div class="login">
-        <form class="login-form" hx-post="/signup" hx-target="#signup-status-message">
+        <form class="login-form" hx-post="/api/v1/signup" hx-target="#signup-status-message">
             <label>Username:</label>
             <br>
             <input class="acc-field" name="username" type="text" placeholder="username" required />

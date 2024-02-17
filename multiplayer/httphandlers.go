@@ -3,7 +3,7 @@ package multiplayer
 import "net/http"
 
 func MultiplayerHandlers(){
-    http.HandleFunc("/randomshrimp", RandomShrimpName)
-    http.HandleFunc("/sendevents", AddNewEvents)
-    http.HandleFunc("/getevents", CheckForEvents) 
+    http.HandleFunc("/api/v1/randomshrimp", RandomShrimpName)
+    http.HandleFunc("/api/v1/sendevents", AddNewEvents)
+    http.HandleFunc("/api/v1/getevents", CheckForEvents) 
 }

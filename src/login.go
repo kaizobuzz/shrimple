@@ -25,7 +25,11 @@ func hashPassword(username, password string) string{
 
 func verifyPassword(username, password string) bool{
     hash:=hashPassword(username, password)
-    if UserMap[username].PasswordHash==hash{
+    var user = GetUserByName(username)  
+    if user == nil {
+        return false
+    }
+    if user.PasswordHash==hash{
         return true;
     }
     return false;
@@ -42,10 +46,14 @@ func GetPepper(){
 }
 
 func CreateCookie(username string) (*http.Cookie, error) {
-   
     var expiration = time.Now().Add(time.Hour * 24)
     
-    token, err := Tokenfromdata(TokenData{Username: username, Expiration: expiration})
+
+    signed_password, err := SignedPassword(username)
+    if err != nil {
+        return nil, err
+    }
+    token, err := Tokenfromdata(TokenData{Username: username, Expiration: expiration, Signed_password: signed_password})
     if err != nil {
         return nil, errors.New("Failed to create auth token")
     }      
@@ -111,4 +119,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     return
+}
+
+func LoggedInUser(r *http.Request) (*string) {
+    cookie, err := r.Cookie("sessiontoken")
+    if err != nil {
+        return nil
+    }
+
+    username, valid, err := VerifySessionToken(cookie.Value)
+    if err != nil || !valid {
+        return nil
+    }
+
+    return username
 }

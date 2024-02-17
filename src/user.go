@@ -8,6 +8,12 @@ import (
 
 var UserMap map[string]*User
 
+func GetUserByName(username string) *User{
+    // exists to abstract over what variable is used to index into UserMap 
+    // for a planned change to indexing by id
+    return UserMap[username]
+}
+
 type User struct {
 	Username               string
 	Id                     int64
@@ -156,7 +162,7 @@ func ReadUsersFromFile() error {
 }
 
 func UsernameTaken(username string) bool {
-    if UserMap[username] != nil {
+    if GetUserByName(username) != nil {
         return true
     }
     return false

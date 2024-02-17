@@ -7,7 +7,7 @@ async function getShrimps() {
 }
 
 async function getRandomShrimpServer(){
-    const response=await fetch("/randomshrimp");
+    const response=await fetch("/api/v1/randomshrimp");
     const random_shrimp_name=await response.text();
     return random_shrimp_name;
 }
@@ -16,7 +16,7 @@ function getNewRandomShrimp(){
     Game.current_shrimp=Game.next_shrimp;
     SubmitOverride.comparison_shrimp=Game.current_shrimp;
     Game.next_shrimp=null;
-    const response = fetch("/randomshrimp");
+    const response = fetch("/api/v1/randomshrimp");
     response.then((result) => {
         const next_shrimp_promise = result.text();
         next_shrimp_promise.then((next_shrimp_name) => {
