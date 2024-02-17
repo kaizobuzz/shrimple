@@ -1,22 +1,30 @@
+// @ts-check
+/**
+ * @param {Shrimp} input_shrimp 
+ * @param {string} key 
+ * @returns {string}
+ */
 function getShrimpStat(input_shrimp, key){ 
     let result=input_shrimp[key];
-    if (result!=null){
-        switch (key){
-            case "length":
-                result+="cm";
-                break;
-            case "max_depth":
-                result+="m";
-                break;
-            case "weight":
-                result+="g";
-                break;
-            default:
-                break;
-        }
+    if (result==null){
+        return "unknown"
+    }
+    switch (key){
+        case "length":
+            result+="cm";
+            break;
+        case "max_depth":
+            result+="m";
+            break;
+        case "weight":
+            result+="g";
+            break;
+        default:
+            break;
     }
     return result;
 }
+/**@param {string} input  */
 function getValidShrimps(input) {
     let valid_shrimps=[];
     for (const index in Game.shrimp_list){
@@ -27,12 +35,13 @@ function getValidShrimps(input) {
     } 
     return valid_shrimps;
 }
-function autofillShrimps(e) {
+
+function autofillShrimps() {
     if(!Game.active) {
         return;
     }
     AutofillResults.hidden=false;
-    let input=e.target.value.toLowerCase();
+    let input=PlayerInput.value.toLowerCase();
     updateSubmitButton(input);
     if (AutofillDisabled){
         AutofillResults.innerHTML="";
@@ -47,7 +56,7 @@ function autofillShrimps(e) {
     let html_to_render="";
     for (const shrimp of valid_shrimps){
         //console.log(Object.keys(shrimp));
-        pos=shrimp.pos;
+        const pos=shrimp.pos;
         html_to_render+=
             "<li>"+
             shrimp.name.slice(0, pos)+
@@ -84,31 +93,30 @@ function hideAutofill(){
     AutofillResults.hidden=true; 
 }
 function useAutofill(){
-    //console.log(this.getElementsByTagName("input")[0].value);
-    //console.log(e.target.value);
     if (this.getElementsByTagName("input")[0]!=undefined){
         PlayerInput.value=this.getElementsByTagName("input")[0].value;
         updateSubmitButton(PlayerInput.value);
         AutofillResults.hidden=true;
     }
 }
+/**@param {Event} e  */
 function checkIfClickedOff(e){
-    //console.log(e.target);
-    if (!InputContainer.contains(e.target)||(e.target.value==undefined&&e.target.childNodes.length!=0)){
+    let target=/**@type Node */(assertNotNull(e.target));
+    if (!InputContainer.contains(target)||(target["value"]==undefined&&target.childNodes.length!=0)){
        hideAutofill() 
     }
 }
-function toggleInfo(e){
-    if (e.target.checked==true){
+function toggleInfo(){
+    if (InfoCheckbox.checked==true){
         ShowStats=true;
         return;
     }
     ShowStats=false;
 }
-let PlayerInput=document.getElementById("player-guess")
-let AutofillResults=document.getElementById("autofill-results");
-let InputContainer=document.querySelector("#shrimp-search");
-let InfoCheckbox=document.getElementById("info-toggle");
+let PlayerInput=assertInputElement(document.getElementById("player-guess"));
+let AutofillResults=assertNotNull(document.getElementById("autofill-results"));
+let InputContainer=assertNotNull(document.querySelector("#shrimp-search"));
+let InfoCheckbox=assertInputElement(document.getElementById("info-toggle"));
 let ShowStats=false;
 let AutofillDisabled=false;
 if (InfoCheckbox.checked){

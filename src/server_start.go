@@ -5,16 +5,18 @@ import (
 	"log"
 	"net/http"
 	"shrimple/src/shared"
+    "shrimple/multiplayer"
 )
 
 func Start_Server() {
 	Initialize()
     
-    print(fmt.Sprint(SERVER_PRITAVE_KEY))
+    fmt.Print(SERVER_PRITAVE_KEY)
 
 	port := "17212"
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
+    multiplayer.MultiplayerHandlers()
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/dailyshrimp", DailyShrimpName)
 	http.HandleFunc("/signup", AccountCreationHandler)

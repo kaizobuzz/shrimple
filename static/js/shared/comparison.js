@@ -1,3 +1,14 @@
+// @ts-check
+
+/** 
+ * @typedef {Object} Comparisons
+ * @property {number} name
+ * @property {number} habitat
+ * @property {number} length
+ * @property {number} coloration
+ * @property {number} weight 
+ * @property {number} max_depth
+*/
 const Equal=0;
 const NotEqual=1;
 const TooLarge=2;
@@ -5,28 +16,41 @@ const TooSmall=3;
 const PartialEqual=4;
 const UnknownComparison=5;
 const HiddenComparison=6;
+
+/** 
+ * @function 
+ * @template A 
+ * @param {A|null} guess_statistic
+ * @param {A|null} answer_statistic
+ * @returns {number}
+ */
 function compareStatistic(guess_statistic, answer_statistic){
     if(guess_statistic == null || answer_statistic == null) {
         return UnknownComparison;
     }
     if(typeof(guess_statistic) != typeof(answer_statistic)){
         console.error("Can't compare guess with answer of different type!")
-        return; 
+        return HiddenComparison; 
     }
-    if (typeof(guess_statistic)=='number'){
+    if (typeof(guess_statistic)=='number'&&typeof(answer_statistic)=='number'){
         if (guess_statistic>answer_statistic){
             return TooLarge 
         } else if (guess_statistic<answer_statistic){
             return TooSmall
         }
         return Equal
-    } else if(guess_statistic.constructor == Array){ // what the heck is this why is js like this
+        //TODO check if this changes stuff
+    } else if(Array.isArray(guess_statistic)&&Array.isArray(answer_statistic)){ // what the heck is this why is js like this
         return compareArrayStatistic(guess_statistic, answer_statistic);
     } else if (guess_statistic==answer_statistic){
         return Equal;
     }
     return NotEqual;
 }
+/**
+ * @param {Comparisons} comparisons 
+ * @returns {string[]}
+ */
 function getComparisonHtml(comparisons){
     let html_to_render=[];
     const keys=Object.keys(comparisons);
@@ -52,8 +76,13 @@ function getComparisonHtml(comparisons){
     }
     return html_to_render;
 }
+/**
+ * @param {Shrimp} shrimp_guess
+ * @param {Shrimp} comparison_shrimp
+ * @returns {Comparisons}
+ */
 function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
-    let comparisons={};
+    let comparisons=/**@type Comparisons*/({});
     if (shrimp_guess.name===comparison_shrimp.name){
         for (const key of Object.keys(shrimp_guess)){
             comparisons[key]=Equal;
@@ -66,10 +95,11 @@ function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
     }
     return comparisons
 }
-function checkAgainstDailyShrimp(input_shrimp){
-    return checkAgainstShrimp(input_shrimp, Game.daily_shrimp);
-}
-
+/** 
+ * @param {string[]} guess_array  
+ * @param {string[]} answer_array 
+ * @returns {number}
+ */
 function compareArrayStatistic(guess_array, answer_array){
     //return NotEqual if the arrays share no elements.
     //return PartialEqual if the arrays share at least one element.

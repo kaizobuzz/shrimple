@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="/multiplayer.css">
+    <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
+    <script src="/js/htmx.min.js"></script>
+    <title>Shrimple (multiplayer)</title>
+</head>
+
+<body>
+    <h1>test</h1>
+    <div id="guesses">
+    </div>
+    <div id="shrimp-search">
+        <div id="player-input">
+            <input class="form-control" id="player-guess" value="" placeholder="Search for a shrimp..." />
+        </div>
+        <button id="input-submit" disabled="">submit</button>
+        <br>
+        <label>Show Shrimp Info</label>
+        <input id="info-toggle" type="checkbox" value="shrimp-info" />
+        <ul id="autofill-results">
+
+        </ul>
+    </div>
+    <div id="max-timer">
+        <div id="current-timer"></div>
+    </div>
+    <div id="effect-name"></div>
+    <div id="lives"></div>
+    <div id="correct-guesses"></div>
+    <script src="/js/shared/utils.js"></script>
+    <script src="/js/shared/autofill.js"></script>
+    <script src="/js/shared/comparison.js"></script>
+    <script src="/js/shared/submit.js"></script>
+    <script src="/multiplayer/bombparty.js"></script>
+    <script src="/multiplayer/effects.js"></script>
+    <script src="/multiplayer/events.js"></script>
+    <script src="/multiplayer/game_loop.js"></script>
+    <script src="/multiplayer/hidefield.js"></script>
+    <script src="/multiplayer/shrimp_garbage.js"></script>
+    <script src="/multiplayer/shrimps.js"></script>
+    <script src="/multiplayer/start_game.js"></script>
+    <script src="/multiplayer/state.js"></script>
+    <script src="/multiplayer/timer.js"></script>
+    <script src="/multiplayer/submitchange.js"></script>
+    <script src="/multiplayer/utils.js"></script>
+</body>
+
+</html>
