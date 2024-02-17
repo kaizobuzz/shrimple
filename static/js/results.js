@@ -29,27 +29,30 @@ function renderEndPopup(){
     }
     html_to_render+="<br><br>Try again in ";
     renderTimer(html_to_render);
-    FinalResultsText.innerHTML=html_to_render+getRemainingTime();
+    let promise=getRemainingTime()
+    promise.then((remainingtime)=>{
+        FinalResultsText.innerHTML=html_to_render+remainingtime;
+    });
     FinalResults.hidden=false;
     ShareButton.disabled=false;
     Game.active=false;
 }
 async function reloadPage(){
-    await sleep(1);
+    await sleep(5);
     location.reload(); 
 }
-function getRemainingTime(){
+async function getRemainingTime(){
     let SecondsInDay=86400;
     let secondsleft=SecondsInDay-(Math.floor(Date.now()/1000)%SecondsInDay);
     if (secondsleft==0){
-        reloadPage();
+        await reloadPage();
     }
     return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s</p>"
 }
 /**@param {string} html_to_render  */
 async function renderTimer(html_to_render){
     while (true){
-        FinalResultsText.innerHTML=html_to_render+getRemainingTime();
+        FinalResultsText.innerHTML=html_to_render+await getRemainingTime();
         await sleep(1);
     }
 }
