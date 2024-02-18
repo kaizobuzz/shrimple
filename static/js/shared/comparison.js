@@ -23,7 +23,7 @@ const Images={
     notequal: path+"shrimpincorrect"+png, 
     toolarge: path+"shrimptoobig"+png,
     toosmall: path+"shrimptoosmall"+png,
-    partialequal: path+"shrimpemoji"+png, 
+    partialequal: path+"shrimppartialequal"+png, 
     unknowncomparison: path+"shrimpunknown"+png,
     hiddencomparison: path+"shrimphide"+png,
 }
