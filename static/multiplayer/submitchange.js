@@ -48,8 +48,8 @@ function guessedCorrectShrimp(){
     let random_effect=Math.floor(Math.random()*6);
     effects.push(random_effect);
     console.log(effects);
-    renderEffects(effects);
-    sendEvent(CurrentEffect); //? 
+    renderEffects(effects); 
+    sendEvent(false, CurrentEffect); //? 
 }
 
 GameOverFunctions.win_function=guessedCorrectShrimp;

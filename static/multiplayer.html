@@ -10,8 +10,11 @@
 </head>
 
 <body>
+    <div id="settings-bar">
+        <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
+            hx-swap="innerHTML"></div>
+    </div>
     <h1>test</h1>
-        <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this" hx-swap="innerHTML"></div>
     <div id="guesses">
     </div>
     <div id="shrimp-search">

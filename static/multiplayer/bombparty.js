@@ -38,8 +38,9 @@ async function useBomb(){
     //TODO render bomb
     let time_remaining=BOMB_TIMER_SECONDS;
     while (current_prompt===CurrentPrompts[0]){
+        console.log(current_prompt, CurrentPrompts[0]);
         GuessResultsDiv.innerHTML="<p>Bomb party prompt:"+current_prompt+
-            ", Remaining time: "+Math.round(time_remaining)+"s </p>";
+            ", Remaining time: "+Math.floor(time_remaining)+"s </p>";
         await sleep(FRAME_TIME);
         time_remaining-=FRAME_TIME;
         if (time_remaining<=0){
