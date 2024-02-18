@@ -73,19 +73,23 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
     //fmt.Printf("base64 representation of token: %s", base64_token)
     var num_bytes int = base64.StdEncoding.DecodedLen(len([]byte(base64_token)))
     var json_token []byte = make([]byte, num_bytes)
-    _, err := base64.StdEncoding.Decode(json_token, []byte(base64_token))
+    bytes, err := base64.StdEncoding.Decode(json_token, []byte(base64_token))
+    json_token = json_token[:bytes]
     if err != nil {
+        fmt.Printf("error decoding base64 in verifysessiontoken: %s", err)
         return nil, false, err
     }
-
+        
     var token Token;
     err = json.Unmarshal(json_token, &token)
     if err != nil {
-        return nil, false, err
+        fmt.Printf("error unmarshalling json in verifysessiontoken: %s", err)
+        fmt.Printf("here is the slice we tried to unmarshal: %x", json_token)
     }
     
     correct_token_signature, err := SignTokenData(token.Tokendata)
     if err != nil {
+        fmt.Printf("Error signing token data in verifysessiontoken: %s", err)
         return nil, false, err
     }
     correct_password_signature, err := SignedPassword(token.Tokendata.Username)
@@ -93,12 +97,15 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
         return nil, false, err
     }
     if token.Tokendata.Expiration.Before(time.Now()) {
+        fmt.Print("Token Expired !! ")
         return nil, false, nil // token expired
     }
     if !slices.Equal(correct_token_signature, token.Signature) {
+        fmt.Print("Token has incorrect signature!")
         return nil, false, nil
     }
     if !slices.Equal(correct_password_signature, token.Tokendata.Signed_password) { 
+        fmt.Print("Token has incorrect password signature!")
         return nil, false, nil
     }
     return &token.Tokendata.Username, true, nil

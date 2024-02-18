@@ -1,6 +1,7 @@
 package src
 
 import (
+    "fmt"
     "encoding/base64"
 	"crypto/sha256"
 	"encoding/hex"
@@ -124,12 +125,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func LoggedInUser(r *http.Request) (*string) {
     cookie, err := r.Cookie("sessiontoken")
     if err != nil {
+        fmt.Print("error getting session token")
         return nil
     }
 
     username, valid, err := VerifySessionToken(cookie.Value)
-    if err != nil || !valid {
+    if err != nil {
+        fmt.Printf("error verifying session token: %s", err)
         return nil
+    }
+
+    if !valid {
+        fmt.Print("invalid session token")
     }
 
     return username
