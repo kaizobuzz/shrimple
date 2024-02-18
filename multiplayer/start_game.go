@@ -13,20 +13,21 @@ type ActiveStatus struct{
     last_p1_signal, last_p2_signal time.Time 
     is_active bool
 }
+type Guess struct{
+    Results[NUM_SHRIMP_FIELDS]GuessResults
+    Status GuessStatus
+}
 type player struct{
-    hasUnrenderedEvents bool
-    shouldClearBoard bool
-    newEffects []Effects 
-    newGuesses [][NUM_SHRIMP_FIELDS]GuessResults
+    HasUnrenderedEvents bool
+    NewEffects []Effects 
+    NewGuesses []Guess
     //these are both from the opponent as the own could be handled client side  
 }
 func give_default_player() player{
     return player{
-        hasUnrenderedEvents: false,
-        shouldClearBoard: false,
-        newEffects: make([]Effects, 0),
-        newGuesses: make([][NUM_SHRIMP_FIELDS]GuessResults, 0),
-    }
+        HasUnrenderedEvents: false,
+        NewEffects: make([]Effects, 0),
+        NewGuesses: make([]Guess, 0)}
 }
 type game struct{
     p1, p2 player

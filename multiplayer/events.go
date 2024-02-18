@@ -29,6 +29,12 @@ const (
     ShrimpGarbage
     BombParty
 )
+type GuessStatus int 
+const (
+    Normal GuessStatus=iota
+    CorrectGuess
+    OutofGuesses
+)
 const CONTENT_TYPE="Content-Type" 
 const JSON_HEADER="application/json"
 const PLAYER_1="1"
@@ -54,7 +60,7 @@ func getGameInfo(r *http.Request)(error, *game, string){
     //maybe should use 404 instead?
     return nil, currentgame, player 
 }
-func AddNewEvents(w http.ResponseWriter, r *http.Request){
+func AddNewEvent(w http.ResponseWriter, r *http.Request){
     //id := r.URL.Query().Get("gameid")
     //player := r.URL.Query().Get("player")
     err, game, playerid:=getGameInfo(r)
@@ -80,9 +86,9 @@ func AddNewEvents(w http.ResponseWriter, r *http.Request){
         game.status.last_p2_signal=time.Now()
         game.status.mu.Unlock()
     }
-    receivingplayer.hasUnrenderedEvents=true
-    events:=strings.Split(r.FormValue("events"), " ")
-    for _, event:=range events{
+    receivingplayer.HasUnrenderedEvents=true
+    event:=r.FormValue("event")
+    if event!=""{
         eventnum, err:=strconv.Atoi(event)
         if err!=nil{
             log.Println(err)
@@ -90,12 +96,13 @@ func AddNewEvents(w http.ResponseWriter, r *http.Request){
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
-        receivingplayer.newEffects = append(receivingplayer.newEffects, Effects(eventnum))
+        receivingplayer.NewEffects = append(receivingplayer.NewEffects, Effects(eventnum))
+        return
     }
-    guesses:=strings.Split(r.FormValue("guesses"), ",")
-    for _, guess:=range guesses{
+    guess:=r.FormValue("guess")
+    if guess!=""{
         guess_results:=strings.Split(guess, " ")
-        var new_guess [NUM_SHRIMP_FIELDS]GuessResults;
+        var new_guess [NUM_SHRIMP_FIELDS]GuessResults
         for i, guess_result:=range guess_results{
             guess_result_num, err:=strconv.Atoi(guess_result)
             if err!=nil{
@@ -106,8 +113,10 @@ func AddNewEvents(w http.ResponseWriter, r *http.Request){
             }
             new_guess[i]=GuessResults(guess_result_num)
         }
-        receivingplayer.newGuesses=append(receivingplayer.newGuesses, new_guess)
+        receivingplayer.NewGuesses=append(receivingplayer.NewGuesses, Guess{Results: new_guess})
+        return
     }
+    w.WriteHeader(http.StatusBadRequest)
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request){
     err, game, playerid:=getGameInfo(r)
@@ -141,8 +150,7 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request){
     }
     w.Header().Set(CONTENT_TYPE, JSON_HEADER)
     w.Write(jsonbytes)
-    checking_player.newEffects=make([]Effects, 0)
-    checking_player.newGuesses=make([][NUM_SHRIMP_FIELDS]GuessResults, 0)
-    checking_player.shouldClearBoard=false
-    checking_player.hasUnrenderedEvents=false
+    checking_player.NewEffects=make([]Effects, 0)
+    checking_player.NewGuesses=make([]Guess, 0)
+    checking_player.HasUnrenderedEvents=false
 }
