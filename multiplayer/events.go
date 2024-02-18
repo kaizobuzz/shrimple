@@ -35,10 +35,31 @@ const (
     CorrectGuess
     OutofGuesses
 )
+type PlayerForJson struct{
+    NewGuesses []Guess
+    NewEffects []Effects
+}
 const CONTENT_TYPE="Content-Type" 
 const JSON_HEADER="application/json"
 const PLAYER_1="1"
 const PLAYER_2="2"
+func makeJsonPlayer(player *player) PlayerForJson{
+    var guess Guess
+    var newGuesses []Guess
+    var effect Effects
+    var newEffects []Effects
+    Loop: for{
+        select{
+            case guess=<-player.NewGuesses: 
+                newGuesses = append(newGuesses, guess)
+            case effect=<-player.NewEffects:
+                newEffects=append(newEffects, effect)
+            default:
+                break Loop
+        }
+    }
+    return PlayerForJson{NewGuesses: newGuesses, NewEffects: newEffects}
+}
 func getGameInfo(r *http.Request)(error, *game, string){
     u := &url.URL{}
 	err := u.UnmarshalBinary([]byte(r.Referer()))
@@ -86,7 +107,6 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
         game.status.last_p2_signal=time.Now()
         game.status.mu.Unlock()
     }
-    receivingplayer.HasUnrenderedEvents=true
     event:=r.FormValue("event")
     if event!=""{
         eventnum, err:=strconv.Atoi(event)
@@ -96,11 +116,19 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
-        receivingplayer.NewEffects = append(receivingplayer.NewEffects, Effects(eventnum))
+        receivingplayer.NewEffects <- Effects(eventnum)
         return
     }
-    guess:=r.FormValue("guess")
-    if guess!=""{
+    guessvalue:=r.FormValue("guess")
+    if guessvalue!=""{
+        guess, guess_status, _:=strings.Cut(guessvalue, ",")
+        guess_status_num, err:=strconv.Atoi(guess_status)
+        if err!=nil{
+            log.Println(err)
+            game.hasError=true 
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
         guess_results:=strings.Split(guess, " ")
         var new_guess [NUM_SHRIMP_FIELDS]GuessResults
         for i, guess_result:=range guess_results{
@@ -113,7 +141,9 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
             }
             new_guess[i]=GuessResults(guess_result_num)
         }
-        receivingplayer.NewGuesses=append(receivingplayer.NewGuesses, Guess{Results: new_guess})
+        receivingplayer.NewGuesses <-(Guess{
+            Results: new_guess, 
+            Status: GuessStatus(guess_status_num)})
         return
     }
     w.WriteHeader(http.StatusBadRequest)
@@ -142,7 +172,7 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request){
         game.status.last_p2_signal=time.Now()
         game.status.mu.Unlock()
     }
-    jsonbytes, err:=json.Marshal(checking_player)
+    jsonbytes, err:=json.Marshal(makeJsonPlayer(checking_player))
     log.Println(jsonbytes)
     if err!=nil{
         log.Println(err)
@@ -150,7 +180,4 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request){
     }
     w.Header().Set(CONTENT_TYPE, JSON_HEADER)
     w.Write(jsonbytes)
-    checking_player.NewEffects=make([]Effects, 0)
-    checking_player.NewGuesses=make([]Guess, 0)
-    checking_player.HasUnrenderedEvents=false
 }

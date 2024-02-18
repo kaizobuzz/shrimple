@@ -18,16 +18,14 @@ type Guess struct{
     Status GuessStatus
 }
 type player struct{
-    HasUnrenderedEvents bool
-    NewEffects []Effects 
-    NewGuesses []Guess
+    NewEffects chan Effects 
+    NewGuesses chan Guess
     //these are both from the opponent as the own could be handled client side  
 }
 func give_default_player() player{
     return player{
-        HasUnrenderedEvents: false,
-        NewEffects: make([]Effects, 0),
-        NewGuesses: make([]Guess, 0)}
+        NewEffects: make(chan Effects, 5),
+        NewGuesses: make(chan Guess, 15)}
 }
 type game struct{
     p1, p2 player

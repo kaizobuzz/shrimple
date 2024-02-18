@@ -57,14 +57,12 @@ function compareStatistic(guess_statistic, answer_statistic){
     }
     return NotEqual;
 }
-/**@param {Comparisons} comparisons 
- * @returns {string[]}
- */
-function getComparisonImages(comparisons){
-    /**@type string[] */
-    let resimages=[];
-    for (const key of Object.keys(comparisons)){
-        switch (comparisons[key]){
+/**@param {Number[]} comparisonarray  
+ * @returns {string[]}*/
+function getComparionImagesbyArray(comparisonarray){
+    let resimages=[]; 
+    for (const value of comparisonarray){
+        switch (value){
             case Equal:
                 resimages.push(Images.equal);
                 break;
@@ -88,10 +86,16 @@ function getComparisonImages(comparisons){
                 break;
             default:
                 resimages.push(Images.hiddencomparison); 
-                console.error("unknown comparison number "+comparisons[key]);
+                console.error("unknown comparison number "+value);
         }
     }
     return resimages;
+}
+/**@param {Comparisons} comparisons 
+ * @returns {string[]}
+ */
+function getComparisonImages(comparisons){
+    return getComparionImagesbyArray(Object.values(comparisons));
 }
 /**
  * @param {Comparisons} comparisons 

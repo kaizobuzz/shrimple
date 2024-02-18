@@ -5,24 +5,28 @@ function submitEmptyGuess(){
     addGuesses(1);
     //TODO will have to change later
 }
-/**@param {number[]} new_guesses */
+/**@param {Guess[]} new_guesses */
 function renderGuesses(new_guesses){
     console.log(new_guesses);
+    for (const guess of new_guesses){
+        let comparison_images=getComparionImagesbyArray(guess.results) 
+    }
 }
 
 //submitting has to reset timer
-
-function eventOnSubmit(){
+/**@param {Comparisons} comparisons  */
+function eventOnSubmit(comparisons){
     if (!SubmitButton.disabled){     
         resetTimer();
     }
-    //sendEvent ??
+    sendEvent(true, Object.values(comparisons));
 }
-function outOfLives(){
+function outOfLives(){ 
     alert("damn 3:");
     Game.active=false;
 }
 function outOfGuesses(){
+    isOutOfGuesses=true;
     getNewRandomShrimp();
     Game.guesses=[];
     GuessResultsDiv.innerHTML="";
@@ -36,6 +40,7 @@ function outOfGuesses(){
 function setLocalStorage(){
 }
 function guessedCorrectShrimp(){
+    isCorrectGuess=true;
     CorrectGuesses+=1;
     ShrimpsGuessedDiv.innerHTML="<p>Correct guesses: "+CorrectGuesses+"</p>";
     getNewRandomShrimp();
@@ -59,3 +64,5 @@ let OtherGuessResultsDiv=assertNotNull(document.getElementById("other-guesses"))
 let LivesDiv=assertNotNull(document.getElementById("lives"));
 let ShrimpsGuessedDiv=assertNotNull(document.getElementById("correct-guesses"));
 let CorrectGuesses=0;
+let isOutOfGuesses=false;
+let isCorrectGuess=false;
