@@ -17,6 +17,16 @@ const PartialEqual=4;
 const UnknownComparison=5;
 const HiddenComparison=6;
 
+const path="img/", png=".png";
+const Images={
+    equal: path+"shrimpcorrect"+png,
+    notequal: path+"shrimpincorrect"+png, 
+    toolarge: path+"shrimptoobig"+png,
+    toosmall: path+"shrimptoosmall"+png,
+    partialequal: path+"shrimpemoji"+png, 
+    unknowncomparison: path+"shrimpunknown"+png,
+    hiddencomparison: path+"shrimphide"+png,
+}
 /** 
  * @function 
  * @template A 
@@ -46,6 +56,42 @@ function compareStatistic(guess_statistic, answer_statistic){
         return Equal;
     }
     return NotEqual;
+}
+/**@param {Comparisons} comparisons 
+ * @returns {string[]}
+ */
+function getComparisonImages(comparisons){
+    /**@type string[] */
+    let resimages=[];
+    for (const key of Object.keys(comparisons)){
+        switch (comparisons[key]){
+            case Equal:
+                resimages.push(Images.equal);
+                break;
+            case NotEqual:
+                resimages.push(Images.notequal);
+                break;
+            case TooLarge:
+                resimages.push(Images.toolarge);
+                break;
+            case TooSmall:
+                resimages.push(Images.toosmall);
+                break;
+            case PartialEqual:
+                resimages.push(Images.partialequal);
+                break;
+            case UnknownComparison:
+                resimages.push(Images.unknowncomparison);
+                break;
+            case HiddenComparison:
+                resimages.push(Images.hiddencomparison);
+                break;
+            default:
+                resimages.push(Images.hiddencomparison); 
+                console.error("unknown comparison number "+comparisons[key]);
+        }
+    }
+    return resimages;
 }
 /**
  * @param {Comparisons} comparisons 

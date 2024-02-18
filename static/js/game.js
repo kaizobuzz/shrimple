@@ -57,6 +57,7 @@ function initializeGameVariablesFromServer(){
     }
     if (cached_game!=null){
         Game=JSON.parse(cached_game);
+        SubmitOverride.comparison_shrimp=Game.daily_shrimp;
         if (Game.num_guesses>0&&Game.active==false){
             renderEndPopup();
         }
