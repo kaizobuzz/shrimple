@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 type GuessResults int 
 const (
@@ -68,7 +67,9 @@ func getGameInfo(r *http.Request)(error, *game, string){
 	}
     id := u.Query().Get("id")
     player := u.Query().Get("p")
-    currentgame:=active_games[id]
+    ActiveGamesMutex.Lock()
+    currentgame:=ActiveGames[id] 
+    ActiveGamesMutex.Unlock()
     if id==""{
         return errors.New("id query is empty"), nil, ""
     }
@@ -98,14 +99,10 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
     var receivingplayer *player 
     if playerid==PLAYER_1{
         receivingplayer=&game.p2
-        game.status.mu.Lock()
-        game.status.last_p1_signal=time.Now()
-        game.status.mu.Unlock()
+        game.status.last_p1_signal<-struct{}{}
     } else{
         receivingplayer=&game.p1 
-        game.status.mu.Lock()
-        game.status.last_p2_signal=time.Now()
-        game.status.mu.Unlock()
+        game.status.last_p2_signal<-struct{}{}
     }
     event:=r.FormValue("event")
     if event!=""{
@@ -149,6 +146,7 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
     w.WriteHeader(http.StatusBadRequest)
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request){
+    log.Println("checking")
     err, game, playerid:=getGameInfo(r)
     if err!=nil{
         log.Println(err)
@@ -163,20 +161,17 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request){
     var checking_player *player 
     if playerid==PLAYER_1{
         checking_player=&game.p1
-        game.status.mu.Lock()
-        game.status.last_p1_signal=time.Now()
-        game.status.mu.Unlock()
+        game.status.last_p1_signal<-struct{}{}
     } else{
         checking_player=&game.p2 
-        game.status.mu.Lock()
-        game.status.last_p2_signal=time.Now()
-        game.status.mu.Unlock()
+        game.status.last_p2_signal<-struct{}{}
     }
     jsonbytes, err:=json.Marshal(makeJsonPlayer(checking_player))
     log.Println(jsonbytes)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusBadRequest)
+        return
     }
     w.Header().Set(CONTENT_TYPE, JSON_HEADER)
     w.Write(jsonbytes)

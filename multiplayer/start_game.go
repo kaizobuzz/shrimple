@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"sync"
 	"time"
+    "sync/atomic"
 )
 const NUM_SHRIMP_FIELDS uint=6
 type ActiveStatus struct{
-    mu sync.Mutex
-    last_p1_signal, last_p2_signal time.Time 
-    is_active bool
+    last_p1_signal, last_p2_signal chan struct{} 
+    is_active atomic.Bool
 }
 type Guess struct{
     Results[NUM_SHRIMP_FIELDS]GuessResults
@@ -24,49 +24,56 @@ type player struct{
 }
 func give_default_player() player{
     return player{
-        NewEffects: make(chan Effects, 5),
-        NewGuesses: make(chan Guess, 15)}
+        NewEffects: make(chan Effects, 10),
+        NewGuesses: make(chan Guess, 20)}
 }
 type game struct{
     p1, p2 player
     status ActiveStatus
     hasError bool
 }
-var active_games map[string]*game
+var ActiveGames map[string]*game
+var ActiveGamesMutex sync.Mutex
 
-func checkActivity(status *ActiveStatus){
-    for{
-        time.Sleep(time.Second*30)
-        status.mu.Lock()
-        if time.Now().Sub(status.last_p1_signal)>time.Minute||time.Now().Sub(status.last_p2_signal)>time.Minute{
-            status.is_active=false
-            break;
-        }
-        status.mu.Unlock()
-        //alternatively just use the close checking from javascript
+func checkPlayerActivity(signal chan struct{}, active *atomic.Bool){
+    Loop: for{
+        select{
+            case <-signal:
+                break
+            case <-time.After(time.Minute*2):
+                active.Store(false) 
+                break Loop
+        } 
     }
 }
-
-func GiveNewGameId(w http.ResponseWriter, r *http.Request){
-    var new_game_id string
-    new_game_id=fmt.Sprintf("%d", rand.Uint64());
-    for active_games[new_game_id]!=nil{
-        new_game_id=fmt.Sprintf("%d", rand.Uint64());
-    }
-    active_games[new_game_id]=&game{
+func checkActivity(status *ActiveStatus){
+    go checkPlayerActivity(status.last_p1_signal, &status.is_active)
+    go checkPlayerActivity(status.last_p2_signal, &status.is_active)
+}
+func makeNewGame(new_game_id string){
+    defer ActiveGamesMutex.Unlock()
+    new_game:=&game{
         p1: give_default_player(),
         p2: give_default_player(),
         status: ActiveStatus{
-            last_p1_signal: time.Now(),
-            last_p2_signal: time.Now(),
-            is_active: true,
+            last_p1_signal: make(chan struct{}),
+            last_p2_signal: make(chan struct{}),
         },
         hasError: false,
     }
-    go checkActivity(&active_games[new_game_id].status)
+    ActiveGames[new_game_id]=new_game
+    checkActivity(&new_game.status)
+}
+func GiveNewGameId(w http.ResponseWriter, r *http.Request){ 
+    var new_game_id string
+    new_game_id=fmt.Sprintf("%d", rand.Uint64());
+    ActiveGamesMutex.Lock()
+    for ActiveGames[new_game_id]!=nil{
+        new_game_id=fmt.Sprintf("%d", rand.Uint64());
+    }
+    go makeNewGame(new_game_id)
     w.Write([]byte(new_game_id))     
 }
-
 func IntializeMap(){
-    active_games=make(map[string]*game)
+    ActiveGames=make(map[string]*game)
 }
