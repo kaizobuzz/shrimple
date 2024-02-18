@@ -110,16 +110,41 @@ li:hover{
     margin-top: auto;
     margin-bottom: auto;
 }
+.close-button {
+    border-radius: 25%;
+    background-color: #fc5a52;
+    border-color: #fc5a52;
+    float: right;
+}
+.close-button:hover {
+    background-color: #fc766f;
+    border-color: #fc766f;
+}
+#results-open{
+    font-family: "Mooli", sans-serif;
+    position: relative;
+    top: 2em;
+    font-size: large;
+    border-radius: 0.5em;
+    background-color: #535054; 
+    border-color: #535054; 
+    color: #C6C9CD;
+}
+#results-open:hover {
+    background-color: #736f74;
+    border-color: #736f74;
+}
 #final-results{
     width: 36em;
     z-index: 2;
     position: absolute;
-    top: 30%;
-    left: 35%;
     border-color: #676668; 
     background-color: #3b3a3b;
     color: #C6C9CD;
-    margin: 3em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0.2em;
 }
 #clipboard-message{
     width: 16em;

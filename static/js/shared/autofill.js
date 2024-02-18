@@ -5,6 +5,9 @@
  * @returns {string}
  */
 function getShrimpStat(input_shrimp, key){ 
+    if (key=="coloration"){
+        return input_shrimp.coloration.join(", ")
+    }
     let result=input_shrimp[key];
     if (result==null){
         return "unknown"
