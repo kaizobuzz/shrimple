@@ -6,6 +6,22 @@ RequiredClick=2,
 NoAutofill=3,  
 ShrimpGarbage=4,
 BombParty=5;
+class GameEffect{
+    /** 
+     * @param {Function} start_function 
+     * @param {Function} end_function 
+     * @param {number} duration_guesses 
+    */
+    constructor(start_function, end_function, duration_guesses){
+        /**@type {Function} start_function*/
+        this.start_function=start_function;
+        /**@type {Function} end_function*/
+        this.end_function=end_function;
+        /**@type {number} duration_guesses*/
+        this.duration_guesses=duration_guesses;
+    }
+}
+
 let EffectDuration={
     GuessStatHide: 4,
     TimeLimitMinus: 4, 
@@ -57,6 +73,10 @@ function renderEffects(effects){
         }
     }
 }
+/**@type GameEffect[]*/
+let NewEffects=[];
+/**@type GameEffect[]*/
+let CurrentEffects=[];
 
 let EffectNameDiv=assertNotNull(document.getElementById("effect-name"));
 let CurrentEffect;

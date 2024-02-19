@@ -10,3 +10,21 @@
     background-color: #93b675;
     height: 2em;
 }
+.other-row{
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 0;
+}
+.other-col{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    min-width: 2.5em;
+    max-width: 2.5em;
+    margin-top: auto;
+    margin-bottom: auto;
+}

@@ -4,6 +4,6 @@ async function waitForGameStart(){
 }
 
 let Player1Accepted=false;
-document.getElementById("start-button").addEventListener("click", function(){
+assertButtonElement(document.getElementById("start-button")).addEventListener("click", function(){
     Player1Accepted=true;
 });
