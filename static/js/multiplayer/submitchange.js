@@ -2,12 +2,13 @@
 function guessedCorrectShrimp(){
     isCorrectGuess=true;
     resetGuesses();
-    sendEvent(false, CurrentEffect); 
+    sendEvent(false, [CurrentEffect]); 
 }
 function outOfGuesses(){
     isOutOfGuesses=true;
     resetGuesses();
     Game.lives-=1;
+    LivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>";
     if (Game.lives<=0){
         outOfLives();
     }
@@ -16,13 +17,16 @@ function outOfGuesses(){
 function renderGuesses(new_guesses){
     console.log(new_guesses);
     for (const guess of new_guesses){
-        let guessHtml="<div class='other-row'>"
-        guessHtml+=getGuessResultHtmlWithClasses(guess.Results, "other-column")+"</div>"
-        OtherGuessResultsDiv.innerHTML+=guessHtml 
-        if (guess.Status==CorrectGuesses){ 
-            OtherGuessResultsDiv.innerHTML=""
+        let guessHtml="<div class='other-row'>";
+        guessHtml+=getGuessResultHtmlWithClasses(guess.Results, "other-column")+"</div>";
+        OtherGuessResultsDiv.innerHTML+=guessHtml; 
+        if (guess.Status==CorrectGuess){ 
+            speedUpTimerPermanent();
+            OtherGuessResultsDiv.innerHTML="";
         } else if (guess.Status==OutOfGuesses){
-            OtherGuessResultsDiv.innerHTML=""
+            OtherGuessResultsDiv.innerHTML="";
+            OtherPersonLives-=1;
+            OtherLivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>"
         }
     }
 }
@@ -34,6 +38,9 @@ function eventOnSubmit(comparisons){
     sendEvent(true, Object.values(comparisons));
 }
 let OtherGuessResultsDiv=assertNotNull(document.getElementById("other-guesses"));
+let OtherLivesDiv=assertNotNull(document.getElementById("other-lives"));
+let OtherPersonLives=Game.lives;
+OtherLivesDiv.innerHTML="<p>Remaining lives: "+OtherPersonLives+"</p>"
 SubmitOverride.after_submit=eventOnSubmit;
 GameOverFunctions.win_function=guessedCorrectShrimp;
 GameOverFunctions.lose_function=outOfGuesses;

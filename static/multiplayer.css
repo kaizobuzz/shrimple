@@ -10,6 +10,9 @@
     background-color: #93b675;
     height: 2em;
 }
+#other-lives{
+    text-align: left;
+}
 .other-row{
     text-align: center;
     display: flex;

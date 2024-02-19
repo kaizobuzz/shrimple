@@ -79,4 +79,5 @@ let NewEffects=[];
 let CurrentEffects=[];
 
 let EffectNameDiv=assertNotNull(document.getElementById("effect-name"));
-let CurrentEffect;
+let CurrentEffect=GuessStatHide;
+

@@ -39,3 +39,30 @@ async function receiveEvents(){
     renderEffects(player.NewEffects);
 }
 let HtmxDiv=assertNotNull(document.getElementById("htmx-things"))
+const startthing="Current effect set to "
+addEventListener("keydown", function(e){
+    switch (e.key){
+        case "0":
+            CurrentEffect=GuessStatHide;
+            displayEffectName(startthing+"Guess Field Hide");
+            break;
+        case "1":
+            CurrentEffect=TimeLimitMinus;
+            displayEffectName(startthing+"Reduced Time Limit");
+            break;
+        case "2":
+            CurrentEffect=NoAutofill;
+            displayEffectName(startthing+"No Autofill");
+            break;
+        case "3":
+            CurrentEffect=ShrimpGarbage;
+            displayEffectName(startthing+"Shrimp Garbage");
+            break;
+        case "4":
+            CurrentEffect=BombParty;
+            displayEffectName(startthing+"Bomb Party");
+            break;
+        default:
+            break;
+    }
+})
