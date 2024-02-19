@@ -50,8 +50,16 @@ func Tokenfromdata(data TokenData) (*Token, error){
 }
 
 func SignTokenData(data TokenData) ([]byte, error) {
-    var hash = sha256.Sum256([]byte(fmt.Sprint(data)))
-    return SignWithServerPrivateKey(hash)
+    json_token, err := json.Marshal(data)
+    if err != nil {
+        return nil, err
+    }
+    var hash = sha256.Sum256(json_token)
+    bytes, err := SignWithServerPrivateKey(hash)
+    if err == nil {
+        fmt.Printf("\n Signed Token: %x \n!! Signature: %x", data, bytes)
+    }
+    return bytes, err
 }
 
 func SignWithServerPrivateKey(data [32]byte) ([]byte, error) {
@@ -79,7 +87,7 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
         fmt.Printf("error decoding base64 in verifysessiontoken: %s", err)
         return nil, false, err
     }
-        
+    fmt.Printf("\n Got JSON token with value: %s (%x) \n", json_token, json_token)  
     var token Token;
     err = json.Unmarshal(json_token, &token)
     if err != nil {
