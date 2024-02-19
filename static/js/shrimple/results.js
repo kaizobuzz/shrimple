@@ -73,4 +73,9 @@ CloseButton.addEventListener("click", function(){
     FinalResults.hidden=true;
 });
 ShareButton.addEventListener("click", getTextToCopy);
+let StartInfoButton=assertButtonElement(document.getElementById("start-info-close"));
+let StartInfo=assertNotNull(document.getElementById("start-info"));
+StartInfoButton.addEventListener("click", function(){
+    StartInfo.hidden=true;
+});
 
