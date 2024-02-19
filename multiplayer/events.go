@@ -15,7 +15,9 @@ func MarshalEffects(effects []Effects) (string){
     for _, effect:=range effects{
         marshal_string+=fmt.Sprintf("%d,", effect)
     }
-    marshal_string=marshal_string[:len(marshal_string)-1]
+    if marshal_string[len(marshal_string)-1]==','{
+        marshal_string=marshal_string[:len(marshal_string)-1]
+    }
     return marshal_string+"]"
 }
 func MarshalGuesses(guesses []Guess) (string){
@@ -25,10 +27,12 @@ func MarshalGuesses(guesses []Guess) (string){
         for _, result:=range guess.Results{
             marshal_string+=fmt.Sprintf("%d,", result)
         } 
-        marshal_string=marshal_string[:len(marshal_string)-1]
+        marshal_string=marshal_string[:len(marshal_string)-1]    
         marshal_string+="], \"Status\": "+fmt.Sprintf("%d},", guess.Status)
     }
-    marshal_string=marshal_string[:len(marshal_string)-1]
+    if marshal_string[len(marshal_string)-1]==','{
+        marshal_string=marshal_string[:len(marshal_string)-1]
+    }
     return marshal_string+"]"
 }
 func (self PlayerForJson) MarshalJSON() ([]byte, error){
