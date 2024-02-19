@@ -83,8 +83,6 @@ func getGameInfo(r *http.Request)(error, *game, string){
     return nil, currentgame, player 
 }
 func AddNewEvent(w http.ResponseWriter, r *http.Request){
-    //id := r.URL.Query().Get("gameid")
-    //player := r.URL.Query().Get("player")
     err, game, playerid:=getGameInfo(r)
     if err!=nil{
         log.Println(err)

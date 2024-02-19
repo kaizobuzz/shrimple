@@ -71,7 +71,6 @@ function initializeGameVariablesFromServer(){
             LivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>";
             Game.active=true;
             startGameLoop();
-            receiveEvents();
         });
     });
 }

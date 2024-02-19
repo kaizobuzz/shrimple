@@ -9,7 +9,14 @@ function submitEmptyGuess(){
 function renderGuesses(new_guesses){
     console.log(new_guesses);
     for (const guess of new_guesses){
-        let comparison_images=getComparionImagesbyArray(guess.results) 
+        let guessHtml="<div class='other-row'>"
+        guessHtml+=getGuessResultHtmlWithClasses(guess.results, "other-column")+"</div>"
+        OtherGuessResultsDiv.innerHTML+=guessHtml 
+        if (guess.status==CorrectGuesses){ 
+            OtherGuessResultsDiv.innerHTML=""
+        } else if (guess.status==OutOfGuesses){
+            OtherGuessResultsDiv.innerHTML=""
+        }
     }
 }
 

@@ -35,20 +35,26 @@ type game struct{
 var ActiveGames map[string]*game
 var ActiveGamesMutex sync.Mutex
 
-func checkPlayerActivity(signal chan struct{}, active *atomic.Bool){
+func removeGame(id string){
+    ActiveGamesMutex.Lock() 
+    defer ActiveGamesMutex.Unlock()
+    delete(ActiveGames, id)
+}
+
+func checkPlayerActivity(signal chan struct{}, id string){
     Loop: for{
         select{
             case <-signal:
                 break
             case <-time.After(time.Minute*2):
-                active.Store(false) 
+                removeGame(id)
                 break Loop
         } 
     }
 }
-func checkActivity(status *ActiveStatus){
-    go checkPlayerActivity(status.last_p1_signal, &status.is_active)
-    go checkPlayerActivity(status.last_p2_signal, &status.is_active)
+func checkActivity(status *ActiveStatus, gameid string){
+    go checkPlayerActivity(status.last_p1_signal, gameid)
+    go checkPlayerActivity(status.last_p2_signal, gameid)
 }
 func makeNewGame(new_game_id string){
     defer ActiveGamesMutex.Unlock()
@@ -62,7 +68,7 @@ func makeNewGame(new_game_id string){
         hasError: false,
     }
     ActiveGames[new_game_id]=new_game
-    checkActivity(&new_game.status)
+    checkActivity(&new_game.status, new_game_id)
 }
 func GiveNewGameId(w http.ResponseWriter, r *http.Request){ 
     var new_game_id string

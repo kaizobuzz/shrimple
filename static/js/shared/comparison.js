@@ -59,7 +59,7 @@ function compareStatistic(guess_statistic, answer_statistic){
 }
 /**@param {Number[]} comparisonarray  
  * @returns {string[]}*/
-function getComparionImagesbyArray(comparisonarray){
+function getComparisonImagesByArray(comparisonarray){
     let resimages=[]; 
     for (const value of comparisonarray){
         switch (value){
@@ -95,7 +95,7 @@ function getComparionImagesbyArray(comparisonarray){
  * @returns {string[]}
  */
 function getComparisonImages(comparisons){
-    return getComparionImagesbyArray(Object.values(comparisons));
+    return getComparisonImagesByArray(Object.values(comparisons));
 }
 /**
  * @param {Comparisons} comparisons 
