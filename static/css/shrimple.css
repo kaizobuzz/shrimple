@@ -11,15 +11,28 @@
     padding-right: 2em;
     right: 2em;
 }
+#settings{
+    float: right;
+}
+#start-info-open{
+    border-color: #C6C9CD;
+    color: #C6C9CD;
+    background-color: #2d2e31;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#start-info-open:hover{
+    background-color: #565860;
+}
 #start-info{
     width: 32em;
     position: absolute;
-    height: 50em;
+    height: 30em;
     background-color: #565860;
-    z-index: 3;
+    z-index: 3; 
+    transition: all 0.5s;
     left: 50%;
     transform: translate(-50%, 0%);
-
 }
 
 details {
