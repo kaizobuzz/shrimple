@@ -30,6 +30,6 @@ function resetTimer(){
     Width=MAX_TIMER_WIDTH;
 }
 
-let TimerDurationSeconds=100;
+let TimerDurationSeconds=24;
 let Width=MAX_TIMER_WIDTH;
 let Timer=assertNotNull(document.getElementById("current-timer"));
