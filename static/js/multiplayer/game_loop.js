@@ -6,7 +6,7 @@ async function startGameLoop(){
     while (Game.active){
         await sleep(FRAME_TIME)
         iterator+=1;
-        if (iterator>(5/FRAME_TIME)){
+        if (iterator>(3/FRAME_TIME)){
             iterator=0;
             receiveEvents();
         }
