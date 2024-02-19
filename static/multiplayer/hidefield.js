@@ -15,7 +15,7 @@ function submitwithHiddenFields(input){
     let guess_html=getGuessResultHtml(input_shrimp, comparisons);
     GuessResultsDiv.innerHTML+=guess_html
     checkAnswer(comparisons);
-    SubmitOverride.after_submit();
+    SubmitOverride.after_submit(comparisons);
     PlayerInput.value="";
     SubmitButton.disabled=true;
 

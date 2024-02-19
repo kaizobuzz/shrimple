@@ -47,10 +47,9 @@ function submitInput(input){
     GuessResultsDiv.innerHTML+=(html_to_render);
     checkAnswer(comparisons);
     setLocalStorage();
-    SubmitOverride.after_submit();
+    SubmitOverride.after_submit(comparisons);
     PlayerInput.value="";
     SubmitButton.disabled=true;
-
 }
 function submitAnswer(){
     if(!Game.active){
@@ -91,9 +90,13 @@ function addGuesses(num_new_guesses){
         return;
     }
 }
-
+/**@callback NeedsComparison 
+ *@param {Comparisons} comparisons 
+ *@returns {void}
+ */
 let SubmitOverride={
-    after_submit: function(){},
+    /**@type NeedsComparison */
+    after_submit: function(_){},
     /**@type Shrimp|null*/
     comparison_shrimp: null,
     submit_function: submitInput,
