@@ -10,6 +10,29 @@ import (
 	"strconv"
 	"strings"
 )
+func MarshalEffects(effects []Effects) (string){
+    result:="["
+    for _, effect:=range effects{
+        result+=fmt.Sprintf("%d,", effect)
+    }
+    return result+"]"
+}
+func MarshalGuesses(guesses []Guess) (string){
+    marshal_string:="["
+    for _, guess:=range guesses{
+        marshal_string+="{\"Results\": ["
+        for _, result:=range guess.Results{
+            marshal_string+=fmt.Sprintf("%d,", result)
+        } 
+        marshal_string=marshal_string[:len(marshal_string)-1]
+        marshal_string+="], \"Status\": "+fmt.Sprintf("%d}", guess.Status)
+    }
+    return marshal_string+"]"
+}
+func (self PlayerForJson) MarshalJSON() ([]byte, error){
+    log.Println(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects)), nil)
+    return []byte(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects))), nil
+}
 type GuessResults int 
 const (
     Correct GuessResults=iota
@@ -34,6 +57,7 @@ const (
     CorrectGuess
     OutofGuesses
 )
+
 type PlayerForJson struct{
     NewGuesses []Guess
     NewEffects []Effects
@@ -83,6 +107,8 @@ func getGameInfo(r *http.Request)(error, *game, string){
     return nil, currentgame, player 
 }
 func AddNewEvent(w http.ResponseWriter, r *http.Request){
+    //log.Println(r)
+    log.Println("?")
     err, game, playerid:=getGameInfo(r)
     if err!=nil{
         log.Println(err)
@@ -93,7 +119,7 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
         log.Println(err)
         w.WriteHeader(http.StatusInternalServerError)
         return
-    }
+    } 
     var receivingplayer *player 
     if playerid==PLAYER_1{
         receivingplayer=&game.p2
@@ -102,7 +128,10 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
         receivingplayer=&game.p1 
         game.status.last_p2_signal<-struct{}{}
     }
-    event:=r.FormValue("event")
+    var event string
+    if r.FormValue("0")=="event"{
+        event=r.FormValue("1")
+    }
     if event!=""{
         eventnum, err:=strconv.Atoi(event)
         if err!=nil{
@@ -114,7 +143,10 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
         receivingplayer.NewEffects <- Effects(eventnum)
         return
     }
-    guessvalue:=r.FormValue("guess")
+    var guessvalue string
+    if r.FormValue("0")=="guess"{
+        guessvalue=r.FormValue("1")
+    }
     if guessvalue!=""{
         guess, guess_status, _:=strings.Cut(guessvalue, ",")
         guess_status_num, err:=strconv.Atoi(guess_status)
@@ -141,9 +173,10 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
             Status: GuessStatus(guess_status_num)})
         return
     }
+    log.Println("guess: ", r.FormValue("guess"), "event: ", r.FormValue("event"))
     w.WriteHeader(http.StatusBadRequest)
 }
-func CheckForEvents(w http.ResponseWriter, r *http.Request){
+func CheckForEvents(w http.ResponseWriter, r *http.Request){ 
     log.Println("checking")
     err, game, playerid:=getGameInfo(r)
     if err!=nil{
@@ -165,7 +198,7 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request){
         game.status.last_p2_signal<-struct{}{}
     }
     jsonbytes, err:=json.Marshal(makeJsonPlayer(checking_player))
-    log.Println(jsonbytes)
+    log.Printf("%s\n", jsonbytes)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusBadRequest)

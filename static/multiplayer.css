@@ -18,7 +18,7 @@
     flex-wrap: wrap;
     flex: 0;
 }
-.other-col{
+.other-column{
     display: flex;
     flex-direction: column;
     flex-basis: 100%;

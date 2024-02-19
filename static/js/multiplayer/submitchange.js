@@ -17,11 +17,11 @@ function renderGuesses(new_guesses){
     console.log(new_guesses);
     for (const guess of new_guesses){
         let guessHtml="<div class='other-row'>"
-        guessHtml+=getGuessResultHtmlWithClasses(guess.results, "other-column")+"</div>"
+        guessHtml+=getGuessResultHtmlWithClasses(guess.Results, "other-column")+"</div>"
         OtherGuessResultsDiv.innerHTML+=guessHtml 
-        if (guess.status==CorrectGuesses){ 
+        if (guess.Status==CorrectGuesses){ 
             OtherGuessResultsDiv.innerHTML=""
-        } else if (guess.status==OutOfGuesses){
+        } else if (guess.Status==OutOfGuesses){
             OtherGuessResultsDiv.innerHTML=""
         }
     }

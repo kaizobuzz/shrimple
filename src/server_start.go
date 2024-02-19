@@ -29,6 +29,7 @@ func Start_Server() {
 }
 
 func Initialize() {
+    multiplayer.IntializeMap()
 	GetPepper()
     if err:= shared.GetShrimpJson(); err!=nil{
         log.Fatal(err)
