@@ -84,7 +84,7 @@
             "name": "Sitka Shrimp",
             "habitat": "Saltwater",
             "length": 3.3,
-            "coloration": ["brown, green"],
+            "coloration": ["brown", "green"],
             "weight": null,
             "max_depth": 12
         },
