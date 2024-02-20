@@ -24,8 +24,8 @@ type player struct{
 }
 func give_default_player() player{
     return player{
-        NewEffects: make(chan Effects, 10),
-        NewGuesses: make(chan Guess, 20)}
+        NewEffects: make(chan Effects, 15),
+        NewGuesses: make(chan Guess, 45)}
 }
 type game struct{
     p1, p2 player

@@ -39,7 +39,7 @@ func (self PlayerForJson) MarshalJSON() ([]byte, error){
     log.Println(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects)), nil)
     return []byte(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects))), nil
 }
-type GuessResults int 
+type GuessResults int8 
 const (
     Correct GuessResults=iota
     Incorrect 
@@ -48,7 +48,7 @@ const (
     PartialEqual
     UnknownComparison
 )
-type Effects int 
+type Effects int8 
 const (
     GuessStatHide Effects=iota 
     TimeLimitMinus    
@@ -57,7 +57,7 @@ const (
     ShrimpGarbage
     BombParty
 )
-type GuessStatus int 
+type GuessStatus int8 
 const (
     Normal GuessStatus=iota
     CorrectGuess
