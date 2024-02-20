@@ -34,13 +34,12 @@ type game struct{
 }
 var ActiveGames map[string]*game
 var ActiveGamesMutex sync.Mutex
-
+var NextGameId string
 func removeGame(id string){
     ActiveGamesMutex.Lock() 
     defer ActiveGamesMutex.Unlock()
     delete(ActiveGames, id)
 }
-
 func checkPlayerActivity(signal chan struct{}, id string){
     Loop: for{
         select{
@@ -56,7 +55,8 @@ func checkActivity(status *ActiveStatus, gameid string){
     go checkPlayerActivity(status.last_p1_signal, gameid)
     go checkPlayerActivity(status.last_p2_signal, gameid)
 }
-func makeNewGame(new_game_id string){
+func makeNewGame(){
+    ActiveGamesMutex.Lock()
     defer ActiveGamesMutex.Unlock()
     new_game:=&game{
         p1: give_default_player(),
@@ -67,19 +67,18 @@ func makeNewGame(new_game_id string){
         },
         hasError: false,
     }
-    ActiveGames[new_game_id]=new_game
-    checkActivity(&new_game.status, new_game_id)
-}
-func GiveNewGameId(w http.ResponseWriter, r *http.Request){ 
-    var new_game_id string
-    new_game_id=fmt.Sprintf("%d", rand.Uint64());
-    ActiveGamesMutex.Lock()
-    for ActiveGames[new_game_id]!=nil{
-        new_game_id=fmt.Sprintf("%d", rand.Uint64());
+    ActiveGames[NextGameId]=new_game
+    checkActivity(&new_game.status, NextGameId)
+    for ActiveGames[NextGameId]!=nil{
+        NextGameId=fmt.Sprintf("%d", rand.Uint64())
     }
-    go makeNewGame(new_game_id)
+}
+func GiveNewGameId(w http.ResponseWriter, r *http.Request){  
+    new_game_id:=NextGameId
+    go makeNewGame()
     w.Write([]byte(new_game_id))     
 }
 func IntializeMap(){
     ActiveGames=make(map[string]*game)
+    NextGameId=fmt.Sprintf("%d", rand.Uint64());
 }
