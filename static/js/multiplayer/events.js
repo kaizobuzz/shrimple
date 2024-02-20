@@ -33,8 +33,12 @@ async function sendEvent(isguess, event){
  * @property {Number[]} NewEffects
 */
 async function receiveEvents(){
-    const response=await fetch("/api/v1/getevents"); 
-    const player=/**@type Player*/(await response.json());   
+    const response=await fetch("/api/v1/getevents");
+    const responsestring=await response.text();
+    if (responsestring=="timeout"){
+        window.location.replace("/timeout.html")
+    }
+    const player=/**@type Player*/JSON.parse(responsestring);   
     renderGuesses(player.NewGuesses)
     renderEffects(player.NewEffects);
 }
