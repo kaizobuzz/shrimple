@@ -1,16 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
     <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
+    <script src="/js/htmx.min.js"></script>
     <meta charset="UFT-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
-    <title>Shrimple</title>
+    <title>Shrimple Multiplayer info</title>
     <meta name="description" content="It's actually quite shrimple (wordle but shrimp) (multiplayer info)">
 </head>
 
 <body>
+    <div id="settings-bar">
+        <div id="settings">
+            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load" hx-target="this"
+            hx-swap="innerHTML"></div>
+        </div>
+    </div>
     <div id="start-info">
         <details>
             <summary>Shrimple Rules</summary>
@@ -71,3 +81,5 @@
     </div>
 
 </body>
+
+</html>

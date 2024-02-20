@@ -17,3 +17,80 @@ body {
 .new-link:active{
     color:#997f95;
 }
+#usercard {
+    float: right;
+    cursor: pointer;
+}
+#usercard:hover{
+    position: relative;
+    background-color: #595b60;
+}
+
+#settings-bar {
+    min-height: 1.5em;
+    background-color: #2d2e31;
+    min-width: 100%;
+    position: relative;
+    bottom: 0.5em;
+    padding-left: 2em;
+    padding-right: 2em;
+    right: 2em;
+}
+b{
+    font-size: 110%;
+}
+#settings {
+    float: right;
+}
+
+#start-info-open {
+    border-color: #C6C9CD;
+    color: #C6C9CD;
+    background-color: #2d2e31;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#start-info-open:hover {
+    background-color: #565860;
+}
+
+#start-info {
+    width: 32em;
+    position: absolute;
+    background-color: #565860;
+    z-index: 3;
+    transition: all 0.5s;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    text-align: left;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+
+}
+.pad {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+}
+h2{
+    text-align: center;
+}
+details {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+}
+
+summary {
+    font-size: 110%;
+    cursor: pointer;
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+}
+
+details[open] {
+    padding: 0.5em;
+}
+
