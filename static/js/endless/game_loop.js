@@ -8,7 +8,9 @@ async function startGameLoop(){
     CurrentGuesses=Game.num_guesses;
     while (Game.active){
         await sleep(FRAME_TIME) 
-        decrementTimer()
+        if (StartInfo.hidden){
+            decrementTimer()
+        }
         checkForGuesses()       
         for (const effect of NewEffects){
             effect.start_function();

@@ -11,10 +11,73 @@
 
 <body>
     <div id="settings-bar">
-        <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
-            hx-swap="innerHTML"></div>
+        <div id="settings">
+            <button id="start-info-open">&nbsp?&nbsp</button>&nbsp;
+            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
+                hx-swap="innerHTML"></div>
+        </div>
     </div>
     <h1>Endless</h1>
+    <div id="start-info">
+        <button id="start-info-close" class="close-button">x</button>
+        <details>
+            <summary>Shrimple Rules</summary>
+            You have 6 guesses to get the correct shrimp.<br>
+            The shrimp image under each field shows the
+            correctness of the field.<br>
+            <div class="row">
+                <div class="column"><img src="img/shrimpcorrect.png" /></div>
+                <div class="column">Field is correct</div>
+                <div class="column"><img src="img/shrimpincorrect.png" /></div>
+                <div class="column">Field is incorrect</div>
+                <div class="column"><img src="img/shrimptoobig.png" /></div>
+                <div class="column">Field is too big</div>
+            </div>
+            <div class="row">
+                <div class="column"><img src="img/shrimptoosmall.png" /></div>
+                <div class="column">Field is too small</div>
+                <div class="column"><img src="img/shrimppartialequal.png" /></div>
+                <div class="column">The daily shrimp shares some elements of this field with the guess shrimp</div>
+                <div class="column"><img src="img/shrimpunknown.png" /></div>
+                <div class="column">Either the guess shrimp or the daily shrimp's field is unknown</div>
+                <div class="column"><img src="img/shrimphide.png"></div>
+                <div class="column">Comparison is hidden</div>
+            </div>
+            <br>
+            In Endless Mode, try to get as many shrimps as you can<br>
+            until your lives run out.
+        </details>
+        <details>
+            <summary>Timer</summary>
+            There is a timer on the bottom that keeps moving.
+            The timer resets when you guess a shrimp.
+            If the timer runs out, a guess gets skipped.<br>
+            In Endless Mode, after each correct guess, the
+            timer permanently speeds up.
+        </details>
+        <details>
+            <summary>Effects</summary>
+            In Endless Mode, after each guess, you may get a 
+            random effect. <br>
+            The effect, if not instant, lasts 4 guesses.<br>
+            The effects can be of the following:<br>
+            <b>Guess Field Hide:</b> While this effect is active, each 
+            field of the shrimp has a chance of its comparison being hidden.<br>
+            <b>Bomb Party:</b> You are given a three letter prompt and you
+            must submit a shrimp that includes that prompt within 15
+            seconds or lose a life. Note that the prompt may include
+            parts of multiple words, eg. sts with Bay Gho<b>st S</b>hrimp.
+            The autofill is disabled while this effect is active.<br>
+            <b>Disabled Autofill:</b> The autofill is disabled while this
+            effect is active.<br>
+            <b>Garbage Shrimp:</b> Two of your shrimp guesses are done for you,
+            with them having 4 out of 6 of their comparisons being hidden.<br>
+            <b>Reduced Time Limit:</b> The timer turns red and the time limit is
+            reduced while this effect is active.
+
+        </details>
+    </div>
+
     <div id="guesses">
     </div>
     <div id="shrimp-search">
@@ -39,6 +102,7 @@
     <script src="/js/shared/autofill.js"></script>
     <script src="/js/shared/comparison.js"></script>
     <script src="/js/shared/submit.js"></script>
+    <script src="/js/shared/info.js"></script>
     <script src="/js/effects/bombparty.js"></script>
     <script src="/js/effects/effects.js"></script>
     <script src="/js/endless/game_loop.js"></script>

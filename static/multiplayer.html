@@ -11,8 +11,10 @@
 
 <body>
     <div id="settings-bar">
-        <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
+        <div id="settings">
+            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
             hx-swap="innerHTML"></div>
+        </div>
     </div>
     <h1>Multiplayer</h1>
     <div id="guesses">

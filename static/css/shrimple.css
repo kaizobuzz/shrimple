@@ -1,7 +1,8 @@
-#usercard{
+#usercard {
     float: right;
 }
-#settings-bar{
+
+#settings-bar {
     min-height: 1.5em;
     background-color: #2d2e31;
     min-width: 100%;
@@ -11,70 +12,89 @@
     padding-right: 2em;
     right: 2em;
 }
-#settings{
+
+#settings {
     float: right;
 }
-#start-info-open{
+
+#start-info-open {
     border-color: #C6C9CD;
     color: #C6C9CD;
     background-color: #2d2e31;
     border-radius: 50%;
     cursor: pointer;
 }
-#start-info-open:hover{
+
+#start-info-open:hover {
     background-color: #565860;
 }
-#start-info{
+
+#start-info {
     width: 32em;
     position: absolute;
-    height: 30em;
     background-color: #565860;
-    z-index: 3; 
+    z-index: 3;
     transition: all 0.5s;
     left: 50%;
     transform: translate(-50%, 0%);
-}
+    text-align: left;
+    border: 1px solid #aaa;
+    border-radius: 4px;
 
+}
+.pad {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+}
+h2{
+    text-align: center;
+}
 details {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  padding: 0.5em 0.5em 0;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
 }
 
 summary {
-  font-weight: bold;
-  margin: -0.5em -0.5em 0;
-  padding: 0.5em;
+    cursor: pointer;
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
 }
 
 details[open] {
-  padding: 0.5em;
+    padding: 0.5em;
 }
+
 .form-control {
     padding-left: 0.5em;
     padding-right: 0.5em;
-    padding-top: 0.3em; 
+    padding-top: 0.3em;
     padding-bottom: 0.3em;
-    background-color: #535054; 
+    background-color: #535054;
     border-color: #4B484C;
     color: #C6C9CD;
     width: 23em;
-    font-size: large; 
+    font-size: large;
     font-family: "Mooli", sans-serif;
 }
+
 #player-input {
     display: block;
     text-align: center;
 }
+
 #player-guess {
     display: inline-block;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
 }
-#input-submit{
+
+#input-submit {
     font-family: "Mooli", sans-serif;
-    background-color: #92cea0; 
+    background-color: #92cea0;
     border-color: #92cea0;
     position: relative;
     left: 15em;
@@ -82,17 +102,21 @@ details[open] {
     font-size: large;
     border-radius: 0.25em;
 }
-#input-submit:hover{
+
+#input-submit:hover {
     background-color: #aedfba;
     border-color: #aedfba;
 }
-#input-submit:disabled{
+
+#input-submit:disabled {
     background-color: #b5b5b5;
     border-color: #b5b5b5;
 }
+
 ul {
     list-style-type: none;
 }
+
 li {
     background-color: #515052;
     opacity: 0.9;
@@ -101,9 +125,11 @@ li {
     padding-top: 0.2em;
     padding-bottom: 0.2em;
 }
-li:hover{
+
+li:hover {
     background-color: #676668;
 }
+
 #autofill-results {
     cursor: pointer;
     text-align: left;
@@ -116,18 +142,19 @@ li:hover{
     right: 1.05em;
 }
 
-.shrimp-info{
+.shrimp-info {
     text-align: center;
     font-size: small;
     color: #acacaf;
 }
 
-#guesses{
-   margin-left: auto;
-   margin-right: auto;
-   width: 36em;
+#guesses {
+    margin-left: auto;
+    margin-right: auto;
+    width: 36em;
 }
-.tooltip .tooltip_text{
+
+.tooltip .tooltip_text {
     visibility: hidden;
     width: 10em;
     text-align: center;
@@ -140,10 +167,12 @@ li:hover{
     z-index: 1;
     position: absolute;
 }
-.tooltip:hover .tooltip_text{
+
+.tooltip:hover .tooltip_text {
     visibility: visible;
     opacity: 1;
 }
+
 .row {
     text-align: center;
     display: flex;
@@ -152,6 +181,7 @@ li:hover{
     flex-wrap: wrap;
     flex: 0;
 }
+
 .column {
     display: flex;
     flex-direction: column;
@@ -162,35 +192,40 @@ li:hover{
     margin-top: auto;
     margin-bottom: auto;
 }
+
 .close-button {
     border-radius: 25%;
     background-color: #fc5a52;
     border-color: #fc5a52;
     float: right;
 }
+
 .close-button:hover {
     background-color: #fc766f;
     border-color: #fc766f;
 }
-#results-open{
+
+#results-open {
     font-family: "Mooli", sans-serif;
     position: relative;
     top: 2em;
     font-size: large;
     border-radius: 0.5em;
-    background-color: #535054; 
-    border-color: #535054; 
+    background-color: #535054;
+    border-color: #535054;
     color: #C6C9CD;
 }
+
 #results-open:hover {
     background-color: #736f74;
     border-color: #736f74;
 }
-#final-results{
+
+#final-results {
     width: 36em;
     z-index: 2;
     position: absolute;
-    border-color: #676668; 
+    border-color: #676668;
     background-color: #3b3a3b;
     color: #C6C9CD;
     top: 50%;
@@ -198,7 +233,8 @@ li:hover{
     transform: translate(-50%, -50%);
     padding: 0.2em;
 }
-#clipboard-message{
+
+#clipboard-message {
     width: 16em;
     background-color: #242324;
     z-index: 3;
@@ -208,10 +244,12 @@ li:hover{
     margin-right: auto;
     bottom: 0.3em;
 }
+
 mark {
     background-color: transparent;
     color: #FF7A7A;
 }
+
 strong {
     font-size: 110%;
 }
