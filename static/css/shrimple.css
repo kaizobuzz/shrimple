@@ -69,7 +69,19 @@ summary {
 details[open] {
     padding: 0.5em;
 }
-
+#start-multiplayer{
+    text-align: center;
+    font-family: "Mooli", sans-serif;
+    font-size: large;
+    border-radius: 25%;  
+    background-color: #535054;
+    border-color: #535054; 
+    color: #C6C9CD;
+}
+#start-multiplayer:hover{
+    background-color: #79757a;
+    border-color: #79757a;
+}
 .form-control {
     padding-left: 0.5em;
     padding-right: 0.5em;
