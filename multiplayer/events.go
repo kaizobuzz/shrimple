@@ -36,7 +36,6 @@ func MarshalGuesses(guesses []Guess) (string){
     return marshal_string+"]"
 }
 func (self PlayerForJson) MarshalJSON() ([]byte, error){
-    log.Println(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects)), nil)
     return []byte(fmt.Sprintf("{\"NewGuesses\": %s, \"NewEffects\": %s}", MarshalGuesses(self.NewGuesses), MarshalEffects(self.NewEffects))), nil
 }
 type GuessResults int8 

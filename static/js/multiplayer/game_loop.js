@@ -3,6 +3,7 @@ async function startGameLoop(){
     let iterator=0;
     CurrentLives=Game.lives;
     CurrentGuesses=Game.num_guesses;
+    let current_time=performance.now();
     while (Game.active){
         await sleep(FRAME_TIME)
         iterator+=1;
@@ -10,7 +11,7 @@ async function startGameLoop(){
             iterator=0;
             receiveEvents();
         }
-        decrementTimer()
+        current_time=decrementTimerRTA(current_time);
         checkForGuesses()       
         for (const effect of NewEffects){
             effect.start_function();
