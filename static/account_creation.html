@@ -9,27 +9,30 @@
 </head>
 
 <body>
-    <h2> Create Your Account </h2>
-    <div class="login">
-        <form class="login-form" hx-post="/api/v1/signup" hx-target="#signup-status-message">
-            <label>Username:</label>
-            <br>
-            <input class="acc-field" name="username" type="text" placeholder="username" required />
-            <br><br>
-            <label>Password:</label>
-            <br>
-            <input class="acc-field" name="password" type="password" placeholder="password" required />
-            <br><br>
-            <label>Confirm Password:</label>
-            <br>
-            <input class="acc-field" name="confirmpassword" type="password" placeholder="confirm password" required />
-            <br><br>
-            <input class="submit-button" type="submit" value="Create Account">
-        </form>
+    <div class="main-info">
+        <h2> Create Your Account </h2>
+        <div class="login">
+            <form class="login-form" hx-post="/api/v1/signup" hx-target="#signup-status-message">
+                <label>Username:</label>
+                <br>
+                <input class="acc-field" name="username" type="text" placeholder="username" required />
+                <br><br>
+                <label>Password:</label>
+                <br>
+                <input class="acc-field" name="password" type="password" placeholder="password" required />
+                <br><br>
+                <label>Confirm Password:</label>
+                <br>
+                <input class="acc-field" name="confirmpassword" type="password" placeholder="confirm password"
+                    required />
+                <br><br>
+                <input class="submit-button" type="submit" value="Create Account">
+            </form>
+        </div>
+        <div id="signup-status-message"></div>
+        <br>Already have an account?<br>
+        <a class="new-link" href="login.html">Sign in</a>
     </div>
-    <div id="signup-status-message"></div>
-    <br>Already have an account?<br>
-    <a class="new-link" href="login.html">Sign in</a>
 </body>
 
 </html>

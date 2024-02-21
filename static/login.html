@@ -9,26 +9,33 @@
 </head>
 
 <body>
-    <h2>login screen !!</h2>
-        <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this" hx-swap="innerHTML"></div>
-    <div class="login">
-        <form class="login-form" hx-post="/api/v1/login" hx-target="#login-status-message">
-            <label>Username:</label>
-            <br>
-            <input class="acc-field" name="username" type="text" placeholder="username" required />
-            <br><br>
-            <label>Password:</label>
-            <br>
-            <input class="acc-field" name="password" type="password" placeholder="password" required />
-            <br><br>
-            <input class="submit-button" id="login-button" value="Login" type="submit" />
-        </form>
+    <div id="settings-bar">
+        <div id="settings">
+            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
+                hx-swap="innerHTML"></div>
+        </div>
     </div>
-    <div id="login-status-message"></div>
+    <div class="main-info">
+        <h2>login screen !!</h2>
+        <div class="login" id="login">
+            <form class="login-form" hx-post="/api/v1/login" hx-target="#login">
+                <label>Username:</label>
+                <br>
+                <input class="acc-field" name="username" type="text" placeholder="username" required />
+                <br><br>
+                <label>Password:</label>
+                <br>
+                <input class="acc-field" name="password" type="password" placeholder="password" required />
+                <br><br>
+                <input class="submit-button" id="login-button" value="Login" type="submit" />
+            </form>
+            <div id="login-status-message"></div>
+        </div>
     <br>
     Don't have an account?
     <br>
     <a class="new-link" href="account_creation.html">Sign up now!</a>
+    </div>
 </body>
 
 </html>

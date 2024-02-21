@@ -82,7 +82,7 @@ func CreateCookie(username string) (*http.Cookie, error) {
 func LoginHandler(w http.ResponseWriter, r *http.Request) { 
     if err:=r.ParseForm(); err!=nil{
         log.Println(err)
-        err := templates.UseStringTemplate("Failed to parse form", templates.ErrorMessage, &w)
+        err := templates.UseStringTemplate("Failed to parse form", templates.ErrorLoginForm, &w)
         if err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusInternalServerError)
@@ -93,7 +93,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     var password string = r.FormValue("password")
 
     if !verifyPassword(username, password){
-        err := templates.UseStringTemplate("Incorrect Credentials", templates.ErrorMessage, &w)
+        err := templates.UseStringTemplate("Incorrect Credentials", templates.ErrorLoginForm, &w)
         if err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusInternalServerError)
@@ -104,7 +104,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     // generate token
     cookie, err := CreateCookie(username)
     if err != nil {
-        err := templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
+        err := templates.UseStringTemplate(err.Error(), templates.ErrorLoginForm, &w)
         if err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusInternalServerError)

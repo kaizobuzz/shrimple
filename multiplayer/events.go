@@ -164,6 +164,7 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request){
         guess_results:=strings.Split(guess, " ")
         var new_guess [NUM_SHRIMP_FIELDS]GuessResults
         for i, guess_result:=range guess_results{
+            //TODO oob error could kill server
             guess_result_num, err:=strconv.Atoi(guess_result)
             if err!=nil{
                 log.Println(err)

@@ -1,14 +1,20 @@
+.main-info{
+    background-color: #2c2c2e;
+    width: 24em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-top: 2em;
+    padding-bottom: 2em;
+    border-width: 0.2em;
+    border: solid 1d1d1f;
+}
 .error-message{
-    color: #e07979;
+    color: #ee3d3d;
 }
 .success-message{
     color: #92cea0;; 
-}
-.row{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-top: 10px;
 }
 .acc-field{
     font-size: large;
@@ -29,8 +35,8 @@
     color: #C6C9CD;
 }
 #login-button{
-    padding-left: 5.3em;
-    padding-right: 5.3em;
+    object-position: 50% 50%;
+    width: 13em;
 }
 .submit-button:hover{
     background-color: #807387; 
