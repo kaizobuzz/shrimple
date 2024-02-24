@@ -23,20 +23,20 @@ type ClientPlayer struct {
 }
 
 const (
-	NewGuess       string = "newGuess"
-	NewEffect      string = "newEffect"
-	PlayerList     string = "playerList"
-	PlayerDied     string = "playerDied"
-	Join           string = "join"
-	Disconnect     string = "disconnect"
-	Ready          string = "ready"
-	Unready        string = "unready"
-	GameStart      string = "gameStart"
-	GetEvents      string = "getEvents"
-	GetState       string = "getState"
-	NoContent      string = "noContent"
-	RawText        string = "rawText"
-	NestedMessages string = "nestedMessages"
+	NewGuess       int = iota
+	NewEffect      
+	PlayerList     
+	PlayerDied     
+	Join           
+	Disconnect     
+	Ready          
+	Unready        
+	GameStart      
+	GetEvents      
+	GetState       
+	NoContent      
+	RawText        
+	NestedMessages 
 )
 
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {

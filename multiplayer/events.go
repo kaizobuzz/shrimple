@@ -85,7 +85,7 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statuscode)
 		return
 	}
-	if message.Type != "join" {
+	if message.Type != Join {
 		log.Println("message type: ", message.Type, " is not join")
 		w.WriteHeader(http.StatusBadRequest)
 		return
