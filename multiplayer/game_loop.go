@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"shrimple/src/shared"
 	"slices"
 	"time"
 )
@@ -100,6 +101,106 @@ func addPlayer(game *game, message *Message) MessageResult {
 		Statuscode: http.StatusOK,
 	}
 }
+func joinResponse(game *game, message *Message) MessageResult {
+	if game.HasStarted {
+		return MessageResult{Message: nil,
+			Err:        errors.New("Game already started"),
+			Statuscode: http.StatusConflict,
+		}
+	}
+	response := addPlayer(game, message)
+	if response.Err == nil {
+		message.Id = response.Message.Jsondata
+		sendEventToOtherPlayers(game, len(game.Players)-1, message)
+		//TODO assumptions ?
+	}
+	return response
+}
+func sendBasicEvents(game *game, message *Message) MessageResult {
+	player_index, err := getPlayerIndex(game, message)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusBadRequest}
+	}
+	sendEventToOtherPlayers(game, player_index, message)
+	return MessageResult{
+		Message: &Message{Type: NoContent}, Err: nil,
+		Statuscode: http.StatusNoContent}
+}
+func getStateResponse(game *game, message *Message) MessageResult {
+	current_players := make([]ClientPlayer, 0)
+	player_index, err := getPlayerIndex(game, message)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusBadRequest}
+	}
+	for i, player := range game.Players {
+		if i != player_index {
+			current_players = append(current_players, ClientPlayer{
+				Name: player.DisplayName, IsReady: player.IsReady})
+		}
+	}
+	current_players_json, err := json.Marshal(current_players)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusInternalServerError}
+	}
+	return MessageResult{Message: &Message{
+		Type:     PlayerList,
+		Jsondata: string(current_players_json),
+	},
+		Err:        nil,
+		Statuscode: http.StatusOK}
+
+}
+func getEventsResponse(game *game, message *Message) MessageResult {
+	player_index, err := getPlayerIndex(game, message)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusBadRequest}
+	}
+	player := game.Players[player_index]
+	messages_json, err := json.Marshal(player.Messages)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusInternalServerError}
+	}
+	return MessageResult{Message: &Message{
+		Type:     NestedMessages,
+		Jsondata: string(messages_json),
+	},
+		Err:        nil,
+		Statuscode: http.StatusOK,
+	}
+}
+func readyUnreadyResponse(game *game, message *Message) MessageResult {
+	if game.HasStarted {
+		return MessageResult{Message: nil,
+			Err:        errors.New("Game already started"),
+			Statuscode: http.StatusConflict,
+		}
+	}
+	player_index, err := getPlayerIndex(game, message)
+	if err != nil {
+		return MessageResult{Message: nil, Err: err,
+			Statuscode: http.StatusBadRequest}
+	}
+	sendEventToOtherPlayers(game, player_index, message)
+	return MessageResult{Message: &Message{Type: NoContent}, Err: err,
+		Statuscode: http.StatusNoContent}
+}
+func checkIfAllReady(game *game, message *Message) {
+	player_index, _ := getPlayerIndex(game, message)
+	game.Players[player_index].IsReady = true
+	if !slices.ContainsFunc(game.Players, func(p *player) bool {
+		return p.IsReady == false
+	}) && len(game.Players) >= 2 {
+		game.HasStarted = true
+		sendEventToOtherPlayers(game, -1, &Message{
+			Type: GameStart,
+		})
+	}
+}
 func checkActivity(game *game) {
 	var time_check time.Time = time.Now()
 Loop:
@@ -113,132 +214,34 @@ Loop:
 		}
 		switch message.Type {
 		case NewGuess, NewEffect, PlayerDied:
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-				break
-			}
-			sendEventToOtherPlayers(game, player_index, message)
-			game.Responses <- MessageResult{
-				Message: &Message{Type: NoContent}, Err: nil,
-				Statuscode: http.StatusNoContent}
+			game.Responses <- sendBasicEvents(game, message)
 		case Join:
-			if game.HasStarted {
-				game.Responses <- MessageResult{Message: nil,
-					Err:        errors.New("Game already started"),
-					Statuscode: http.StatusConflict,
-				}
-				break
-			}
-			response := addPlayer(game, message)
+			game.Responses <- joinResponse(game, message)
+		case Disconnect:
+			response := sendBasicEvents(game, message)
 			if response.Err == nil {
-				message.Id = response.Message.Jsondata
-				sendEventToOtherPlayers(game, len(game.Players)-1, message)
-				//TODO assumptions ?
+				player_index, _ := getPlayerIndex(game, message)
+				game.Players = shared.UnstableDeleteIndex(game.Players, player_index)
 			}
 			game.Responses <- response
-		case Disconnect:
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-				break
-			}
-			sendEventToOtherPlayers(game, player_index, message)
-			game.Responses <- MessageResult{Message: &Message{Type: NoContent}, Err: err,
-				Statuscode: http.StatusNoContent}
 		case Ready:
-			if game.HasStarted {
-				game.Responses <- MessageResult{Message: nil,
-					Err:        errors.New("Game already started"),
-					Statuscode: http.StatusConflict,
-				}
+			response := readyUnreadyResponse(game, message)
+			if response.Err == nil {
+				checkIfAllReady(game, message)
 			}
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-				break
-			}
-			sendEventToOtherPlayers(game, player_index, message)
-			//Same functionality as below until this point
-			game.Players[player_index].IsReady = true
-			if !slices.ContainsFunc(game.Players, func(p *player) bool {
-				return p.IsReady == false
-			}) {
-				game.HasStarted = true
-				sendEventToOtherPlayers(game, -1, &Message{
-					Type: GameStart,
-				})
-			}
-			game.Responses <- MessageResult{Message: &Message{Type: NoContent}, Err: err,
-				Statuscode: http.StatusNoContent}
+			game.Responses <- response
 		case Unready:
-			if game.HasStarted {
-				game.Responses <- MessageResult{Message: nil,
-					Err:        errors.New("Game already started"),
-					Statuscode: http.StatusConflict,
-				}
+			response := readyUnreadyResponse(game, message)
+			if response.Err != nil {
+				player_index, _ := getPlayerIndex(game, message)
+				game.Players[player_index].IsReady = false
 			}
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-				break
-			}
-			sendEventToOtherPlayers(game, player_index, message)
-			game.Players[player_index].IsReady = false
-			game.Responses <- MessageResult{Message: &Message{Type: NoContent}, Err: err,
-				Statuscode: http.StatusNoContent}
+			game.Responses <- response
 		case GetState:
-			current_players := make([]ClientPlayer, 0)
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-			}
-			for i, player := range game.Players {
-				if i != player_index {
-					current_players = append(current_players, ClientPlayer{
-						Name: player.DisplayName, IsReady: player.IsReady})
-				}
-			}
-			current_players_json, err := json.Marshal(current_players)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusInternalServerError}
-				break
-			}
-			game.Responses <- MessageResult{Message: &Message{
-				Type:     PlayerList,
-				Jsondata: string(current_players_json),
-			},
-				Err:        nil,
-				Statuscode: http.StatusOK}
+			game.Responses <- getStateResponse(game, message)
 		case GetEvents:
-			player_index, err := getPlayerIndex(game, message)
-			if err != nil {
-				game.Responses <- MessageResult{Message: nil, Err: err,
-					Statuscode: http.StatusBadRequest}
-                break
-			}
-            player:=game.Players[player_index]
-            messages_json, err:=json.Marshal(player.Messages)
-            if err!=nil{
-                game.Responses <- MessageResult{Message: nil, Err: err,
-                    Statuscode: http.StatusInternalServerError}
-                break
-            }
-            game.Responses <- MessageResult{Message: &Message{
-                Type: NestedMessages,
-                Jsondata: string(messages_json),
-            },
-                Err: nil,
-                Statuscode: http.StatusOK,
-            }
+			game.Responses <- getEventsResponse(game, message)
 		}
-
 		if time.Since(time_check) > time.Second*30 {
 			time_check = time.Now()
 			checkPlayerActivity(game)

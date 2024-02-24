@@ -63,11 +63,6 @@ func getGameId(r *http.Request) (*game, error) {
 	//maybe should use 404 instead?
 	return currentgame, nil
 }
-func getPlayerCopy(game *game) []*player {
-	game_copy := make([]*player, 0)
-	_ = copy(game_copy, game.Players)
-	return game_copy
-}
 func getRequestInfo(
 	r *http.Request,
 ) (game *game, message *Message, err error, statuscode int) {
@@ -113,7 +108,6 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response.Message.Jsondata))
 }
 
-
 func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	game, message, err, statuscode := getRequestInfo(r)
 	if err != nil {
@@ -140,24 +134,23 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request) {
-	game, _, err, statuscode := getRequestInfo(r)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(statuscode)
-		return
-	}
-	log.Println(game)
-	/*receiving_player := game.Players[player_index]
-		new_messages := make([]Message, 0, len(receiving_player.Messages))
-	Loop:
-		for {
-			select {
-			case new_message := <-receiving_player.Messages:
-				new_messages = append(new_messages, *new_message)
-			default:
-				break Loop
-			}
-		}
-		json_response, err := json.Marshal(new_messages)
-		w.Write(json_response)*/
+	game, message, err, statuscode := getRequestInfo(r)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(statuscode)
+        return
+    }
+    game.Messages <- message 
+    response := <-game.Responses
+    if response.Err != nil {
+        log.Println(response.Err)
+        w.WriteHeader(response.Statuscode)
+        return
+    }
+    if response.Message.Type!=NestedMessages{
+        log.Println("response message type: ", response.Message.Type, " is not ", NestedMessages)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+    w.Write([]byte(response.Message.Jsondata))
 }

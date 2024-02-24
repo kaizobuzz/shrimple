@@ -7,15 +7,9 @@ import (
 	"log"
 	"net/http"
 	"slices"
+    "shrimple/src/shared"
 )
-func unstableDelete[T comparable](slice []T, value T)([]T, error){
-    index:=slices.Index(slice, value)
-    if (index==-1){
-        return slice, errors.New(fmt.Sprint("value: ", value, "not found in slice: ", slice))
-    }
-    slice[index]=slice[len(slice)-1]
-    return slice[:len(slice)-1], nil
-}
+
 func getCurrentUser(r *http.Request) (user *User, err error){
     username:=LoggedInUser(r)
     if username==nil{
@@ -88,13 +82,13 @@ func acceptFriendRequest(w http.ResponseWriter, r *http.Request){
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    receiving_user.IncomingFriendRequests, err=unstableDelete(receiving_user.IncomingFriendRequests, sending_user.Id)
+    receiving_user.IncomingFriendRequests, err=shared.UnstableDelete(receiving_user.IncomingFriendRequests, sending_user.Id)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusConflict)
         return
     }
-    sending_user.OutgoingFriendRequests, err=unstableDelete(sending_user.OutgoingFriendRequests, receiving_user.Id)
+    sending_user.OutgoingFriendRequests, err=shared.UnstableDelete(sending_user.OutgoingFriendRequests, receiving_user.Id)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusConflict)
