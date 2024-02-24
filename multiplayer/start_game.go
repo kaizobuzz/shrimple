@@ -20,7 +20,7 @@ type Guess struct {
 	Status  GuessStatus
 }
 type player struct {
-	Messages    chan *Message
+	Messages    []*Message
 	DisplayName string
 	Userid      string
 	LastTime    time.Time
@@ -30,12 +30,13 @@ type player struct {
 
 func getNewEmptyPlayer() player {
 	return player{
-		Messages: make(chan *Message, 40),
+		Messages: make([]*Message, 40),
 		LastTime: time.Now(),
 	}
 }
 
 type game struct {
+    Id         string
 	Players    []*player
 	HasError   bool
 	HasStarted bool
@@ -56,6 +57,7 @@ func makeNewGame() {
 	ActiveGamesLock.Lock()
 	defer ActiveGamesLock.Unlock()
 	new_game := &game{
+        Id:       NextGameId,
 		Players:  make([]*player, 0),
 		HasError: false,
 		Messages: make(chan *Message),
