@@ -8,10 +8,10 @@ import (
 
 var UserMap map[string]*User
 
-func GetUserByName(username string) *User{
-    // exists to abstract over what variable is used to index into UserMap 
-    // for a planned change to indexing by id
-    return UserMap[username]
+func GetUserByName(username string) *User {
+	// exists to abstract over what variable is used to index into UserMap
+	// for a planned change to indexing by id
+	return UserMap[username]
 }
 
 type User struct {
@@ -25,25 +25,27 @@ type User struct {
 }
 
 func CreateUser(username, password string) error {
-    if UsernameTaken(username){
-        return errors.New("Account already exists with that name")
-    }
-    hash := hashPassword(username, password)   
-    UserMap[username]=&User{
-        Username: username,
-        Id: int64(len(UserMap)), //should be a mutex to avoid duplicate ids but oh well
-        PasswordHash: hash,
-        Experience: 0,
-        Friends: []int64{},
-        IncomingFriendRequests: []int64{},
-        OutgoingFriendRequests: []int64{},
-    }
-    err := WriteUsersToFile()
-    if err != nil {
-        delete(UserMap, username)
-        return err
-    }
-    return nil
+	if UsernameTaken(username) {
+		return errors.New("Account already exists with that name")
+	}
+	hash := hashPassword(username, password)
+	UserMap[username] = &User{
+		Username: username,
+		Id: int64(
+			len(UserMap),
+		), //should be a mutex to avoid duplicate ids but oh well
+		PasswordHash:           hash,
+		Experience:             0,
+		Friends:                []int64{},
+		IncomingFriendRequests: []int64{},
+		OutgoingFriendRequests: []int64{},
+	}
+	err := WriteUsersToFile()
+	if err != nil {
+		delete(UserMap, username)
+		return err
+	}
+	return nil
 }
 
 func serializeUser(user User) (*[]byte, error) {
@@ -142,7 +144,7 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
-    UserMap = make(map[string]*User)
+	UserMap = make(map[string]*User)
 	var jsonuserlist []jsonUser
 
 	file, err := os.ReadFile("data/users.json")
@@ -162,10 +164,8 @@ func ReadUsersFromFile() error {
 }
 
 func UsernameTaken(username string) bool {
-    if GetUserByName(username) != nil {
-        return true
-    }
-    return false
+	if GetUserByName(username) != nil {
+		return true
+	}
+	return false
 }
-
-

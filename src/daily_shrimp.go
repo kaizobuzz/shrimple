@@ -7,17 +7,16 @@ import (
 
 	//"io"
 	"math/rand"
+	"shrimple/src/shared"
 	"time"
-    "shrimple/src/shared"
 )
-
 
 func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 	mode := r.URL.Query().Get("mode")
 	u := &url.URL{}
 	err := u.UnmarshalBinary([]byte(r.Referer()))
 	if err != nil {
-        log.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
