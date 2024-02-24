@@ -95,13 +95,17 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 	if response.Err != nil {
 		log.Println(response.Err)
 		w.WriteHeader(response.Statuscode)
-        if response.Statuscode==http.StatusConflict{
-            w.Write([]byte(response.Err.Error()))
-        }
+		if response.Statuscode == http.StatusConflict {
+			w.Write([]byte(response.Err.Error()))
+		}
 		return
 	}
 	if response.Message.Type != RawText {
-		log.Println("response message type: ", response.Message.Type, " for joining is not raw text")
+		log.Println(
+			"response message type: ",
+			response.Message.Type,
+			" for joining is not raw text",
+		)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -135,22 +139,22 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request) {
 	game, message, err, statuscode := getRequestInfo(r)
-    if err!=nil{
-        log.Println(err)
-        w.WriteHeader(statuscode)
-        return
-    }
-    game.Messages <- message 
-    response := <-game.Responses
-    if response.Err != nil {
-        log.Println(response.Err)
-        w.WriteHeader(response.Statuscode)
-        return
-    }
-    if response.Message.Type!=NestedMessages{
-        log.Println("response message type: ", response.Message.Type, " is not ", NestedMessages)
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    w.Write([]byte(response.Message.Jsondata))
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(statuscode)
+		return
+	}
+	game.Messages <- message
+	response := <-game.Responses
+	if response.Err != nil {
+		log.Println(response.Err)
+		w.WriteHeader(response.Statuscode)
+		return
+	}
+	if response.Message.Type != NestedMessages {
+		log.Println("response message type: ", response.Message.Type, " is not ", NestedMessages)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte(response.Message.Jsondata))
 }
