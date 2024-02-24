@@ -170,6 +170,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 		return MessageResult{Message: nil, Err: err,
 			Statuscode: http.StatusInternalServerError}
 	}
+    player.Messages = make([]*Message, 0)
 	return MessageResult{Message: &Message{
 		Type:     NestedMessages,
 		Jsondata: string(messages_json),
