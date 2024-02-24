@@ -40,8 +40,10 @@ const (
 )
 
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
-	player_username := game.Players[playerindex].DisplayName
-	message.Id = player_username
+    if playerindex!=-1{
+	    player_displayname := game.Players[playerindex].DisplayName
+	    message.Id = player_displayname
+    }
 	for i, player := range game.Players {
 		if i != playerindex {
 			player.Messages = append(player.Messages, message)
@@ -62,9 +64,13 @@ func getPlayerIndex(game *game, message *Message) (int, error) {
 	return player_index, nil
 }
 func checkPlayerActivity(game *game) {
-	for _, player := range game.Players {
+	for i, player := range game.Players {
 		if time.Since(player.LastTime) > time.Minute {
-
+            sendEventToOtherPlayers(game, -1, &Message{
+                Type: Disconnect,
+                Id: player.DisplayName,
+            })
+            game.Players=shared.UnstableDeleteIndex(game.Players, i)
 		}
 	}
 }
@@ -151,7 +157,6 @@ func getStateResponse(game *game, message *Message) MessageResult {
 	},
 		Err:        nil,
 		Statuscode: http.StatusOK}
-
 }
 func getEventsResponse(game *game, message *Message) MessageResult {
 	player_index, err := getPlayerIndex(game, message)

@@ -124,13 +124,22 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	if response.Err != nil {
 		log.Println(response.Err)
 		w.WriteHeader(response.Statuscode)
+        if response.Statuscode==http.StatusConflict{
+            w.Write([]byte(response.Err.Error()))
+        }
 		return
 	}
 	switch response.Message.Type {
 	case NoContent:
 		w.WriteHeader(http.StatusNoContent)
 		return
-	//TODO
+    case PlayerList:
+        response_json, err:=json.Marshal(response.Message)
+        if err!=nil{
+            log.Println(err)
+            w.WriteHeader(http.StatusInternalServerError)
+        }
+        w.Write(response_json)
 	default:
 		log.Println("response message type: ", response.Message.Type, " is not valid")
 		w.WriteHeader(http.StatusBadRequest)
