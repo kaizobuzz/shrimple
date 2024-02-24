@@ -20,4 +20,10 @@ async function startGameLoop(){
         NewEffects=[];
     }
 }
+/**@param {string} response_string  */
+function checkTimeout(response_string){
+    if (response_string=="timeout"){
+        window.location.replace("/timeout.html")
+    }
+}
 

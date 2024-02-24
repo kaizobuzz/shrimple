@@ -138,6 +138,7 @@ func LoggedInUser(r *http.Request) (*string) {
 
     if !valid {
         fmt.Print("invalid session token")
+        return nil
     }
 
     return username
