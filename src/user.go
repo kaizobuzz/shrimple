@@ -4,13 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+    "sync"
 )
 
 var UserMap map[string]*User
+var UserMapLock sync.Mutex
 
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
 	// for a planned change to indexing by id
+    UserMapLock.Lock()
+    defer UserMapLock.Unlock()
 	return UserMap[username]
 }
 
@@ -29,6 +33,7 @@ func CreateUser(username, password string) error {
 		return errors.New("Account already exists with that name")
 	}
 	hash := hashPassword(username, password)
+    UserMapLock.Lock()
 	UserMap[username] = &User{
 		Username: username,
 		Id: int64(
@@ -40,9 +45,12 @@ func CreateUser(username, password string) error {
 		IncomingFriendRequests: []int64{},
 		OutgoingFriendRequests: []int64{},
 	}
+    UserMapLock.Unlock()
 	err := WriteUsersToFile()
 	if err != nil {
+        UserMapLock.Lock()
 		delete(UserMap, username)
+        UserMapLock.Unlock()
 		return err
 	}
 	return nil
@@ -118,9 +126,12 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 
 func WriteUsersToFile() error {
 	var userlist []User
+    UserMapLock.Lock()
 	for _, value := range UserMap {
 		userlist = append(userlist, *value)
 	}
+    UserMapLock.Unlock()
+    //TODO might be a problem later?
 	bytes, err := json.Marshal(userlist)
 	if err != nil {
 		return err
@@ -144,6 +155,8 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
+    UserMapLock.Lock()
+    defer UserMapLock.Unlock()
 	UserMap = make(map[string]*User)
 	var jsonuserlist []jsonUser
 
