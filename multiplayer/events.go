@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"time"
 )
 
 type GuessResults int8
@@ -101,26 +100,19 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 	if response.Err != nil {
 		log.Println(response.Err)
 		w.WriteHeader(response.Statuscode)
+        if response.Statuscode==http.StatusConflict{
+            w.Write([]byte(response.Err.Error()))
+        }
 		return
 	}
 	if response.Message.Type != RawText {
-		log.Println("response message type: ", RawText, " is not raw text")
+		log.Println("response message type: ", response.Message.Type, " for joining is not raw text")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Write([]byte(response.Message.Jsondata))
 }
-func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
-	player_username := game.Players[playerindex].DisplayName
-	message.Id = player_username
-	for i, player := range game.Players {
-		if i != playerindex {
-			player.Messages <- message
-		} else {
-			player.LastTime = time.Now()
-		}
-	}
-}
+
 
 func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	game, message, err, statuscode := getRequestInfo(r)
