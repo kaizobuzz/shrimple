@@ -1,4 +1,9 @@
 //@ts-check
+
+/**@typedef  PlayerListItem
+ *@property {string} Name 
+ *@property {boolean} IsReady
+ * */
 async function waitForGameStart(){ 
     while (true){
         await sleep(1); 
@@ -13,18 +18,13 @@ async function waitForGameStart(){
     }
 }
 async function getState(){
-    const get_state_message=/**@type Message*/({
-        Type: MessageType.GetState,
-        Id: CurrentKeyObject.playerkey,
-        Jsondata: "",
-    });
-    const get_state_response=await fetch("/api/v1/sendevent", {
-        method: "POST",
-        body: JSON.stringify(get_state_message), 
-        headers: {
-            "Content-type": JsonContentHeaderValue,
-        }
-    })
+    let response_message=await sendEvent(MessageType.GetState, "")
+    if (response_message.Type!=MessageType.PlayerList){
+        console.error("wrong message type ?")
+    }
+    let player_list=/**@type PlayerListItem[]*/(JSON.parse(response_message.Jsondata)) 
+    for (const player of player_list){
+    }
 }
 async function getPlayerId(e){
     let display_name=e.target.value 

@@ -81,6 +81,8 @@ async function sendEvent(message_type, event){
 
         }
     }
+    let response_message=/**@type Message*/(JSON.parse(await response.text()))
+    return response_message 
 }
 /**@typedef Player 
  * @property {Guess[]} NewGuesses
@@ -98,7 +100,8 @@ async function receiveEvents(){
     for (const message of messages){
         switch (message.Type){
             case MessageType.NewGuess:
-                renderGuess(JSON.parse(message.Jsondata));
+                renderGuess(JSON.parse(message.Jsondata), message.Id);
+                //TODO need to specify the player,
                 break;
             case MessageType.NewEffect:
                 renderEffects([JSON.parse(message.Jsondata)]);

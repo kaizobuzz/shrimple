@@ -13,8 +13,9 @@ function outOfGuesses(){
         outOfLives();
     }
 }
-/**@param {Guess} new_guess*/ 
-function renderGuess(new_guess){
+/**@param {Guess} new_guess 
+* @param {string} player_id*/
+function renderGuess(new_guess, player_id){
     console.log(new_guess);
     let guessHtml="<div class='other-row'>";
     guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
