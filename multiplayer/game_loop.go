@@ -38,7 +38,11 @@ const (
 	RawText        
 	NestedMessages 
 )
-
+const ( 
+    DisplayNameTaken string="Display name taken"
+    GameAlreadyStarted string="Game already started"
+    GameNotStarted string="Game not started"
+)
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
     if playerindex!=-1{
 	    player_displayname := game.Players[playerindex].DisplayName
@@ -89,7 +93,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 	}) {
 		return MessageResult{
 			Message:    nil,
-			Err:        errors.New("Name already taken"),
+			Err:        errors.New(DisplayNameTaken),
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -110,7 +114,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 func joinResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{Message: nil,
-			Err:        errors.New("Game already started"),
+			Err:        errors.New(GameAlreadyStarted),
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -182,7 +186,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 func readyUnreadyResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{Message: nil,
-			Err:        errors.New("Game already started"),
+			Err:        errors.New(GameAlreadyStarted),
 			Statuscode: http.StatusConflict,
 		}
 	}

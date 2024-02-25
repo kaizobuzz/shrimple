@@ -62,7 +62,7 @@ Object.freeze(http)
 async function sendEvent(message_type, event){ 
     const message=/**@type Message */({
         Type: message_type,
-        Id: PlayerId,
+        Id: CurrentKeyObject.playerkey,
         Jsondata: JSON.stringify(event),
     })
     const response=await fetch("/api/v1/sendevents", {
