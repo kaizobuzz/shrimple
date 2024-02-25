@@ -1,6 +1,6 @@
 // @ts-check
 
-const sleep = s => new Promise(r => setTimeout(r, s*1000));
+const sleep = (s) => new Promise(r => setTimeout(r, s*1000));
 
 /** 
  * @template T

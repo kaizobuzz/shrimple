@@ -84,13 +84,14 @@ async function sendEvent(message_type, event){
     let response_message=/**@type Message*/(JSON.parse(await response.text()))
     return response_message 
 }
-/**@typedef Player 
- * @property {Guess[]} NewGuesses
- * @property {Number[]} NewEffects
-*/
 async function receiveEvents(){
     const response=await fetch("/api/v1/getevents");
-    if (!response.ok){
+    if (!response.ok){ 
+        if (response.status==http.StatusGone){
+            redirectOut();
+        } else if (response.status==http.StatusConflict){
+        } 
+        return;
     }
     const response_string=await response.text();
     const messages=/**@type Message[]*/(JSON.parse(response_string));   
@@ -101,10 +102,25 @@ async function receiveEvents(){
         switch (message.Type){
             case MessageType.NewGuess:
                 renderGuess(JSON.parse(message.Jsondata), message.Id);
-                //TODO need to specify the player,
                 break;
             case MessageType.NewEffect:
                 renderEffects([JSON.parse(message.Jsondata)]);
+                break;
+            case MessageType.GameStart:
+                Game.active=true;
+                //TODO more ?
+                break;
+            case MessageType.Ready:
+                break;
+            case MessageType.Unready:
+                break;
+            case MessageType.PlayerDied:
+                break;
+            case MessageType.Disconnect:
+                //TODO
+                break;
+            case MessageType.Join:
+                addPlayer({Name: message.Id, IsReady: false})
                 break;
             default:
                 console.error("Invalid effect number ", message.Type)

@@ -23,7 +23,7 @@ type ClientPlayer struct {
 }
 
 const (
-	NewGuess       int = iota
+	NewGuess       uint8 = iota
 	NewEffect      
 	PlayerList     
 	PlayerDied     

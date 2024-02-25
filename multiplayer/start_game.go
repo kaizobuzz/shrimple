@@ -11,7 +11,7 @@ import (
 const NUM_SHRIMP_FIELDS uint = 6
 
 type Message struct {
-	Type     int
+	Type     uint8
 	Id       string
 	Jsondata string
 }

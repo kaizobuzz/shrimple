@@ -14,7 +14,10 @@ async function waitForGameStart(){
     }
     while (true){
         await sleep(1); 
-        //TODO getevents
+        receiveEvents();
+        if (Game.active==true){
+           return 
+        }
     }
 }
 async function getState(){
@@ -24,10 +27,15 @@ async function getState(){
     }
     let player_list=/**@type PlayerListItem[]*/(JSON.parse(response_message.Jsondata)) 
     for (const player of player_list){
+        addPlayer(player);
     }
 }
+/**@param {PlayerListItem} player */
+function addPlayer(player){
+
+}
 async function getPlayerId(e){
-    let display_name=e.target.value 
+    let display_name=/**@type string*/(e.target.value) 
     const join_message=/**@type Message*/({
         Type: MessageType.Join,
         Id: "",
@@ -69,7 +77,7 @@ assertButtonElement(document.getElementById("start-button")).addEventListener("c
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
 DisplayNameInput.addEventListener("submit", getPlayerId);
-let GameId=window.location.href.split("?id=")[1] ;
+let GameId=window.location.href.split("?id=")[1];
 let CurrentKeyObject={
     game: "",
     playerkey: "",
@@ -87,3 +95,4 @@ if (CurrentKeyString!=null){
         DisplayNameInput.hidden=true;
     }
 }
+let Players=[]
