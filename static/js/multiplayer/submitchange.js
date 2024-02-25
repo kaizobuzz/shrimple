@@ -2,7 +2,7 @@
 function guessedCorrectShrimp(){
     isCorrectGuess=true;
     resetGuesses();
-    sendEvent(false, [CurrentEffect]); 
+    sendEvent(MessageType.NewEffect, CurrentEffect); 
 }
 function outOfGuesses(){
     isOutOfGuesses=true;
@@ -13,21 +13,19 @@ function outOfGuesses(){
         outOfLives();
     }
 }
-/**@param {Guess[]} new_guesses*/ 
-function renderGuesses(new_guesses){
-    console.log(new_guesses);
-    for (const guess of new_guesses){
-        let guessHtml="<div class='other-row'>";
-        guessHtml+=getGuessResultHtmlWithClasses(guess.Results, "other-column")+"</div>";
-        OtherGuessResultsDiv.innerHTML+=guessHtml; 
-        if (guess.Status==CorrectGuess){ 
-            speedUpTimerPermanent();
-            OtherGuessResultsDiv.innerHTML="";
-        } else if (guess.Status==OutOfGuesses){
-            OtherGuessResultsDiv.innerHTML="";
-            OtherPersonLives-=1;
-            OtherLivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>"
-        }
+/**@param {Guess} new_guess*/ 
+function renderGuess(new_guess){
+    console.log(new_guess);
+    let guessHtml="<div class='other-row'>";
+    guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
+    OtherGuessResultsDiv.innerHTML+=guessHtml; 
+    if (new_guess.Status==GuessStatus.CorrectGuess){ 
+        speedUpTimerPermanent();
+        OtherGuessResultsDiv.innerHTML="";
+    } else if (new_guess.Status==GuessStatus.OutOfGuesses){
+        OtherGuessResultsDiv.innerHTML="";
+        OtherPersonLives-=1;
+        OtherLivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>"
     }
 }
 /**@param {Comparisons} comparisons  */
@@ -35,7 +33,18 @@ function eventOnSubmit(comparisons){
     if (!SubmitButton.disabled){     
         resetTimer();
     }
-    sendEvent(true, Object.values(comparisons));
+    let guess_status=GuessStatus.Normal;
+    if (isOutOfGuesses){
+        isOutOfGuesses=false;
+        guess_status=GuessStatus.OutOfGuesses;
+    }
+    if (isCorrectGuess){
+        isCorrectGuess=false;
+        guess_status=GuessStatus.CorrectGuess;
+    }
+    sendEvent(MessageType.NewGuess, /**@type Guess*/({
+        Results: Object.values(comparisons),
+        Status: guess_status}));
 }
 let OtherGuessResultsDiv=assertNotNull(document.getElementById("other-guesses"));
 let OtherLivesDiv=assertNotNull(document.getElementById("other-lives"));
