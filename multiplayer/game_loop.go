@@ -80,15 +80,7 @@ func checkPlayerActivity(game *game) {
 	}
 }
 func addPlayer(game *game, message *Message) MessageResult {
-	var display_name string
-	err := json.Unmarshal([]byte(message.Jsondata), &display_name)
-	if err != nil {
-		return MessageResult{
-			Message:    nil,
-			Err:        err,
-			Statuscode: http.StatusBadRequest,
-		}
-	}
+	var display_name=message.Jsondata	
 	if slices.ContainsFunc(game.Players, func(p *player) bool {
 		return p.DisplayName == display_name
 	}) {
@@ -143,6 +135,7 @@ func getStateResponse(game *game, message *Message) MessageResult {
 	current_players := make([]ClientPlayer, 0)
 	player_index, err := getPlayerIndex(game, message)
 	if err != nil {
+        log.Println("state ?")
 		return MessageResult{Message: nil, Err: err,
 			Statuscode: http.StatusBadRequest}
 	}
@@ -167,6 +160,7 @@ func getStateResponse(game *game, message *Message) MessageResult {
 func getEventsResponse(game *game, message *Message) MessageResult {
 	player_index, err := getPlayerIndex(game, message)
 	if err != nil {
+        log.Println("event ?")
 		return MessageResult{Message: nil, Err: err,
 			Statuscode: http.StatusBadRequest}
 	}
@@ -228,12 +222,7 @@ Loop:
 		case NewGuess, NewEffect, PlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
 		case Join:
-            select{
-            case game.Responses <- joinResponse(game, message):
-                log.Println("yay")
-            default:
-                log.Println("??? how did this fail")
-            }
+            game.Responses <- joinResponse(game, message)
 		case Disconnect:
 			response := sendBasicEvents(game, message)
 			if response.Err == nil {

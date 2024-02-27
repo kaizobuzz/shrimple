@@ -61,6 +61,7 @@ func makeNewGame() {
 		Players:  make([]*player, 0),
 		HasError: false,
 		Messages: make(chan *Message),
+        Responses: make(chan MessageResult),
 	}
 	ActiveGames[NextGameId] = new_game
 	go checkActivity(new_game)

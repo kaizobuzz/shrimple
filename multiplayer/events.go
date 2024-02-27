@@ -150,6 +150,7 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request) {
+    log.Println("???")
 	game, message, err, statuscode := getRequestInfo(r)
 	if err != nil {
 		log.Println(err)

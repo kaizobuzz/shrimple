@@ -23,6 +23,7 @@ async function startGameLoop(){
     }
 }
 function redirectOut(){
-    window.location.replace("/timeout.html")
+    console.log("you would be redirected here")
+    //window.location.replace("/timeout.html")
 }
 

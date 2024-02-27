@@ -85,7 +85,19 @@ async function sendEvent(message_type, event){
     return response_message 
 }
 async function receiveEvents(){
-    const response=await fetch("/api/v1/getevents");
+    const message=/**@type Message */({
+        Type: MessageType.GetEvents,
+        Id: CurrentKeyObject.playerkey,
+        Jsondata: "",
+    })
+    console.log(message)
+    const response=await fetch("/api/v1/getevents",{
+        method: "POST",
+        body: JSON.stringify(message),
+        headers: {
+            "Content-type": JsonContentHeaderValue 
+        }
+    })
     if (!response.ok){ 
         if (response.status==http.StatusGone){
             redirectOut();
@@ -94,6 +106,7 @@ async function receiveEvents(){
         return;
     }
     const response_string=await response.text();
+    console.log(response_string);
     const messages=/**@type Message[]*/(JSON.parse(response_string));   
     if (messages==null){
         return;
