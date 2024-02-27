@@ -41,7 +41,7 @@ async function getPlayerId(e){
         Id: "",
         Jsondata: display_name,
         });
-    const join_response=await fetch("/api/v1/getplayerkey", {
+    const join_response=await fetch("/api/v1/newjoin", {
             method: "POST",
             body: JSON.stringify(join_message),
             headers: {

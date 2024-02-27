@@ -15,8 +15,8 @@ function decrementTimer(){
 }
 /**@param {Number} delta_time  */
 
-function decrementTimerRTA(delta_time){
-    let current_time=performance.now();
+function decrementTimerRTA(delta_time, offset=0){
+    let current_time=performance.now()+offset;
     let time_passed=(current_time-delta_time)/1000
     Width-=MAX_TIMER_WIDTH/(TimerDurationSeconds/time_passed);
     if (Width<=0){

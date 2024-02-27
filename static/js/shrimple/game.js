@@ -49,9 +49,7 @@ function fillInGameValueWithPromise(promise, key){
 
 
 function initializeGameVariablesFromServer(){
-    const cached_vals=checkLocalStorage();
-    const cached_game=cached_vals[0];
-    const cached_guess_results=cached_vals[1];
+    const [cached_game, cached_guess_results]=checkLocalStorage();
     if (cached_guess_results!=null){
         GuessResultsDiv.innerHTML=DOMPurify.sanitize(cached_guess_results);
     }
