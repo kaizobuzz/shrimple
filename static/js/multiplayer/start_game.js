@@ -5,6 +5,7 @@
  *@property {boolean} IsReady
  * */
 async function waitForGameStart(){ 
+    await sleep(1);
     while (true){
         await sleep(1); 
         if (CurrentKeyObject.playerkey!=""){
@@ -35,12 +36,14 @@ function addPlayer(player){
 
 }
 async function getPlayerId(e){
-    let display_name=/**@type string*/(e.target.value) 
+    console.log(e);
+    let display_name=/**@type string*/DisplayNameInput.value; 
     const join_message=/**@type Message*/({
         Type: MessageType.Join,
         Id: "",
         Jsondata: display_name,
         });
+    console.log(join_message);
     const join_response=await fetch("/api/v1/newjoin", {
             method: "POST",
             body: JSON.stringify(join_message),
@@ -48,17 +51,18 @@ async function getPlayerId(e){
             "Content-type": JsonContentHeaderValue 
             }
         })
-    if (join_response.status==http.StatusGone){
-        redirectOut();
-    }
-    if (join_response.status==http.StatusConflict){
-        const err=await join_response.text();
-        if (err==ConflictReasons.GameAlreadyStarted){
-            return
-        } else if (err==ConflictReasons.DisplayNameTaken){
-            DisplayNameInputResult.innerText="Display Name Taken"
-            return
+    if (!join_response.ok){
+        if (join_response.status==http.StatusGone){
+            redirectOut();
         }
+        if (join_response.status==http.StatusConflict){
+            const err=await join_response.text();
+            if (err==ConflictReasons.GameAlreadyStarted){
+            } else if (err==ConflictReasons.DisplayNameTaken){
+                DisplayNameInputResult.innerText="Display Name Taken"
+            }
+        }
+        return
     }
     let CurrentKey=await join_response.text(); 
     CurrentKeyObject={
@@ -66,17 +70,13 @@ async function getPlayerId(e){
         playerkey: CurrentKey 
     }
     localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
-    DisplayNameInput.hidden=true;
+    DisplayNameInputDiv.hidden=true;
 }
 let PlayerAccepted=false;
-assertButtonElement(document.getElementById("start-button")).addEventListener("click", function(){
-    PlayerAccepted=true;
-    sendEvent(MessageType.Ready, "")
-});
-
+let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
-DisplayNameInput.addEventListener("submit", getPlayerId);
+assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
 let GameId=window.location.href.split("?id=")[1];
 let CurrentKeyObject={
     game: "",
@@ -92,7 +92,12 @@ if (CurrentKeyString!=null){
         }; 
         localStorage.removeItem("multiplayer-key");
     } else{
-        DisplayNameInput.hidden=true;
+        DisplayNameInputDiv.hidden=true;
     }
 }
 let Players=[]
+assertButtonElement(document.getElementById("start-button"))?.addEventListener("click", function(){
+    PlayerAccepted=true;
+    sendEvent(MessageType.Ready, "")
+});
+

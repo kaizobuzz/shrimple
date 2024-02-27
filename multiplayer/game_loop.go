@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"shrimple/src/shared"
 	"slices"
@@ -84,7 +85,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 	if err != nil {
 		return MessageResult{
 			Message:    nil,
-			Err:        nil,
+			Err:        err,
 			Statuscode: http.StatusBadRequest,
 		}
 	}
@@ -119,10 +120,11 @@ func joinResponse(game *game, message *Message) MessageResult {
 		}
 	}
 	response := addPlayer(game, message)
+    defer log.Println("this function should've returned")
 	if response.Err == nil {
+        fmt.Println(response.Message)
 		message.Id = response.Message.Jsondata
 		sendEventToOtherPlayers(game, len(game.Players)-1, message)
-		//TODO assumptions ?
 	}
 	return response
 }
@@ -226,7 +228,12 @@ Loop:
 		case NewGuess, NewEffect, PlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
 		case Join:
-			game.Responses <- joinResponse(game, message)
+            select{
+            case game.Responses <- joinResponse(game, message):
+                log.Println("yay")
+            default:
+                log.Println("??? how did this fail")
+            }
 		case Disconnect:
 			response := sendBasicEvents(game, message)
 			if response.Err == nil {

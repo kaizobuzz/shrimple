@@ -70,6 +70,7 @@ func getRequestInfo(
 	if err != nil {
 		return nil, nil, err, http.StatusGone
 	}
+    message=&Message{}
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(message)
@@ -91,7 +92,9 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	game.Messages <- message
+    log.Println("waiting")
 	response := <-game.Responses
+    log.Println(response)
 	if response.Err != nil {
 		log.Println(response.Err)
 		w.WriteHeader(response.Statuscode)
