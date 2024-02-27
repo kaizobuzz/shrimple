@@ -1,4 +1,9 @@
 //@ts-check
+function getPlayerFromDisplayName(){
+    for (const player of Players){
+        
+    }
+}
 function guessedCorrectShrimp(){
     isCorrectGuess=true;
     resetGuesses();
@@ -19,7 +24,7 @@ function renderGuess(new_guess, player_id){
     console.log(new_guess);
     let guessHtml="<div class='other-row'>";
     guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
-    OtherGuessResultsDiv.innerHTML+=guessHtml; 
+    OtherGuessResultsDiv.innerHTML+=DOMPurify.sanitize(guessHtml); 
     if (new_guess.Status==GuessStatus.CorrectGuess){ 
         speedUpTimerPermanent();
         OtherGuessResultsDiv.innerHTML="";

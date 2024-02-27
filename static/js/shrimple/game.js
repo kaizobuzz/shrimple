@@ -53,7 +53,7 @@ function initializeGameVariablesFromServer(){
     const cached_game=cached_vals[0];
     const cached_guess_results=cached_vals[1];
     if (cached_guess_results!=null){
-        GuessResultsDiv.innerHTML=cached_guess_results;
+        GuessResultsDiv.innerHTML=DOMPurify.sanitize(cached_guess_results);
     }
     if (cached_game!=null){
         Game=JSON.parse(cached_game);

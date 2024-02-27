@@ -52,7 +52,7 @@ async function getRemainingTime(){
 /**@param {string} html_to_render  */
 async function renderTimer(html_to_render){
     while (true){
-        FinalResultsText.innerHTML=html_to_render+await getRemainingTime();
+        FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render)+await getRemainingTime();
         await sleep(1);
     }
 }

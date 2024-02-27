@@ -53,8 +53,8 @@ function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     /** @type Comparisons*/
     let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
-    let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
-    GuessResultsDiv.innerHTML+=(html_to_render);
+    const html_to_render_dirty=getGuessResultHtml(input_shrimp, comparisons);
+    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
     checkAnswer(comparisons);
     setLocalStorage();
     SubmitOverride.after_submit(comparisons);
