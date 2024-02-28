@@ -7,7 +7,7 @@ const IMGCLASS="<img class='comparison' src='"
  * @param {string} column_class 
  * @returns {string}
  */
-function getGuessResultHtmlWithClasses(comparison_array, column_class){
+function getGuessResultHtmlWithClasses(comparison_array, column_class='column'){
     let column_class_text="<div class='"+column_class+"'>";
     let html_to_render=column_class_text+IMGCLASS;
     html_to_render+=getComparisonImagesByArray(comparison_array).join("'/> </div>"+column_class_text+IMGCLASS) 

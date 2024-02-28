@@ -51,6 +51,7 @@ Object.freeze(MessageType);
 const http={
     StatusConflict: 409,
     StatusGone: 410,
+    StatusNoContent: 204,
 }
 Object.freeze(http)
 /**@typedef Guess 
@@ -80,6 +81,9 @@ async function sendEvent(message_type, event){
         } else{
 
         }
+    }
+    if (response.status==http.StatusNoContent){
+        return
     }
     let response_message=/**@type Message*/(JSON.parse(await response.text()))
     return response_message 

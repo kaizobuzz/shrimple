@@ -69,7 +69,7 @@ async function getPlayerId(e){
         game: GameId,
         playerkey: CurrentKey 
     }
-    localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
+    //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
     DisplayNameInputDiv.hidden=true;
 }
 let PlayerAccepted=false;
@@ -96,7 +96,8 @@ if (CurrentKeyString!=null){
     }
 }
 let Players=[]
-assertButtonElement(document.getElementById("start-button"))?.addEventListener("click", function(){
+let StartButton=assertButtonElement(document.getElementById("start-button")) 
+StartButton.addEventListener("click", function(){
     PlayerAccepted=true;
     sendEvent(MessageType.Ready, "")
 });

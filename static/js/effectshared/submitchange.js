@@ -11,8 +11,12 @@ function setAllHiddenComparison(){
     }
 }
 function submitEmptyGuess(){
-    Game.guesses.push("Skipped")
-    GuessResultsDiv.innerHTML+="<p>Skipped</p>"
+    const comparisons=setAllHiddenComparison();
+    Game.guesses.push(getComparisonHtml(comparisons).join(""));
+    let html_to_render_dirty=FLEX_ROW
+    html_to_render_dirty+=getGuessResultHtmlWithClasses(Object.values(comparisons));
+    html_to_render_dirty+="<div class='column'> Skipped </div> </div>"
+    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
     addGuesses(1);
     SubmitOverride.after_submit(setAllHiddenComparison())
     //TODO will have to change later

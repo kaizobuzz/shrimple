@@ -45,13 +45,14 @@ const (
     GameNotStarted string="Game not started"
 )
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
+    sending_message:=message.clone();
     if playerindex!=-1{
 	    player_displayname := game.Players[playerindex].DisplayName
-	    message.Id = player_displayname
+	    sending_message.Id = player_displayname
     }
 	for i, player := range game.Players {
 		if i != playerindex {
-			player.Messages = append(player.Messages, message)
+			player.Messages = append(player.Messages, &sending_message)
 		} else {
 			player.LastTime = time.Now()
 		}
@@ -196,7 +197,7 @@ func readyUnreadyResponse(game *game, message *Message) MessageResult {
 		Statuscode: http.StatusNoContent}
 }
 func checkIfAllReady(game *game, message *Message) {
-	player_index, _ := getPlayerIndex(game, message)
+	player_index, _ := getPlayerIndex(game, message) 
 	game.Players[player_index].IsReady = true
 	if !slices.ContainsFunc(game.Players, func(p *player) bool {
 		return p.IsReady == false

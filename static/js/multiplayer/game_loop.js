@@ -1,5 +1,6 @@
 //@ts-check
 async function startGameLoop(){
+    StartButton.hidden=true;
     let iterator=0;
     CurrentLives=Game.lives;
     CurrentGuesses=Game.num_guesses;

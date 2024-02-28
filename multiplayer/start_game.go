@@ -15,6 +15,13 @@ type Message struct {
 	Id       string
 	Jsondata string
 }
+func (m *Message) clone() Message{
+    return Message{
+        Type: m.Type,
+        Id: m.Id,
+        Jsondata: m.Jsondata,
+    }
+}
 type Guess struct {
 	Results [NUM_SHRIMP_FIELDS]GuessResults
 	Status  GuessStatus
