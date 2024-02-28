@@ -40,3 +40,13 @@
     width: 30em;
     z-index: 3;
 }
+#main-player{
+    width: 60%;
+    position: relative;
+}
+.other-player{
+    position: absolute;
+    width: 40%;
+    right: 0%;
+    top: 0%;
+}

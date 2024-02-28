@@ -239,7 +239,7 @@ Loop:
 			game.Responses <- response
 		case Unready:
 			response := readyUnreadyResponse(game, message)
-			if response.Err != nil {
+			if response.Err == nil {
 				player_index, _ := getPlayerIndex(game, message)
 				game.Players[player_index].IsReady = false
 			}

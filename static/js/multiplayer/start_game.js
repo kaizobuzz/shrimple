@@ -23,8 +23,12 @@ async function waitForGameStart(){
 }
 async function getState(){
     let response_message=await sendEvent(MessageType.GetState, "")
+    if (response_message==undefined){
+        return;
+    }
     if (response_message.Type!=MessageType.PlayerList){
         console.error("wrong message type ?")
+        return;
     }
     let player_list=/**@type PlayerListItem[]*/(JSON.parse(response_message.Jsondata)) 
     for (const player of player_list){
@@ -70,8 +74,11 @@ async function getPlayerId(e){
         playerkey: CurrentKey 
     }
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
+    MainDiv.style.filter="";
     DisplayNameInputDiv.hidden=true;
 }
+let MainDiv=assertNotNull(document.getElementById("main-game"));
+MainDiv.style.filter="blur(3em)";
 let PlayerAccepted=false;
 let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
@@ -93,12 +100,20 @@ if (CurrentKeyString!=null){
         localStorage.removeItem("multiplayer-key");
     } else{
         DisplayNameInputDiv.hidden=true;
+        MainDiv.style.filter="";
     }
 }
 let Players=[]
 let StartButton=assertButtonElement(document.getElementById("start-button")) 
 StartButton.addEventListener("click", function(){
-    PlayerAccepted=true;
-    sendEvent(MessageType.Ready, "")
+    if (StartButton.innerText=="ready"){
+        PlayerAccepted=true;
+        sendEvent(MessageType.Ready, "");
+        StartButton.innerText="unready";
+    } else{
+        PlayerAccepted=false;
+        sendEvent(MessageType.Unready, "");
+        StartButton.innerText="ready";
+    }
 });
 
