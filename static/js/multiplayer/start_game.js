@@ -1,5 +1,13 @@
 //@ts-check
-
+/**@typedef Player 
+ * @property {Number[][]} guesses 
+ * @property {string} name
+ * @property {boolean} is_ready
+ * @property {HTMLDivElement} node
+ * @property {HTMLDivElement} guess_node 
+ * @property {HTMLDivElement} lives_node
+ * @property {Number} lives
+ * */
 /**@typedef  PlayerListItem
  *@property {string} Name 
  *@property {boolean} IsReady
@@ -37,7 +45,32 @@ async function getState(){
 }
 /**@param {PlayerListItem} player */
 function addPlayer(player){
+    let node=document.createElement("div");
+    node.classList.add("other-player");
+    node.style.transform=("translate:(0, 50%)")
+    node.innerText=player.Name;
+    let guess_node=document.createElement("div");
+    let lives_node=document.createElement("div");
+    node.appendChild(guess_node);
+    node.appendChild(lives_node);
+    Players.push({
+        name: player.Name,
+        is_ready: player.IsReady,
+        node: node,
+        guess_node: guess_node,
+        lives_node: lives_node,
+        guesses: [],
+        lives: 3,
+    })
+}
 
+/**@param {string} player_name*/
+function getPlayerIndex(player_name){
+    console.log(player_name);
+    console.log(Players);
+    return Players.findIndex((element)=>{
+        element.name==player_name;
+    })
 }
 async function getPlayerId(e){
     console.log(e);
@@ -103,7 +136,7 @@ if (CurrentKeyString!=null){
         MainDiv.style.filter="";
     }
 }
-let Players=[]
+let Players=/**@type Player[]*/([]);
 let StartButton=assertButtonElement(document.getElementById("start-button")) 
 StartButton.addEventListener("click", function(){
     if (StartButton.innerText=="ready"){

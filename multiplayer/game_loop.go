@@ -219,6 +219,7 @@ Loop:
 		case <-time.After(time.Minute):
 			break Loop
 		}
+        process_start:=time.Now()
 		switch message.Type {
 		case NewGuess, NewEffect, PlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
@@ -253,6 +254,7 @@ Loop:
 			time_check = time.Now()
 			checkPlayerActivity(game)
 		}
+        log.Println("main game loop process took: ", time.Since(process_start).Milliseconds(), "ms")
 	}
 	for {
 		select {

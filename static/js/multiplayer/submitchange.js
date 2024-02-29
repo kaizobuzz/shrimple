@@ -1,9 +1,4 @@
 //@ts-check
-function getPlayerFromDisplayName(){
-    for (const player of Players){
-        
-    }
-}
 function guessedCorrectShrimp(){
     isCorrectGuess=true;
     resetGuesses();
@@ -13,7 +8,7 @@ function outOfGuesses(){
     isOutOfGuesses=true;
     resetGuesses();
     Game.lives-=1;
-    LivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>";
+    LivesDiv.innerText="Remaining lives: "+Game.lives;
     if (Game.lives<=0){
         outOfLives();
     }
@@ -21,17 +16,23 @@ function outOfGuesses(){
 /**@param {Guess} new_guess 
 * @param {string} player_id*/
 function renderGuess(new_guess, player_id){
-    console.log(new_guess);
+    let player_index=getPlayerIndex(player_id);
+    if (player_index==-1){
+        console.log(player_id+" not in game");
+        return;
+    }
+    let target_player=Players[player_index];
+    let guess_div=target_player.guess_node;
     let guessHtml="<div class='other-row'>";
     guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
-    OtherGuessResultsDiv.innerHTML+=DOMPurify.sanitize(guessHtml); 
+    guess_div.innerHTML+=DOMPurify.sanitize(guessHtml); 
     if (new_guess.Status==GuessStatus.CorrectGuess){ 
         speedUpTimerPermanent();
-        OtherGuessResultsDiv.innerHTML="";
+        guess_div.innerHTML="";
     } else if (new_guess.Status==GuessStatus.OutOfGuesses){
-        OtherGuessResultsDiv.innerHTML="";
-        OtherPersonLives-=1;
-        OtherLivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>"
+        guess_div.innerHTML="";
+        target_player.lives-=1;
+        target_player.lives_node.innerText="Remaining lives: "+Game.lives;
     }
 }
 /**@param {Comparisons} comparisons  */
@@ -52,10 +53,6 @@ function eventOnSubmit(comparisons){
         Results: Object.values(comparisons),
         Status: guess_status}));
 }
-let OtherGuessResultsDiv=assertNotNull(document.getElementById("other-guesses"));
-let OtherLivesDiv=assertNotNull(document.getElementById("other-lives"));
-let OtherPersonLives=Game.lives;
-OtherLivesDiv.innerHTML="<p>Remaining lives: "+OtherPersonLives+"</p>"
 SubmitOverride.after_submit=eventOnSubmit;
 GameOverFunctions.win_function=guessedCorrectShrimp;
 GameOverFunctions.lose_function=outOfGuesses;

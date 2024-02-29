@@ -150,21 +150,23 @@ li:hover {
 }
 
 #results-open {
-    font-family: "Mooli", sans-serif;
     position: relative;
     top: 2em;
+}
+
+.main-buttons {
+    font-family: "Mooli", sans-serif;
     font-size: large;
     border-radius: 0.5em;
     background-color: #535054;
     border-color: #535054;
     color: #C6C9CD;
 }
-
-#results-open:hover {
+.main-buttons:hover {
     background-color: #736f74;
     border-color: #736f74;
-}
 
+}
 #final-results {
     width: 36em;
     z-index: 2;

@@ -144,7 +144,6 @@ async function receiveEvents(){
         }
     }
 }
-let HtmxDiv=assertNotNull(document.getElementById("htmx-things"))
 const startthing="Current effect set to "
 addEventListener("keydown", function(e){
     switch (e.key){
