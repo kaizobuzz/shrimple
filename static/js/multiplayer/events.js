@@ -42,10 +42,16 @@ const MessageType={
 	Unready: 7,        
 	GameStart: 8,      
 	GetEvents: 9,      
-	GetState: 10,       
+	GetStartState: 10,       
 	NoContent: 11,      
 	RawText: 12,        
-	NestedMessages: 13 
+	NestedMessages: 13, 
+    GetGameState: 14, 
+    FullGameState: 15,
+    VoteKick: 16,
+    Kick: 17,
+    SendChat: 18,
+
 };
 Object.freeze(MessageType);
 const http={

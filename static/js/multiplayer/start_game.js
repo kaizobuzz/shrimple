@@ -30,7 +30,7 @@ async function waitForGameStart(){
     }
 }
 async function getState(){
-    let response_message=await sendEvent(MessageType.GetState, "")
+    let response_message=await sendEvent(MessageType.GetStartState, "")
     if (response_message==undefined){
         return;
     }
@@ -53,6 +53,7 @@ function addPlayer(player){
     let lives_node=document.createElement("div");
     node.appendChild(guess_node);
     node.appendChild(lives_node);
+    document.body.appendChild(node);
     Players.push({
         name: player.Name,
         is_ready: player.IsReady,
@@ -69,7 +70,7 @@ function getPlayerIndex(player_name){
     console.log(player_name);
     console.log(Players);
     return Players.findIndex((element)=>{
-        element.name==player_name;
+        return element.name==player_name;
     })
 }
 async function getPlayerId(e){
