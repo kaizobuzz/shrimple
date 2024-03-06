@@ -1,6 +1,6 @@
 //@ts-check
 /**@typedef Player 
- * @property {Number[][]} guesses 
+ * @property {Guess[]} guesses 
  * @property {string} name
  * @property {boolean} is_ready
  * @property {HTMLDivElement} node
@@ -110,6 +110,7 @@ async function getPlayerId(e){
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
     MainDiv.style.filter="";
     DisplayNameInputDiv.hidden=true;
+    getState();
 }
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";

@@ -13,6 +13,12 @@ function outOfGuesses(){
         outOfLives();
     }
 }
+/**@param {Player} player*/ 
+function loseLife(player){
+    player.lives--;
+    player.lives_node.innerText="Remaining lives: "+player.lives;
+
+}
 /**@param {Guess} new_guess 
 * @param {string} player_id*/
 function renderGuess(new_guess, player_id){
@@ -22,6 +28,7 @@ function renderGuess(new_guess, player_id){
         return;
     }
     let target_player=Players[player_index];
+    target_player.guesses.push(new_guess);
     let guess_div=target_player.guess_node;
     let guessHtml="<div class='other-row'>";
     guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
@@ -31,8 +38,7 @@ function renderGuess(new_guess, player_id){
         guess_div.innerHTML="";
     } else if (new_guess.Status==GuessStatus.OutOfGuesses){
         guess_div.innerHTML="";
-        target_player.lives-=1;
-        target_player.lives_node.innerText="Remaining lives: "+Game.lives;
+        loseLife(target_player);
     }
 }
 /**@param {Comparisons} comparisons  */

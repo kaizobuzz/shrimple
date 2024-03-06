@@ -44,7 +44,7 @@ async function reloadPage(){
 async function getRemainingTime(){
     let SecondsInDay=86400;
     let secondsleft=SecondsInDay-(Math.floor(Date.now()/1000)%SecondsInDay);
-    if (secondsleft==0){
+    if (secondsleft<1){
         await reloadPage();
     }
     return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s";
@@ -72,5 +72,8 @@ CloseButton.addEventListener("click", function(){
     OpenButton.hidden=false;
     FinalResults.hidden=true;
 });
-ShareButton.addEventListener("click", getTextToCopy);
+let ClipboardFunction=getTextToCopy
+ShareButton.addEventListener("click", function(){
+    ClipboardFunction();
+});
 
