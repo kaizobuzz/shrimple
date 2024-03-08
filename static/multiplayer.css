@@ -31,3 +31,22 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+#display-name-input-div{
+    background-color: #38383b;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30em;
+    z-index: 3;
+}
+#main-player{
+    width: 60%;
+    position: relative;
+}
+.other-player{
+    position: absolute;
+    width: 40%;
+    right: 0%;
+    top: 0%;
+}

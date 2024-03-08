@@ -7,7 +7,7 @@ const IMGCLASS="<img class='comparison' src='"
  * @param {string} column_class 
  * @returns {string}
  */
-function getGuessResultHtmlWithClasses(comparison_array, column_class){
+function getGuessResultHtmlWithClasses(comparison_array, column_class='column'){
     let column_class_text="<div class='"+column_class+"'>";
     let html_to_render=column_class_text+IMGCLASS;
     html_to_render+=getComparisonImagesByArray(comparison_array).join("'/> </div>"+column_class_text+IMGCLASS) 
@@ -53,8 +53,8 @@ function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     /** @type Comparisons*/
     let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
-    let html_to_render=getGuessResultHtml(input_shrimp, comparisons);
-    GuessResultsDiv.innerHTML+=(html_to_render);
+    const html_to_render_dirty=getGuessResultHtml(input_shrimp, comparisons);
+    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
     checkAnswer(comparisons);
     setLocalStorage();
     SubmitOverride.after_submit(comparisons);

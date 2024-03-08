@@ -18,20 +18,20 @@ function loseGame(){
 function renderEndPopup(){
     let html_to_render="";
     if (Game.won){ 
-        html_to_render+="<p>You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
+        html_to_render+="You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
         if (Game.num_guesses==1){
             html_to_render+="guess"
         } else{
             html_to_render+="guesses";
         }
     } else{
-        html_to_render+="<p>You didn't get today's shrimple"
+        html_to_render+="You didn't get today's shrimple"
     }
     html_to_render+="<br><br>Try again in ";
     renderTimer(html_to_render);
     let promise=getRemainingTime()
     promise.then((remainingtime)=>{
-        FinalResultsText.innerHTML=html_to_render+remainingtime;
+        FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render+remainingtime);
     });
     FinalResults.hidden=false;
     ShareButton.disabled=false;
@@ -44,15 +44,15 @@ async function reloadPage(){
 async function getRemainingTime(){
     let SecondsInDay=86400;
     let secondsleft=SecondsInDay-(Math.floor(Date.now()/1000)%SecondsInDay);
-    if (secondsleft==0){
+    if (secondsleft<1){
         await reloadPage();
     }
-    return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s</p>"
+    return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s";
 }
 /**@param {string} html_to_render  */
 async function renderTimer(html_to_render){
     while (true){
-        FinalResultsText.innerHTML=html_to_render+await getRemainingTime();
+        FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render)+await getRemainingTime();
         await sleep(1);
     }
 }
@@ -72,5 +72,8 @@ CloseButton.addEventListener("click", function(){
     OpenButton.hidden=false;
     FinalResults.hidden=true;
 });
-ShareButton.addEventListener("click", getTextToCopy);
+let ClipboardFunction=getTextToCopy
+ShareButton.addEventListener("click", function(){
+    ClipboardFunction();
+});
 

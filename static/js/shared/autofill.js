@@ -56,33 +56,34 @@ function autofillShrimps() {
     } 
     //console.log(input);
     const valid_shrimps=getValidShrimps(input);
-    let html_to_render="";
+    let html_to_render_dirty="";
     for (const shrimp of valid_shrimps){
         //console.log(Object.keys(shrimp));
         const pos=shrimp.pos;
-        html_to_render+=
+        html_to_render_dirty+=
             "<li>"+
             shrimp.name.slice(0, pos)+
             "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
             shrimp.name.slice(pos+input.length);
         if (ShowStats){
             const shrimp_stats=Game.shrimp_list[Game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
-            html_to_render+=
+            html_to_render_dirty+=
             "<br><span class=shrimp-info>";
             for (const key of Object.keys(shrimp_stats)){
                 if (key=="name"){
                     continue;
                 }
-                html_to_render+=getShrimpStat(shrimp_stats, key); 
-                html_to_render+=", ";
+                html_to_render_dirty+=getShrimpStat(shrimp_stats, key); 
+                html_to_render_dirty+=", ";
             }
-            html_to_render+="</span>";
+            html_to_render_dirty+="</span>";
         }
-        html_to_render+="<input type=\"hidden\" value=\""+shrimp.name+"\"/>"+
+        html_to_render_dirty+="<input type=\"hidden\" value=\""+shrimp.name+"\"/>"+
             "</li>";
     }
     //console.log(html_to_render);
-    AutofillResults.innerHTML=html_to_render;
+    const html_to_render_clean=DOMPurify.sanitize(html_to_render_dirty);
+    AutofillResults.innerHTML=html_to_render_clean;
     addListEners();
 }
 function addListEners(){

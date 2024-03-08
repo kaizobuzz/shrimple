@@ -9,40 +9,52 @@
     <link rel="stylesheet" type="text/css" href="/multiplayer.css">
     <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
     <script src="/js/htmx.min.js"></script>
+    <script src="/js/purify.min.js"></script>
     <title>Shrimple (multiplayer)</title>
 </head>
 
 <body>
     <div id="settings-bar">
         <div id="settings">
-            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load" hx-target="this"
-            hx-swap="innerHTML"></div>
+            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load" hx-target="this" hx-swap="innerHTML"></div>
         </div>
     </div>
-    <h1>Multiplayer</h1>
-    <div id="guesses">
-    </div>
-    <div id="shrimp-search">
-        <div id="player-input">
-            <input class="form-control" id="player-guess" value="" placeholder="Search for a shrimp..." />
-        </div>
-        <button id="input-submit" disabled="">submit</button>
-        <br>
-        <label>Show Shrimp Info</label>
-        <input id="info-toggle" type="checkbox" value="shrimp-info" />
-        <ul id="autofill-results">
+    <div id="main-game">
+        <h1>Multiplayer</h1>
+        <div id="main-player">
+            <div id="guesses">
+            </div>
+            <div id="shrimp-search">
+                <div id="player-input">
+                    <input class="form-control" id="player-guess" value="" placeholder="Search for a shrimp..." />
+                </div>
+                <button id="input-submit" disabled="">submit</button>
+                <br>
+                <label>Show Shrimp Info</label>
+                <input id="info-toggle" type="checkbox" value="shrimp-info" />
+                <ul id="autofill-results">
 
-        </ul>
+                </ul>
+            </div>
+            <div id="max-timer">
+                <div id="current-timer"></div>
+            </div>
+            <div id="effect-name"></div>
+            <div id="lives"></div>
+            <div id="correct-guesses"></div>
+        </div>
+        <div class="other-player"></div>
+        <div id="other-guesses"></div>
+        <div id="other-lives"></div>
     </div>
-    <div id="max-timer">
-        <div id="current-timer"></div>
+    <div id="display-name-input-div">
+        <form>
+            <input type="text" id="display-name-input" class="form-control" placeholder="Choose a name..." />
+            <input id="name-submit" class="main-buttons" type="button" value="Submit" />
+        </form>
+        <div id="display-name-input-result"></div>
     </div>
-    <div id="effect-name"></div>
-    <div id="lives"></div>
-    <div id="correct-guesses"></div>
-    <div id="other-guesses"></div>
-    <div id="other-lives"></div>
-    <div id="htmx-things"></div>
+    <button id="start-button" class="main-buttons">ready</button>
     <script src="/js/shared/utils.js"></script>
     <script src="/js/effects/utils.js"></script>
     <script src="/js/shared/autofill.js"></script>
@@ -60,6 +72,7 @@
     <script src="/js/effects/timer.js"></script>
     <script src="/js/effectshared/submitchange.js"></script>
     <script src="/js/multiplayer/submitchange.js"></script>
+    <script src="/js/multiplayer/localstorage.js"></script>
 </body>
 
 </html>

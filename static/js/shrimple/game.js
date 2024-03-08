@@ -47,16 +47,22 @@ function fillInGameValueWithPromise(promise, key){
     });
 }
 
-
-function initializeGameVariablesFromServer(){
-    const cached_vals=checkLocalStorage();
-    const cached_game=cached_vals[0];
-    const cached_guess_results=cached_vals[1];
-    if (cached_guess_results!=null){
-        GuessResultsDiv.innerHTML=cached_guess_results;
+function getMode(){
+    const mode_text="mode=";
+    let url=window.location.href;
+    let mode_pos=url.indexOf(mode_text)+mode_text.length;
+    if (mode_pos==-1){
+        console.error("no mode");
     }
+    return url.slice(mode_pos);
+}
+function initializeGameVariablesFromServer(){
+    const [cached_game, cached_guess_results]=checkLocalStorage(); 
     if (cached_game!=null){
         Game=JSON.parse(cached_game);
+        if (cached_guess_results!=null){
+            GuessResultsDiv.innerHTML=DOMPurify.sanitize(cached_guess_results);
+        }
         SubmitOverride.comparison_shrimp=Game.daily_shrimp;
         if (Game.num_guesses>0&&Game.active==false){
             renderEndPopup();
@@ -79,6 +85,12 @@ function initializeGameVariablesFromServer(){
         Game.active = true;
     });
 }
+let mode=getMode();
+console.log(mode);
+if (mode=="shrimple"){
 
+} else if (mode=="clamplicated"){
+    changeSubmitFunction();
+} else {
+}
 initializeGameVariablesFromServer();
-

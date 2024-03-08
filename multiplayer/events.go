@@ -9,27 +9,6 @@ import (
 	"net/url"
 )
 
-type GuessResults int8
-
-const (
-	Correct GuessResults = iota
-	Incorrect
-	TooLarge
-	TooSmall
-	PartialEqual
-	UnknownComparison
-)
-
-type Effects int8
-
-const (
-	GuessStatHide Effects = iota
-	TimeLimitMinus
-	RequiredClick
-	NoAutofill
-	ShrimpGarbage
-	BombParty
-)
 
 type GuessStatus int8
 
@@ -70,6 +49,7 @@ func getRequestInfo(
 	if err != nil {
 		return nil, nil, err, http.StatusGone
 	}
+    message=&Message{}
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(message)
@@ -91,7 +71,9 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	game.Messages <- message
+    log.Println("waiting")
 	response := <-game.Responses
+    log.Println(response)
 	if response.Err != nil {
 		log.Println(response.Err)
 		w.WriteHeader(response.Statuscode)
@@ -166,4 +148,23 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte(response.Message.Jsondata))
+}
+func GetGameStateEvent(w http.ResponseWriter, r *http.Request){
+    game, err:=getGameId(r)
+    if err!=nil{
+        w.WriteHeader(http.StatusGone)
+    }
+    message:=&Message{ 
+        Type: GetFullState,
+        Id: "",
+        Jsondata: "",
+    }
+    game.Messages<-message
+    response:=<-game.Responses
+    if response.Err!=nil{
+        log.Println(err)
+        w.WriteHeader(response.Statuscode)
+        return
+    }
+    w.Write([]byte(response.Message.Jsondata))
 }

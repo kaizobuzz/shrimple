@@ -42,15 +42,22 @@ const MessageType={
 	Unready: 7,        
 	GameStart: 8,      
 	GetEvents: 9,      
-	GetState: 10,       
+	GetStartState: 10,       
 	NoContent: 11,      
 	RawText: 12,        
-	NestedMessages: 13 
+	NestedMessages: 13, 
+    GetGameState: 14, 
+    FullGameState: 15,
+    VoteKick: 16,
+    Kick: 17,
+    SendChat: 18,
+
 };
 Object.freeze(MessageType);
 const http={
     StatusConflict: 409,
     StatusGone: 410,
+    StatusNoContent: 204,
 }
 Object.freeze(http)
 /**@typedef Guess 
@@ -81,11 +88,26 @@ async function sendEvent(message_type, event){
 
         }
     }
+    if (response.status==http.StatusNoContent){
+        return
+    }
     let response_message=/**@type Message*/(JSON.parse(await response.text()))
     return response_message 
 }
 async function receiveEvents(){
-    const response=await fetch("/api/v1/getevents");
+    const message=/**@type Message */({
+        Type: MessageType.GetEvents,
+        Id: CurrentKeyObject.playerkey,
+        Jsondata: "",
+    })
+    console.log(message)
+    const response=await fetch("/api/v1/getevents",{
+        method: "POST",
+        body: JSON.stringify(message),
+        headers: {
+            "Content-type": JsonContentHeaderValue 
+        }
+    })
     if (!response.ok){ 
         if (response.status==http.StatusGone){
             redirectOut();
@@ -94,6 +116,7 @@ async function receiveEvents(){
         return;
     }
     const response_string=await response.text();
+    console.log(response_string);
     const messages=/**@type Message[]*/(JSON.parse(response_string));   
     if (messages==null){
         return;
@@ -127,7 +150,6 @@ async function receiveEvents(){
         }
     }
 }
-let HtmxDiv=assertNotNull(document.getElementById("htmx-things"))
 const startthing="Current effect set to "
 addEventListener("keydown", function(e){
     switch (e.key){
