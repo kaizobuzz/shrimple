@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"sync"
+	"shrimple/src/shared"
 	"time"
 )
 
@@ -60,18 +60,17 @@ type game struct {
 	Responses  chan MessageResult
 }
 
-var ActiveGames map[string]*game
-var ActiveGamesLock sync.Mutex
+var ActiveGames shared.Locked[map[string]*game]
 var NextGameId string
 
 func removeGame(id string) {
-	ActiveGamesLock.Lock()
-	defer ActiveGamesLock.Unlock()
-	delete(ActiveGames, id)
+    ActiveGames.SafeProcessInner (func(games_map map[string]*game){
+	    delete(games_map, id)
+    })
 }
 func makeNewGame() {
-	ActiveGamesLock.Lock()
-	defer ActiveGamesLock.Unlock()
+    active_games:=ActiveGames.SafeAccessInner()
+	defer ActiveGames.Lock.Unlock()
 	new_game := &game{
 		Id:        NextGameId,
 		Players:   make([]player, 0),
@@ -79,10 +78,10 @@ func makeNewGame() {
 		Messages:  make(chan *Message),
 		Responses: make(chan MessageResult),
 	}
-	ActiveGames[NextGameId] = new_game
+	active_games[NextGameId] = new_game
 	go checkActivity(new_game)
 	source := rand.NewSource(time.Now().UnixNano())
-	for ActiveGames[NextGameId] != nil {
+	for active_games[NextGameId] != nil {
 		NextGameId = fmt.Sprintf("%d", source.Int63())
 	}
 }
@@ -92,6 +91,6 @@ func GiveNewGameId(w http.ResponseWriter, r *http.Request) {
 	makeNewGame()
 }
 func IntializeMap() {
-	ActiveGames = make(map[string]*game)
+	ActiveGames = shared.Locked[map[string]*game]{Value: make(map[string]*game)}
 	NextGameId = fmt.Sprintf("%d", rand.Uint64())
 }

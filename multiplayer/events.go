@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"shrimple/src/shared"
 )
 
 
@@ -30,17 +31,17 @@ func getGameId(r *http.Request) (*game, error) {
 		return nil, err
 	}
 	id := u.Query().Get("id")
-	ActiveGamesLock.Lock()
-	currentgame := ActiveGames[id]
-	ActiveGamesLock.Unlock()
+    current_game:=shared.SafeProcessLockedWithReturn(&ActiveGames, func(games map[string]*game)*game {
+       return games[id] 
+    })
 	if id == "" {
 		return nil, errors.New("id query is empty")
 	}
-	if currentgame == nil {
+	if current_game == nil {
 		return nil, errors.New(fmt.Sprint("game with id", id, "doesn't exist"))
 	}
 	//maybe should use 404 instead?
-	return currentgame, nil
+	return current_game, nil
 }
 func getRequestInfo(
 	r *http.Request,

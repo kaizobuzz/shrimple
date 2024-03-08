@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-    "shrimple/src/shared"
+	"shrimple/src/shared"
+	"sync"
 )
 
 var UserMap shared.Locked[map[string]*User]
@@ -130,7 +131,11 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 	}, nil
 }
 
+var UserFileLock sync.Mutex
+
 func WriteUsersToFile() error {
+    UserFileLock.Lock()
+    defer UserFileLock.Unlock()
 	var userlist []User
 	for _, value := range UserMap.SafeAccessInner() {
 		userlist = append(userlist, *value)
@@ -171,20 +176,18 @@ func ReadUsersFromFile() error {
     if err != nil {
         return err
     }
-
-    var adding_err error = nil;
-    adduserstomap := func (usermap map[string]*User) {
+    adduserstomap := func (usermap map[string]*User) error{
         for _, u := range jsonuserlist {
             user, err := deserializeUser(u)
             if err != nil {
-                adding_err = err;
-                return
+                return err
             }
             usermap[user.Username] = user
         }
+        return nil
     }
 
-    UserMap.SafeProcessInner(adduserstomap)
+    adding_err:=shared.SafeProcessLockedWithReturn(&UserMap, adduserstomap)
     if adding_err != nil {
         return adding_err
     }

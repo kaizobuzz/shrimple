@@ -38,5 +38,9 @@ func (l *Locked[T]) SafeProcessInner(x func(T)) {
     x(l.Value)
     l.Lock.Unlock();
 }
-
+func SafeProcessLockedWithReturn[T, V any](locked *Locked[T], function func(T)V) V{
+    locked.Lock.Lock()
+    defer locked.Lock.Unlock()
+    return function(locked.Value)
+}
 
