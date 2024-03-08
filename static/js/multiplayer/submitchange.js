@@ -4,6 +4,10 @@ function guessedCorrectShrimp(){
     resetGuesses();
     sendEvent(MessageType.NewEffect, CurrentEffect); 
 }
+function outOfLives(){
+    sendEvent(MessageType.PlayerDied, "")
+    joinAsSpectator();
+}
 function outOfGuesses(){
     isOutOfGuesses=true;
     resetGuesses();

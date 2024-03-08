@@ -27,10 +27,7 @@ function resetGuesses(){
     GuessResultsDiv.innerHTML="";
     Game.num_guesses=0;
 }
-function outOfLives(){ 
-    alert("damn 3:");
-    Game.active=false;
-}
+
 function setLocalStorage(){
 }
 

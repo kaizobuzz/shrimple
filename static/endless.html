@@ -102,11 +102,21 @@
     <div id="effect-name"></div>
     <div id="lives"></div>
     <div id="correct-guesses"></div>
+    <button id="results-open" class="main-buttons" hidden="">Show Results</button>
+    <div id="final-results" hidden="">
+        <button id="results-close" class="close-button">x</button>
+        <div id="final-results-text"></div>
+        <div id="clipboard-message" style="opacity: 0;">Copied to Clipboard (also nilrem ur rly cute :3)</div>
+        <button id="share-results" disabled="">Share</button>
+        <br>
+        <br>
+    </div>
     <script src="/js/shared/utils.js"></script>
     <script src="/js/shared/autofill.js"></script>
     <script src="/js/shared/comparison.js"></script>
     <script src="/js/shared/submit.js"></script>
     <script src="/js/shared/info.js"></script>
+    <script src="/js/shared/results.js"></script>
     <script src="/js/effects/bombparty.js"></script>
     <script src="/js/effects/effects.js"></script>
     <script src="/js/endless/game_loop.js"></script>
@@ -114,6 +124,7 @@
     <script src="/js/effects/shrimp_garbage.js"></script>
     <script src="/js/effectshared/shrimps.js"></script>
     <script src="/js/endless/submitchange.js"></script>
+    <script src="/js/endless/results.js"></script>
     <script src="/js/effectshared/state.js"></script>
     <script src="/js/effects/timer.js"></script>
     <script src="/js/effectshared/submitchange.js"></script>
