@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-    "sync"
+    "shrimple/src/shared"
 )
 
-var UserMap map[string]*User
-var UserMapLock sync.Mutex
+var UserMap shared.Locked[map[string]*User]
 
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
@@ -33,8 +32,8 @@ func CreateUser(username, password string) error {
 		return errors.New("Account already exists with that name")
 	}
 	hash := hashPassword(username, password)
-    UserMapLock.Lock()
-	UserMap[username] = &User{
+
+    var new_user *User = &User{
 		Username: username,
 		Id: int64(
 			len(UserMap),
@@ -44,6 +43,10 @@ func CreateUser(username, password string) error {
 		Friends:                []int64{},
 		IncomingFriendRequests: []int64{},
 		OutgoingFriendRequests: []int64{},
+    }
+
+    UserMapLock.Lock()
+	UserMap[username] = &User{
 	}
     UserMapLock.Unlock()
 	err := WriteUsersToFile()
@@ -75,7 +78,6 @@ type jsonUser struct {
 }
 
 func deserializeUser(user_json jsonUser) (*User, error) {
-
 	id, err := user_json.Id.Int64()
 	if err != nil {
 		return nil, err
@@ -126,12 +128,11 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 
 func WriteUsersToFile() error {
 	var userlist []User
-    UserMapLock.Lock()
-	for _, value := range UserMap {
+	for _, value := range UserMap.SafeAccessInner() {
 		userlist = append(userlist, *value)
 	}
-    UserMapLock.Unlock()
-    //TODO might be a problem later?
+    UserMap.Lock.Unlock();
+    
 	bytes, err := json.Marshal(userlist)
 	if err != nil {
 		return err
@@ -155,24 +156,35 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
-    UserMapLock.Lock()
-    defer UserMapLock.Unlock()
-	UserMap = make(map[string]*User)
+    UserMap = shared.Locked[map[string]*User]{Value: make(map[string]*User)}
 	var jsonuserlist []jsonUser
 
 	file, err := os.ReadFile("data/users.json")
 	if err != nil {
 		return err
 	}
-	json.Unmarshal(file, &jsonuserlist)
+    err = json.Unmarshal(file, &jsonuserlist)
+    if err != nil {
+        return err
+    }
 
-	for _, u := range jsonuserlist {
-		user, err := deserializeUser(u)
-		if err != nil {
-			return err
-		}
-		UserMap[user.Username] = user
-	}
+    var adding_err error = nil;
+    adduserstomap := func (usermap map[string]*User) {
+        for _, u := range jsonuserlist {
+            user, err := deserializeUser(u)
+            if err != nil {
+                adding_err = err;
+                return
+            }
+            usermap[user.Username] = user
+        }
+    }
+
+    UserMap.SafeProcessInner(adduserstomap)
+    if adding_err != nil {
+        return adding_err
+    }
+
 	return nil
 }
 
