@@ -23,8 +23,8 @@ type Locked[T any] struct {
 }
 
 func (l *Locked[T]) SafeAccessInner() T {
-    l.lock.Lock();
-    return l.value
+    l.Lock.Lock();
+    return l.Value
 }
 
 func (l *Locked[T]) SafeWriteInner(val T) {
@@ -33,11 +33,10 @@ func (l *Locked[T]) SafeWriteInner(val T) {
     l.Lock.Unlock();
 }
 
-func (l *Locked[T]) SafeProcessInner[V any](x func(T)V)V {
+func (l *Locked[T]) SafeProcessInner(x func(T)) {
     l.Lock.Lock();
-    var val V = x(l.Value)
+    x(l.Value)
     l.Lock.Unlock();
-    return val
 }
 
 

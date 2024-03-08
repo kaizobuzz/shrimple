@@ -12,9 +12,12 @@ var UserMap shared.Locked[map[string]*User]
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
 	// for a planned change to indexing by id
-    UserMapLock.Lock()
-    defer UserMapLock.Unlock()
-	return UserMap[username]
+
+    var u *User = nil;
+    usermap := UserMap.SafeAccessInner();
+    u = usermap[username]
+    UserMap.Lock.Unlock()
+    return u
 }
 
 type User struct {
@@ -32,11 +35,13 @@ func CreateUser(username, password string) error {
 		return errors.New("Account already exists with that name")
 	}
 	hash := hashPassword(username, password)
+    
+    usermap := UserMap.SafeAccessInner()
 
     var new_user *User = &User{
 		Username: username,
 		Id: int64(
-			len(UserMap),
+			len(usermap),
 		), //should be a mutex to avoid duplicate ids but oh well
 		PasswordHash:           hash,
 		Experience:             0,
@@ -45,15 +50,14 @@ func CreateUser(username, password string) error {
 		OutgoingFriendRequests: []int64{},
     }
 
-    UserMapLock.Lock()
-	UserMap[username] = &User{
-	}
-    UserMapLock.Unlock()
+	usermap[username] = new_user
+    UserMap.Lock.Unlock()
+
 	err := WriteUsersToFile()
 	if err != nil {
-        UserMapLock.Lock()
-		delete(UserMap, username)
-        UserMapLock.Unlock()
+        UserMap.SafeProcessInner(func(x map[string]*User){
+            delete(x, username)
+        });
 		return err
 	}
 	return nil
