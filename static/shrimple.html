@@ -17,6 +17,10 @@
 
 <body>
     <div id="settings-bar">
+        <a class="new-link" href="index.html">        
+        <button id="home-button">Back to homepage</button>
+        </a>
+
         <div id="settings">
             <button id="start-info-open">&nbsp?&nbsp</button>&nbsp;
             <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
@@ -52,7 +56,7 @@
                     <div class="column"><img src="img/shrimphide.png" /></div>
                     <div class="column">This field of the shrimp is hidden </div>
                 </div>
-                <h2><b>Clamplicated Info</b></h2> 
+                <h2><b>Clamplicated Info</b></h2>
                 In this mode, some fields at random will be hidden.
             </div>
         </div>
@@ -75,8 +79,8 @@
     <div id="final-results" hidden="">
         <button id="results-close" class="close-button">x</button>
         <div id="final-results-text"></div>
-        <div id="clipboard-message" style="opacity: 0;">Copied to Clipboard (also nilrem ur rly cute :3)</div>
-        <button id="share-results" disabled="">Share</button>
+        <div id="clipboard-message" style="opacity: 0;">Copied to Clipboard</div>
+        <button id="share-results" class="main-buttons" disabled="">Share</button>
         <br>
         <br>
     </div>

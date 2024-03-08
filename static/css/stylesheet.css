@@ -25,7 +25,18 @@ body {
     position: relative;
     background-color: #595b60;
 }
-
+#home-button {
+    float: left;
+    background-color: #2d2e31;
+    font-family: "Mooli", sans-serif;
+    font-size: large;
+    color: #C6C9CD;
+    border-color: #2d2e31;
+}
+#home-button:hover{
+    background-color: #595b60;
+    border-color: #595b60;
+}
 #settings-bar {
     min-height: 1.5em;
     background-color: #2d2e31;
@@ -94,3 +105,25 @@ details[open] {
     padding: 0.5em;
 }
 
+.main-buttons {
+    font-family: "Mooli", sans-serif;
+    font-size: large;
+    color: #C6C9CD;
+    border-radius: 0.5em;
+    background-color: #535054;
+    border-color: #535054;
+}
+.main-buttons:hover {
+    background-color: #736f74;
+    border-color: #736f74;
+}
+.center{
+    text-align: center;
+}
+.full-center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}

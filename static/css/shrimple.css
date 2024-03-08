@@ -148,25 +148,15 @@ li:hover {
     background-color: #fc766f;
     border-color: #fc766f;
 }
-
+.center{
+    text-align: center;
+}
 #results-open {
     position: relative;
     top: 2em;
 }
 
-.main-buttons {
-    font-family: "Mooli", sans-serif;
-    font-size: large;
-    border-radius: 0.5em;
-    background-color: #535054;
-    border-color: #535054;
-    color: #C6C9CD;
-}
-.main-buttons:hover {
-    background-color: #736f74;
-    border-color: #736f74;
 
-}
 #final-results {
     width: 36em;
     z-index: 2;
