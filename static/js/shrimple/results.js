@@ -34,6 +34,7 @@ function renderEndPopup(){
         FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render+remainingtime);
     });
     FinalResults.hidden=false;
+    FinalResults.style.opacity=1;
     ShareButton.disabled=false;
     Game.active=false;
 }

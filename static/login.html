@@ -11,9 +11,12 @@
 
 <body>
     <div id="settings-bar">
+        <a class="new-link" href="index.html">
+            <button id="home-button">Back to homepage</button>
+        </a>
         <div id="settings">
-            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
-                hx-swap="innerHTML"></div>
+            <a href="/login.html" id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button"
+                hx-target="this" hx-swap="innerHTML"></a>
         </div>
     </div>
     <div class="main-info">
@@ -32,10 +35,10 @@
             </form>
             <div id="login-status-message"></div>
         </div>
-    <br>
-    Don't have an account?
-    <br>
-    <a class="new-link" href="account_creation.html">Sign up now!</a>
+        <br>
+        Don't have an account?
+        <br>
+        <a class="new-link" href="account_creation.html">Sign up now!</a>
     </div>
 </body>
 

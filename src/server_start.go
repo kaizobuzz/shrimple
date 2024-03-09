@@ -7,12 +7,10 @@ import (
 	"shrimple/multiplayer"
 	"shrimple/src/shared"
 )
-
 func Start_Server() {
 	Initialize()
-
 	fmt.Print(SERVER_PRITAVE_KEY)
-
+    go takeStdIn()
 	port := "17212"
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)

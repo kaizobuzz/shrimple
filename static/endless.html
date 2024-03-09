@@ -15,10 +15,13 @@
 
 <body>
     <div id="settings-bar">
+        <a class="new-link" href="index.html">
+            <button id="home-button">Back to homepage</button>
+        </a>
         <div id="settings">
             <button id="start-info-open">&nbsp?&nbsp</button>&nbsp;
-            <div id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
-                hx-swap="innerHTML"></div>
+            <a href="/login.html" id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button"
+                hx-target="this" hx-swap="innerHTML"></a>
         </div>
     </div>
     <h1>Endless</h1>
@@ -61,11 +64,11 @@
         </details>
         <details>
             <summary>Effects</summary>
-            In Endless Mode, after each guess, you may get a 
+            In Endless Mode, after each guess, you may get a
             random effect. <br>
             The effect, if not instant, lasts 4 guesses.<br>
             The effects can be of the following:<br>
-            <b>Guess Field Hide:</b> While this effect is active, each 
+            <b>Guess Field Hide:</b> While this effect is active, each
             field of the shrimp has a chance of its comparison being hidden.<br>
             <b>Bomb Party:</b> You are given a three letter prompt and you
             must submit a shrimp that includes that prompt within 15

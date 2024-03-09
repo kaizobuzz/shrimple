@@ -139,8 +139,7 @@ li:hover {
 
 .close-button {
     border-radius: 25%;
-    background-color: #fc5a52;
-    border-color: #fc5a52;
+    background-color: #fc5a52; border-color: #fc5a52;
     float: right;
 }
 
@@ -148,9 +147,7 @@ li:hover {
     background-color: #fc766f;
     border-color: #fc766f;
 }
-.center{
-    text-align: center;
-}
+
 #results-open {
     position: relative;
     top: 2em;
@@ -168,6 +165,7 @@ li:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0.2em;
+    transition: opacity 0.3s;
 }
 
 #clipboard-message {

@@ -1,5 +1,5 @@
 async function checkIfUseClamplicatedInfo(){
-    await sleep(0.2);
+    await sleep(0.1);
     if (mode=="clamplicated"){
         ClamplicatedInfo.hidden=false;
     }
