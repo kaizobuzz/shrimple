@@ -31,7 +31,7 @@ type ClientPlayer struct {
 }
 
 const (
-	NewGuess uint8 = iota
+	NewGuess int = iota
 	NewEffect
 	PlayerList
 	PlayerDied
@@ -175,7 +175,6 @@ func getStartStateResponse(game *game, message *Message) MessageResult {
 func getEventsResponse(game *game, message *Message) MessageResult {
 	player_index, err := getPlayerIndex(game, message)
 	if err != nil {
-		log.Println("event ?")
 		return MessageResult{
 			Err:        err,
 			Statuscode: http.StatusBadRequest}
@@ -325,7 +324,7 @@ Loop:
 		case <-time.After(time.Minute):
 			break Loop
 		}
-		process_start := time.Now()
+		//process_start := time.Now()
 		switch message.Type {
 		case NewGuess, NewEffect, PlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
@@ -364,7 +363,7 @@ Loop:
 		default:
 			game.Responses <- MessageResult{
 				Message:    nil,
-				Err:        errors.New(fmt.Sprintf("message type num %d unsupported", message.Type)),
+				Err:        fmt.Errorf("message type num %d unsupported", message.Type),
 				Statuscode: http.StatusBadRequest,
 			}
 		}
@@ -372,7 +371,7 @@ Loop:
 			time_check = time.Now()
 			checkPlayerActivity(game)
 		}
-		log.Println("main game loop process took: ", time.Since(process_start).Milliseconds(), "ms")
+		//log.Println("main game loop process took: ", time.Since(process_start).Milliseconds(), "ms")
 	}
 	for {
 		select {

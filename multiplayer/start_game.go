@@ -12,7 +12,7 @@ const NUM_SHRIMP_FIELDS uint = 6
 const MAX_LIVES uint = 3
 
 type Message struct {
-	Type     uint8
+	Type     int
 	Id       string
 	Jsondata string
 }
