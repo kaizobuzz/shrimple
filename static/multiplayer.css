@@ -41,12 +41,20 @@
     z-index: 3;
 }
 #main-player{
-    width: 60%;
-    position: relative;
+    width: 50%;
+    position: absolute;
+    left: 30%;
 }
 .other-player{
     position: absolute;
-    width: 40%;
-    right: 0%;
+    width: 30%;
+    left: 0%;
     top: 0%;
+}
+#chat{
+    position: absolute;
+    left: 80%;
+    width: 20%;
+    background-color: #2e2f33;
+    height: 50%;
 }

@@ -32,4 +32,5 @@ function setLocalStorage(){
 }
 
 let LivesDiv=assertNotNull(document.getElementById("lives"));
+let OutOfGuessFunction=function(){}
 

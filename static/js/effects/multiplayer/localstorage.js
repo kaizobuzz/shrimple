@@ -14,7 +14,6 @@ function getTimeOffset(){
     let offset=last_time_object.time-performance.now(); 
     return [offset, /**@type number*/last_time_object.width];
 }
-
 function setTimeOffset(){
     let last_time_object={
         game_id: GameId,

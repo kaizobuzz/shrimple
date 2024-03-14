@@ -12,6 +12,7 @@
  *@property {string} Name 
  *@property {boolean} IsReady
  * */
+
 async function waitForGameStart(){ 
     await sleep(1);
     while (true){
@@ -73,13 +74,12 @@ function getPlayerIndex(player_name){
         return element.name==player_name;
     })
 }
-async function getPlayerId(e){
-    console.log(e);
-    let display_name=/**@type string*/DisplayNameInput.value; 
+async function getPlayerId(){
+    DisplayName=/**@type string*/DisplayNameInput.value; 
     const join_message=/**@type Message*/({
         Type: MessageType.Join,
         Id: "",
-        Jsondata: display_name,
+        Jsondata: DisplayName,
         });
     console.log(join_message);
     const join_response=await fetch("/api/v1/newjoin", {
@@ -115,6 +115,7 @@ async function getPlayerId(e){
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";
 let PlayerAccepted=false;
+let DisplayName="";
 let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
@@ -151,4 +152,5 @@ StartButton.addEventListener("click", function(){
         StartButton.innerText="ready";
     }
 });
+
 

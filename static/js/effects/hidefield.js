@@ -21,10 +21,14 @@ function submitwithHiddenFields(input){
 
 }
 function hideRandomFieldsOn(){
+    HideFieldCount+=1
     SubmitOverride.submit_function=submitwithHiddenFields;
 }
 function hideRandomFieldsOff(){
-    disableSubmitFunctionOverride();
+    HideFieldCount-=1
+    if (HideFieldCount<1){ 
+        disableSubmitFunctionOverride();
+    }
 }
-
+var HideFieldCount=0
 

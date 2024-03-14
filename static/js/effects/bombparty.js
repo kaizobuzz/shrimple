@@ -46,7 +46,7 @@ async function useBomb(){
         if (time_remaining<=0){
            //TODO explode bomb 
             submitShrimpForBomb();
-            outOfGuesses();
+            OutOfGuessFunction;
             break;
         }
     }
@@ -58,7 +58,7 @@ async function checkForBombs(){
     let timer_duration=TimerDurationSeconds;
     TimerDurationSeconds=1000000;
     const guesshtml=GuessResultsDiv.innerHTML;
-    AutofillDisabled=true;
+    AutofillDisabled+=1;
     BombPartyActive=true;
     SubmitOverride.submit_function=submitShrimpForBomb;
     SubmitOverride.can_submit_function=canSubmitForBomb;
@@ -66,7 +66,7 @@ async function checkForBombs(){
         await useBomb();
     }
     TimerDurationSeconds=timer_duration;
-    AutofillDisabled=false;
+    AutofillDisabled-=1;
     BombPartyActive=false;
     disableSubmitFunctionOverride();
     GuessResultsDiv.innerHTML=guesshtml;

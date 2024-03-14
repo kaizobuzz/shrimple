@@ -10,7 +10,7 @@ async function startGameLoop(){
     while (Game.active){
         await sleep(FRAME_TIME)
         iterator+=1;
-        if (iterator>(3/FRAME_TIME)){
+        if (iterator>(1/FRAME_TIME)){
             iterator=0;
             receiveEvents();
         }
@@ -23,8 +23,5 @@ async function startGameLoop(){
         NewEffects=[];
     }
 }
-function redirectOut(){
-    console.log("you would be redirected here")
-    //window.location.replace("/timeout.html")
-}
+
 

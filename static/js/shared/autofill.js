@@ -46,7 +46,7 @@ function autofillShrimps() {
     AutofillResults.hidden=false;
     let input=PlayerInput.value.toLowerCase();
     updateSubmitButton(input);
-    if (AutofillDisabled){
+    if (AutofillDisabled>0){
         AutofillResults.innerHTML="";
         return;
     }
@@ -122,7 +122,7 @@ let AutofillResults=assertNotNull(document.getElementById("autofill-results"));
 let InputContainer=assertNotNull(document.querySelector("#shrimp-search"));
 let InfoCheckbox=assertInputElement(document.getElementById("info-toggle"));
 let ShowStats=false;
-let AutofillDisabled=false;
+let AutofillDisabled=0;
 if (InfoCheckbox.checked){
     ShowStats=true;
 }

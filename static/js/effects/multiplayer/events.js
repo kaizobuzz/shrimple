@@ -6,7 +6,6 @@
  * @property {string} Jsondata
 */
 const JsonContentHeaderValue="application/json; charset=UFT-8"
-
 /**
  * @readonly 
  * @enum {string}
@@ -72,6 +71,7 @@ async function sendEvent(message_type, event){
         Id: CurrentKeyObject.playerkey,
         Jsondata: JSON.stringify(event),
     })
+    console.log(message);
     const response=await fetch("/api/v1/sendevents", {
         method: "POST",
         body: JSON.stringify(message), 
@@ -100,7 +100,6 @@ async function receiveEvents(){
         Id: CurrentKeyObject.playerkey,
         Jsondata: "",
     })
-    console.log(message)
     const response=await fetch("/api/v1/getevents",{
         method: "POST",
         body: JSON.stringify(message),
@@ -116,7 +115,9 @@ async function receiveEvents(){
         return;
     }
     const response_string=await response.text();
-    console.log(response_string);
+    if (response_string!="[]"){
+        console.log(response_string);
+    }
     const messages=/**@type Message[]*/(JSON.parse(response_string));   
     if (messages==null){
         return;
@@ -143,12 +144,18 @@ async function receiveEvents(){
                 //TODO
                 break;
             case MessageType.Join:
-                addPlayer({Name: message.Id, IsReady: false})
+                addPlayer({Name: message.Id, IsReady: false});
                 break;
+            case MessageType.SendChat:
+                addChat(message.Id, message.Jsondata);
             default:
                 console.error("Invalid effect number ", message.Type)
         }
     }
+}
+function redirectOut(){
+    console.log("you would be redirected here")
+    //window.location.replace("/timeout.html")
 }
 const startthing="Current effect set to "
 addEventListener("keydown", function(e){
@@ -177,4 +184,5 @@ addEventListener("keydown", function(e){
             break;
     }
 })
+
 let PlayerId=""

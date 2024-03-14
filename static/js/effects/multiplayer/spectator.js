@@ -13,7 +13,7 @@ async function getGameState(){
         }
         return
     }
-    const state=/**@type Message*/(await state_response.json());
+    const state=/**@type {Message}*/(await state_response.json());
     if (state.Type!=MessageType.FullGameState){
         return 
     }
@@ -31,8 +31,14 @@ function updateLives(lives, player_name){
     for (;lives>target_player.lives; lives--){
         loseLife(target_player);
     }
+}
+/**@param {Player} player*/ 
+function loseLife(player){
+    player.lives--;
+    player.lives_node.innerText="Remaining lives: "+player.lives;
 
 }
+
 async function joinAsSpectator(){
     while (Game.active==true){
         await sleep(1);

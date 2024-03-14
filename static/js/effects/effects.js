@@ -54,8 +54,8 @@ function renderEffects(effects){
                 break;
             case NoAutofill:
                 NewEffects.push(new GameEffect(
-                    function(){AutofillDisabled=true}, 
-                    function(){AutofillDisabled=false}, 
+                    function(){AutofillDisabled+=1}, 
+                    function(){AutofillDisabled-=1}, 
                     EffectDuration.NoAutofill));
                 displayEffectName("No Autofill");
                 //this is notable because it also disables showing stats initially so might have to do something about that

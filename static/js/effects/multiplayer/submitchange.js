@@ -17,12 +17,6 @@ function outOfGuesses(){
         outOfLives();
     }
 }
-/**@param {Player} player*/ 
-function loseLife(player){
-    player.lives--;
-    player.lives_node.innerText="Remaining lives: "+player.lives;
-
-}
 /**@param {Guess} new_guess 
 * @param {string} player_id*/
 function renderGuess(new_guess, player_id){
@@ -36,7 +30,7 @@ function renderGuess(new_guess, player_id){
     let guess_div=target_player.guess_node;
     let guessHtml="<div class='other-row'>";
     guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
-    guess_div.innerHTML+=DOMPurify.sanitize(guessHtml); 
+    guess_div.innerHTML+=guessHtml; 
     if (new_guess.Status==GuessStatus.CorrectGuess){ 
         speedUpTimerPermanent();
         guess_div.innerHTML="";
@@ -59,7 +53,7 @@ function eventOnSubmit(comparisons){
         isCorrectGuess=false;
         guess_status=GuessStatus.CorrectGuess;
     }
-    sendEvent(MessageType.NewGuess, /**@type Guess*/({
+    sendEvent(MessageType.NewGuess, /**@type Guess }*/({
         Results: Object.values(comparisons),
         Status: guess_status}));
 }
@@ -68,3 +62,4 @@ GameOverFunctions.win_function=guessedCorrectShrimp;
 GameOverFunctions.lose_function=outOfGuesses;
 let isOutOfGuesses=false;
 let isCorrectGuess=false;
+OutOfGuessFunction=outOfGuesses;
