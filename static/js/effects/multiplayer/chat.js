@@ -3,14 +3,15 @@ function sendChat(e){
     if (e.key=='Enter'){
         let input=ChatInput.value;
         sendEvent(MessageType.SendChat, input);
-        addChat(DisplayName, input)
+        addChat(DisplayName, " "+input+" ");
         ChatInput.value="";
     }
 }
 /**@param {string} player_name  
  * @param {string} message_content */
 function addChat(player_name, message_content){
-    ChatDiv.innerText+=player_name+": "+message_content;
+    let message=message_content.slice(1, message_content.length-1)
+    ChatDiv.innerText+=player_name+": "+message;
     ChatDiv.innerHTML+="<br>"
 }
 let ChatDiv=assertNotNull(document.getElementById("chat-messages"));
