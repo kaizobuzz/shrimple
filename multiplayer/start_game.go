@@ -53,7 +53,7 @@ func getNewEmptyPlayer() player {
 
 type game struct {
 	Id         string
-	Players    []player
+	Players    []*player
 	HasError   bool
 	HasStarted bool
 	Messages   chan *Message
@@ -73,7 +73,7 @@ func makeNewGame() {
 	defer ActiveGames.Lock.Unlock()
 	new_game := &game{
 		Id:        NextGameId,
-		Players:   make([]player, 0),
+		Players:   make([]*player, 0),
 		HasError:  false,
 		Messages:  make(chan *Message),
 		Responses: make(chan MessageResult),

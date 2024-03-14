@@ -72,7 +72,7 @@ func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
 	}
 }
 func getPlayerIndex(game *game, message *Message) (int, error) {
-	player_index := slices.IndexFunc(game.Players, func(p player) bool {
+	player_index := slices.IndexFunc(game.Players, func(p *player) bool {
 		return p.Userid == message.Id
 	})
 	if player_index == -1 {
@@ -83,19 +83,19 @@ func getPlayerIndex(game *game, message *Message) (int, error) {
 	return player_index, nil
 }
 func checkPlayerActivity(game *game) {
-	for i, player := range game.Players {
+	for _, player := range game.Players {
 		if time.Since(player.LastTime) > time.Minute {
 			sendEventToOtherPlayers(game, -1, &Message{
 				Type: Disconnect,
 				Id:   player.DisplayName,
 			})
-			game.Players = shared.UnstableDeleteIndex(game.Players, i)
+            game.Players, _ = shared.UnstableDelete(game.Players, player)
 		}
 	}
 }
 func addPlayer(game *game, message *Message) MessageResult {
 	var display_name = message.Jsondata
-	if slices.ContainsFunc(game.Players, func(p player) bool {
+	if slices.ContainsFunc(game.Players, func(p *player) bool {
 		return p.DisplayName == display_name
 	}) {
 		return MessageResult{
@@ -108,7 +108,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 	source := rand.NewSource(time.Now().UnixNano())
 	display_sum := sha256.Sum256([]byte(new_player.DisplayName + fmt.Sprintf("%d", source.Int63())))
 	new_player.Userid = base64.StdEncoding.EncodeToString(display_sum[:])
-	game.Players = append(game.Players, new_player)
+	game.Players = append(game.Players, &new_player)
 	return MessageResult{
 		Message: &Message{
 			Type:     RawText,
@@ -214,7 +214,7 @@ func readyUnreadyResponse(game *game, message *Message) MessageResult {
 func checkIfAllReadyWithPlayerExists(game *game, message *Message) {
 	player_index, _ := getPlayerIndex(game, message)
 	game.Players[player_index].IsReady = true
-	if !slices.ContainsFunc(game.Players, func(p player) bool {
+	if !slices.ContainsFunc(game.Players, func(p *player) bool {
 		return p.IsReady == false
 	}) && len(game.Players) >= 2 {
 		game.HasStarted = true
@@ -271,7 +271,7 @@ func voteToKickResponse(game *game, message *Message) MessageResult {
 	}
 	sending_player := game.Players[player_index]
 	target_player_name := message.Jsondata
-	target_index := slices.IndexFunc(game.Players, func(p player) bool {
+	target_index := slices.IndexFunc(game.Players, func(p *player) bool {
 		return p.DisplayName == target_player_name
 	})
 	if target_index == -1 {
