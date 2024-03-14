@@ -21,34 +21,34 @@
     </div>
     <div id="main-game">
         <h1>Multiplayer</h1>
-        <div id="main-player">
-            <div id="guesses">
-            </div>
-            <div id="shrimp-search">
-                <div id="player-input">
-                    <input class="form-control" id="player-guess" value="" placeholder="Search for a shrimp..." />
+        <div id="main-flex">
+            <div id="other-players" class="main-flex"></div>
+            <div id="main-player" class="main-flex">
+                <div id="guesses">
                 </div>
-                <button id="input-submit" disabled="">submit</button>
-                <br>
-                <label>Show Shrimp Info</label>
-                <input id="info-toggle" type="checkbox" value="shrimp-info" />
-                <ul id="autofill-results">
+                <div id="shrimp-search">
+                    <div id="player-input">
+                        <input class="form-control" id="player-guess" value="" placeholder="Search for a shrimp..." />
+                    </div>
+                    <button id="input-submit" disabled="">submit</button>
+                    <br>
+                    <label>Show Shrimp Info</label>
+                    <input id="info-toggle" type="checkbox" value="shrimp-info" />
+                    <div id="max-timer">
+                        <div id="current-timer"></div>
+                    </div>
+                    <ul id="autofill-results" class="translate-up">
 
-                </ul>
+                    </ul>
+                </div>
+                <div id="effect-name"></div>
+                <div id="lives"></div>
+                <div id="correct-guesses"></div>
             </div>
-            <div id="max-timer">
-                <div id="current-timer"></div>
+            <div id="chat" class="main-flex">
+                <div id="chat-messages"></div>
+                <input class="form-control" id="chat-form" />
             </div>
-            <div id="effect-name"></div>
-            <div id="lives"></div>
-            <div id="correct-guesses"></div>
-        </div>
-        <div class="other-player"></div>
-        <div id="other-guesses"></div>
-        <div id="other-lives"></div>
-        <div id="chat">
-            <div id="chat-messages"></div>
-            <input class="form-control" id="chat-form" />
         </div>
     </div>
     <div id="display-name-input-div">

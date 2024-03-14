@@ -1,10 +1,20 @@
+#main-flex{
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 0;
+
+}
 #max-timer{
     background-color: #515052;
-    width: 30em;
+    position: relative;
     margin-left: auto;
     margin-right: auto;
-    position: relative;
     top: 1em;
+    width: 18em;
+    z-index: -1;
 }
 #current-timer{
     background-color: #93b675;
@@ -12,6 +22,9 @@
 }
 #other-lives{
     text-align: left;
+}
+.translate-up{
+    bottom: 2em;
 }
 .other-row{
     text-align: center;
@@ -41,27 +54,29 @@
     z-index: 3;
 }
 #main-player{
-    width: 50%;
-    position: absolute;
-    left: 30%;
+    width: 40%;
+    order: 2;
+}
+#other-players{
+    width: 25%;
+    order: 1;
 }
 .other-player{
-    position: absolute;
-    width: 30%;
-    left: 0%;
-    top: 0%;
 }
 #chat{
+    order: 3;
     text-align: left;
-    position: absolute;
-    left: 80%;
     width: 20%;
     background-color: #2e2f33;
-    height: 50%;
+    min-height: 10em;
 }
 #chat-form{
     width: 80%;
-    position: absolute;
-    left: 10%;
-    bottom: 0;
+}
+.main-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex-basis: 100%;
+    flex: 1;
 }

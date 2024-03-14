@@ -19,7 +19,7 @@
     background-color: #535054;
     border-color: #4B484C;
     color: #C6C9CD;
-    width: 23em;
+    width: 16em;
     font-size: large;
     font-family: "Mooli", sans-serif;
 }
@@ -41,7 +41,7 @@
     background-color: #92cea0;
     border-color: #92cea0;
     position: relative;
-    left: 15em;
+    left: 11em;
     bottom: 1.7em;
     font-size: large;
     border-radius: 0.25em;
@@ -77,15 +77,19 @@ li:hover {
 #autofill-results {
     cursor: pointer;
     text-align: left;
-    bottom: 3.2em;
+    position: relative;
     margin-left: auto;
     margin-right: auto;
-    position: relative;
-    width: 24em;
+    width: 18em;
     font-size: large;
     right: 1.05em;
 }
-
+.translate-up-slightly{
+    bottom: 3.2em;
+}
+.translate-up {
+    bottom: 5.2em;
+}
 .shrimp-info {
     text-align: center;
     font-size: small;
