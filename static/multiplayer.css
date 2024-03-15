@@ -23,9 +23,6 @@
 #other-lives{
     text-align: left;
 }
-.translate-up{
-    bottom: 2em;
-}
 .other-row{
     text-align: center;
     display: flex;
@@ -69,6 +66,7 @@
     width: 20%;
     background-color: #2e2f33;
     min-height: 10em;
+    padding-left: 0.5em;
 }
 #chat-form{
     width: 80%;

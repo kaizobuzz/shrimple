@@ -54,7 +54,7 @@ function addPlayer(player){
     let lives_node=document.createElement("div");
     node.appendChild(guess_node);
     node.appendChild(lives_node);
-    document.body.appendChild(node);
+    OtherPlayersDiv.appendChild(node);
     Players.push({
         name: player.Name,
         is_ready: player.IsReady,
@@ -119,6 +119,7 @@ let DisplayName="";
 let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
+let OtherPlayersDiv=assertNotNull(document.getElementById("other-players"));
 assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
 let GameId=window.location.href.split("?id=")[1];
 let CurrentKeyObject={
