@@ -1,7 +1,6 @@
 package shared
 import(
     "slices"
-    "errors"
     "fmt"
     "sync"
 )
