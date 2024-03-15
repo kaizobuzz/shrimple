@@ -17,12 +17,9 @@ func getCurrentUser(r *http.Request) (user *User, err error) {
 	}
 	user = GetUserByName(*username)
 	if user == nil {
-		return nil, errors.New(
-			fmt.Sprint(
-				"username ",
-				username,
-				" despite having a session token does not correspond to any user",
-			),
+		return nil, fmt.Errorf(
+			"username %s despite having a session token does not correspond to any user",
+			*username,
 		)
 	}
 	return user, nil
@@ -34,7 +31,7 @@ func getUsersForRequests(r *http.Request) (user *User, target *User, err error) 
 	target_username := r.FormValue("username")
 	target_user := GetUserByName(target_username)
 	if target_user != nil {
-		return nil, nil, errors.New(fmt.Sprint("target username: ", target_username, "is invalid"))
+		return nil, nil, fmt.Errorf("target username: %s is invalid", target_username)
 	}
 	user, err = getCurrentUser(r)
 	if err != nil {

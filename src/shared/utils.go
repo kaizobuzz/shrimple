@@ -8,7 +8,7 @@ import(
 func UnstableDelete[T comparable](slice []T, value T)([]T, error){
     index:=slices.Index(slice, value)
     if (index==-1){
-        return slice, errors.New(fmt.Sprint("value: ", value, "not found in slice: ", slice))
+        return slice, fmt.Errorf("value: %v not found in slice: %v", value, slice)
     }
     return UnstableDeleteIndex(slice, index), nil
 }

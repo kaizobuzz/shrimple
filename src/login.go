@@ -20,7 +20,7 @@ func hashPassword(username, password string) string {
 	if len(pepper) == 0 {
 		log.Fatal(errors.New("pepper too short (0 chars)"))
 	}
-	password = password + pepper
+	password = password + pepper + username
 	hash := sha256.Sum256([]byte(password))
 	return hex.EncodeToString(hash[:])
 }

@@ -5,7 +5,7 @@ import (
 	"log"
 )
 func takeStdIn(){
-    for{
+    for{ 
         var message_type string
         var arg string
         _, err:=fmt.Scan(&message_type, &arg)

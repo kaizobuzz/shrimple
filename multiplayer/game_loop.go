@@ -76,8 +76,10 @@ func getPlayerIndex(game *game, message *Message) (int, error) {
 		return p.Userid == message.Id
 	})
 	if player_index == -1 {
-		return player_index, errors.New(
-			fmt.Sprint("request with id: ", message.Id, " not found in: ", game.Players),
+		return player_index, fmt.Errorf(
+			"request with id: %s not found in: %+v",
+			message.Id,
+			game.Players,
 		)
 	}
 	return player_index, nil
@@ -89,7 +91,7 @@ func checkPlayerActivity(game *game) {
 				Type: Disconnect,
 				Id:   player.DisplayName,
 			})
-            game.Players, _ = shared.UnstableDelete(game.Players, player)
+			game.Players, _ = shared.UnstableDelete(game.Players, player)
 		}
 	}
 }
@@ -142,7 +144,7 @@ func sendBasicEvents(game *game, message *Message) MessageResult {
 	}
 	sendEventToOtherPlayers(game, player_index, message)
 	return MessageResult{
-		Message: &Message{Type: NoContent},
+		Message:    &Message{Type: NoContent},
 		Statuscode: http.StatusNoContent}
 }
 func getStartStateResponse(game *game, message *Message) MessageResult {
@@ -276,8 +278,10 @@ func voteToKickResponse(game *game, message *Message) MessageResult {
 	})
 	if target_index == -1 {
 		return MessageResult{
-			Err: errors.New(
-				fmt.Sprint("target player: ", target_player_name, " not found in ", game.Players),
+			Err: fmt.Errorf(
+				"target player: %s not found in %v",
+				target_player_name,
+				game.Players,
 			),
 			Statuscode: http.StatusBadRequest,
 		}

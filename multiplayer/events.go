@@ -38,7 +38,7 @@ func getGameId(r *http.Request) (*game, error) {
 		return nil, errors.New("id query is empty")
 	}
 	if current_game == nil {
-		return nil, errors.New(fmt.Sprint("game with id", id, "doesn't exist"))
+		return nil, fmt.Errorf("game with id %s doesn't exist", id)
 	}
 	//maybe should use 404 instead?
 	return current_game, nil
