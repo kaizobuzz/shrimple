@@ -1,4 +1,5 @@
 //@ts-check
+/**@param {KeyboardEvent} e  */
 function sendChat(e){
     if (e.key=='Enter'){
         let input=ChatInput.value;

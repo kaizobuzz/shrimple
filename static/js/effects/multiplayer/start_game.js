@@ -110,7 +110,6 @@ async function getPlayerId(){
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
     MainDiv.style.filter="";
     DisplayNameInputDiv.hidden=true;
-    getState();
 }
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";

@@ -148,6 +148,7 @@ async function receiveEvents(){
                 break;
             case MessageType.SendChat:
                 addChat(message.Id, message.Jsondata);
+                break;
             default:
                 console.error("Invalid effect number ", message.Type)
         }
