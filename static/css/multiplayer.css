@@ -5,7 +5,6 @@
     align-items: flex-start;
     flex-wrap: wrap;
     flex: 0;
-
 }
 #max-timer{
     background-color: #515052;
@@ -71,6 +70,10 @@
 }
 #chat-form{
     width: 80%;
+}
+#start-button{
+    position: absolute;
+    top: 50%;
 }
 .main-flex{
     display: flex;

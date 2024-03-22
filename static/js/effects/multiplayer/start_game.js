@@ -74,6 +74,11 @@ function getPlayerIndex(player_name){
         return element.name==player_name;
     })
 }
+function nameChosenFilter(){
+    MainDiv.style.filter="";
+    DisplayNameInputDiv.hidden=true;
+    StartButton.hidden=false;
+}
 async function getPlayerId(){
     DisplayName=/**@type string*/DisplayNameInput.value; 
     const join_message=/**@type Message*/({
@@ -108,8 +113,7 @@ async function getPlayerId(){
         playerkey: CurrentKey 
     }
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
-    MainDiv.style.filter="";
-    DisplayNameInputDiv.hidden=true;
+    nameChosenFilter();
 }
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";
@@ -135,8 +139,7 @@ if (CurrentKeyString!=null){
         }; 
         localStorage.removeItem("multiplayer-key");
     } else{
-        DisplayNameInputDiv.hidden=true;
-        MainDiv.style.filter="";
+        nameChosenFilter();
     }
 }
 let Players=/**@type Player[]*/([]);
