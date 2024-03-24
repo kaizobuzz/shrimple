@@ -87,8 +87,11 @@ li:hover {
 .translate-up-slightly{
     bottom: 3.2em;
 }
-.translate-up {
-    bottom: 7.2em;
+.translate-up-endless {
+    bottom: 8.5em;
+}
+.translate-up-multiplayer {
+    bottom: 6.2em;
 }
 .shrimp-info {
     text-align: center;

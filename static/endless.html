@@ -95,21 +95,23 @@
         <br>
         <label>Show Shrimp Info</label>
         <input id="info-toggle" type="checkbox" value="shrimp-info" />
-        <div id="max-timer">
-            <div id="current-timer"></div>
+        <div id="shrimp-div-down">
+            <div id="max-timer">
+                <div id="current-timer"></div>
+            </div>
+            <div id="lives"></div>
+            <div id="correct-guesses">&nbsp</div>
         </div>
-        <div id="lives"></div>
-        <ul id="autofill-results" class="translate-up">
+        <ul id="autofill-results" class="translate-up-endless">
 
         </ul>
     </div>
     <div id="effect-name"></div>
-    <div id="correct-guesses"></div>
     <button id="results-open" class="main-buttons" hidden="">Show Results</button>
-    <div id="final-results" hidden="">
+    <div id="final-results" hidden>
         <button id="results-close" class="close-button">x</button>
         <div id="final-results-text"></div>
-        <div id="clipboard-message" style="opacity: 0;">Copied to Clipboard (also nilrem ur rly cute :3)</div>
+        <div id="clipboard-message" style="opacity: 0;">Copied to Clipboard</div>
         <button id="share-results" class="main-buttons">Share</button>
         <br>
         <button id="reload" class="main-buttons">Play again</button>
