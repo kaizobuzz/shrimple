@@ -162,23 +162,23 @@ const startthing="Current effect set to "
 addEventListener("keydown", function(e){
     switch (e.key){
         case "0":
-            CurrentEffect=GuessStatHide;
+            CurrentEffect=EffectType.GuessStatHide;
             displayEffectName(startthing+"Guess Field Hide");
             break;
         case "1":
-            CurrentEffect=TimeLimitMinus;
+            CurrentEffect=EffectType.TimeLimitMinus;
             displayEffectName(startthing+"Reduced Time Limit");
             break;
         case "2":
-            CurrentEffect=NoAutofill;
+            CurrentEffect=EffectType.NoAutofill;
             displayEffectName(startthing+"No Autofill");
             break;
         case "3":
-            CurrentEffect=ShrimpGarbage;
+            CurrentEffect=EffectType.ShrimpGarbage;
             displayEffectName(startthing+"Shrimp Garbage");
             break;
         case "4":
-            CurrentEffect=BombParty;
+            CurrentEffect=EffectType.BombParty;
             displayEffectName(startthing+"Bomb Party");
             break;
         default:

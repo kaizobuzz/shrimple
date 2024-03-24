@@ -1,11 +1,15 @@
 //@ts-check
-const 
-GuessStatHide=0, 
-TimeLimitMinus=1,    
-RequiredClick=2,
-NoAutofill=3,  
-ShrimpGarbage=4,
-BombParty=5;
+/**@readonly
+ * @enum number*/
+const EffectType={ 
+    GuessStatHide: 0, 
+    TimeLimitMinus: 1,    
+    ResultSwap: 2,
+    NoAutofill: 3,  
+    ShrimpGarbage: 4,
+    BombParty: 5
+}
+Object.freeze(EffectType);
 class GameEffect{
     /** 
      * @param {Function} start_function 
@@ -29,7 +33,7 @@ let EffectDuration={
 }
 /**@param {string} name  */
 async function displayEffectName(name){
-    EffectNameDiv.innerHTML+="<p>"+name+"</p>";
+    EffectNameDiv.innerText=name;
     await sleep(2);
     EffectNameDiv.innerHTML="";
 }
@@ -38,7 +42,7 @@ function renderEffects(effects){
     for (const effect of effects){
         console.log(effect);
         switch (effect){
-            case GuessStatHide:
+            case EffectType.GuessStatHide:
                 NewEffects.push(new GameEffect(
                     hideRandomFieldsOn, 
                     hideRandomFieldsOff, 
@@ -46,13 +50,13 @@ function renderEffects(effects){
                 displayEffectName("Guess Field Hide");
                 //maybe duration to work around comment below for no autofill
                 break;
-            case TimeLimitMinus:
+            case EffectType.TimeLimitMinus:
                 NewEffects.push(new GameEffect(speedUpTimerOn, speedUpTimerOff, EffectDuration.TimeLimitMinus));
                 displayEffectName("Reduced Time Limit");
                 break;
-            case RequiredClick:
+            case EffectType.ResultSwap:
                 break;
-            case NoAutofill:
+            case EffectType.NoAutofill:
                 NewEffects.push(new GameEffect(
                     function(){AutofillDisabled+=1}, 
                     function(){AutofillDisabled-=1}, 
@@ -60,11 +64,11 @@ function renderEffects(effects){
                 displayEffectName("No Autofill");
                 //this is notable because it also disables showing stats initially so might have to do something about that
                 break;
-            case ShrimpGarbage:
+            case EffectType.ShrimpGarbage:
                 getShrimpGarbage();
                 displayEffectName("Garbage Shrimp");
                 break;
-            case BombParty:
+            case EffectType.BombParty:
                 startBombParty();
                 displayEffectName("Bomb Party");
                 break;
@@ -79,5 +83,5 @@ let NewEffects=[];
 let CurrentEffects=[];
 
 let EffectNameDiv=assertNotNull(document.getElementById("effect-name"));
-let CurrentEffect=GuessStatHide;
+let CurrentEffect=EffectType.GuessStatHide;
 

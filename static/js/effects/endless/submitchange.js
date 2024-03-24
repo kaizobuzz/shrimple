@@ -1,7 +1,7 @@
 //@ts-check
 function guessedCorrectShrimp(){
     CorrectGuesses+=1;
-    ShrimpsGuessedDiv.innerHTML="<p>Correct guesses: "+CorrectGuesses+"</p>";
+    ShrimpsGuessedDiv.innerText="Correct guesses: "+CorrectGuesses;
     resetGuesses();    
     speedUpTimerPermanent();
     /**@type number[]*/
@@ -13,7 +13,7 @@ function guessedCorrectShrimp(){
 function outOfGuesses(){
     resetGuesses();
     Game.lives-=1;
-    LivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>";
+    LivesDiv.innerText="Remaining lives: "+Game.lives;
     if (Game.lives<=0){
         outOfLives();
     }

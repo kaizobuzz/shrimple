@@ -24,8 +24,10 @@ function clampicatedSubmit(input){
             comparisons.coloration=HiddenComparison;
         }
     }
-    const html_to_render_dirty=getGuessResultHtml(input_shrimp, comparisons);
-    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
+    const guess_html=getGuessResultHtml(input_shrimp, comparisons);
+    for (const node of guess_html){
+        GuessResultsDiv.appendChild(node);
+    }
     checkAnswer(comparisons);
     setLocalStorage();
     SubmitOverride.after_submit(comparisons);

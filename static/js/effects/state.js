@@ -68,7 +68,7 @@ function initializeGameVariablesFromServer(){
         //TODO listen for actual Game 
         const promise=waitForGameStart();
         promise.then(()=>{
-            LivesDiv.innerHTML="<p>Remaining lives: "+Game.lives+"</p>";
+            LivesDiv.innerText="Remaining lives: "+Game.lives;
             Game.active=true;
             startGameLoop();
         });

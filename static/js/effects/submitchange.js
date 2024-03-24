@@ -13,10 +13,13 @@ function setAllHiddenComparison(){
 function submitEmptyGuess(){
     const comparisons=setAllHiddenComparison();
     Game.guesses.push(getComparisonHtml(comparisons).join(""));
-    let html_to_render_dirty=FLEX_ROW
-    html_to_render_dirty+=getGuessResultHtmlWithClasses(Object.values(comparisons));
-    html_to_render_dirty+="<div class='column'> Skipped </div> </div>"
-    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
+    let guess_row=getGuessResultHtmlWithClasses(Object.values(comparisons));
+    guess_row.classList.add(FLEX_ROW_CLASS);
+    let skip_text_col=document.createElement("div");
+    guess_row.appendChild(skip_text_col);
+    skip_text_col.classList.add(FLEX_COL_CLASS)
+    skip_text_col.innerText="Skipped"
+    GuessResultsDiv.appendChild(guess_row);
     addGuesses(1);
     SubmitOverride.after_submit(setAllHiddenComparison())
     //TODO will have to change later

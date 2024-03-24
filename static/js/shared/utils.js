@@ -24,8 +24,4 @@ function assertButtonElement(button){
 function assertInputElement(element){
     return /**@type {HTMLInputElement}*/(element);
 }
-/**@param {HTMLElement} element 
- * @param {string} input  */
-function addToDivAfterPurify(element, input){
-    element.innerHTML+=DOMPurify.sanitize(input);
-}
+

@@ -12,8 +12,8 @@ function sendChat(e){
  * @param {string} message_content */
 function addChat(player_name, message_content){
     let message=message_content.slice(1, message_content.length-1)
-    ChatDiv.innerText+=player_name+": "+message;
-    ChatDiv.innerHTML+="<br>"
+    ChatDiv.appendChild(document.createTextNode(player_name+": "+message));
+    ChatDiv.appendChild(document.createElement("br"));
 }
 let ChatDiv=assertNotNull(document.getElementById("chat-messages"));
 let ChatInput=assertInputElement(document.getElementById("chat-form"));

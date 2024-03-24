@@ -13,12 +13,13 @@ function submitwithHiddenFields(input){
         }    
     }
     let guess_html=getGuessResultHtml(input_shrimp, comparisons);
-    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(guess_html);
+    for (const node of guess_html){
+        GuessResultsDiv.appendChild(node);
+    }
     checkAnswer(comparisons);
     SubmitOverride.after_submit(comparisons);
     PlayerInput.value="";
     SubmitButton.disabled=true;
-
 }
 function hideRandomFieldsOn(){
     HideFieldCount+=1
@@ -30,5 +31,4 @@ function hideRandomFieldsOff(){
         disableSubmitFunctionOverride();
     }
 }
-var HideFieldCount=0
-
+let HideFieldCount=0

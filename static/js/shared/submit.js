@@ -1,51 +1,68 @@
 // @ts-check
 const MAX_GUESSES=6;
-const FLEX_COL="<div class='column'>"
-const FLEX_ROW="<div class='row'>"
-const IMGCLASS="<img class='comparison' src='"
+const FLEX_COL_CLASS="column"
+const FLEX_ROW_CLASS="row"
+const IMGCLASS="comparison"
 /**@param {Number[]} comparison_array 
  * @param {string} column_class 
- * @returns {string}
+ * @returns {HTMLDivElement}
  */
-function getGuessResultHtmlWithClasses(comparison_array, column_class='column'){
-    let column_class_text="<div class='"+column_class+"'>";
-    let html_to_render=column_class_text+IMGCLASS;
-    html_to_render+=getComparisonImagesByArray(comparison_array).join("'/> </div>"+column_class_text+IMGCLASS) 
-    html_to_render+="'/> </div>"
-    return html_to_render
+function getGuessResultHtmlWithClasses(comparison_array, column_class=FLEX_COL_CLASS){
+    const image_links=getComparisonImagesByArray(comparison_array);
+    let row_node=document.createElement("div");
+    for (const image_link of image_links){
+        let img=new Image();
+        img.src=image_link
+        img.classList.add(IMGCLASS);
+        let column_node=document.createElement("div");
+        column_node.classList.add(column_class)
+        column_node.appendChild(img);
+        row_node.appendChild(column_node)
+    }
+    return row_node
 }
 /** @param {Shrimp} input_shrimp
 * @param {Comparisons} comparisons 
-* @returns {string}
+* @returns {HTMLDivElement[]}
 */
 function getGuessResultHtml(input_shrimp, comparisons){
-    let html_to_render="";
+    let nodes=[];
     if (Game.num_guesses==0){
-        html_to_render+=renderKeys(input_shrimp)
+        nodes.push(renderKeys(input_shrimp));
     }
-    html_to_render+=FLEX_ROW;
-    html_to_render+=getGuessResultHtmlWithClasses(Object.values(comparisons), 'column');
+    let row_div=getGuessResultHtmlWithClasses(Object.values(comparisons), 'column');
+    nodes.push(row_div);
+    row_div.classList.add(FLEX_ROW_CLASS);
     Game.guesses.push(getComparisonHtml(comparisons).join("")); 
-    html_to_render+=FLEX_COL+"<div class='tooltip'>"+"<p>"+input_shrimp.name+"</p>";
-    html_to_render+="<span class='tooltip_text'>";
+    let tooltip_col=document.createElement("div");
+    row_div.appendChild(tooltip_col);
+    tooltip_col.classList.add("tooltip", FLEX_COL_CLASS);
+    tooltip_col.innerText+=input_shrimp.name;
+    let tooltip_text=document.createElement("span");
+    tooltip_text.classList.add("tooltip_text");
+    tooltip_col.append(tooltip_text);
     for (const key of Object.keys(input_shrimp)){
-        html_to_render+="<strong>"+key+": </strong>"+getShrimpStat(input_shrimp, key)+"<br>"; 
+        let strong=document.createElement("strong");
+        strong.innerText=key+": ";
+        tooltip_text.appendChild(strong); 
+        tooltip_text.appendChild(document.createTextNode(getShrimpStat(input_shrimp, key))); 
+        tooltip_text.appendChild(document.createElement("br"));
     }
-    html_to_render+="</span> </div> </div> </div>";
-    return html_to_render;
+    return nodes;
 }
 /** @param {Shrimp} input_shrimp 
- * @returns {string}
+ * @returns {HTMLDivElement}
  */
 function renderKeys(input_shrimp){
-    let html_to_render=FLEX_ROW;
+    let row_node=document.createElement("div");
+    row_node.classList.add(FLEX_ROW_CLASS);
     for (const key of Object.keys(input_shrimp)){
-        html_to_render+=FLEX_COL;
-        html_to_render+=key;
-        html_to_render+="</div>"
+        let column_node=document.createElement("div");
+        column_node.classList.add(FLEX_COL_CLASS);
+        row_node.appendChild(column_node)
+        column_node.innerText=key;
     }
-    html_to_render+="</div>"
-    return html_to_render;
+    return row_node;
 }
 /** @param {string} input
  */
@@ -53,8 +70,10 @@ function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     /** @type Comparisons*/
     let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
-    const html_to_render_dirty=getGuessResultHtml(input_shrimp, comparisons);
-    GuessResultsDiv.innerHTML+=DOMPurify.sanitize(html_to_render_dirty);
+    const guess_html=getGuessResultHtml(input_shrimp, comparisons);
+    for (const node of guess_html){ 
+        GuessResultsDiv.appendChild(node);
+    }
     checkAnswer(comparisons);
     setLocalStorage();
     SubmitOverride.after_submit(comparisons);

@@ -14,3 +14,7 @@ function outOfLives(){
     ShareButton.disabled=false;
 }
 ClipboardFunction=copyToClipboard;
+let ReloadButton=assertButtonElement(document.getElementById("reload"));
+ReloadButton.addEventListener("click", function(){
+    window.location.reload();
+});

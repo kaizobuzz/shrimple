@@ -56,34 +56,41 @@ function autofillShrimps() {
     } 
     //console.log(input);
     const valid_shrimps=getValidShrimps(input);
-    let html_to_render_dirty="";
+    let list_items=/**@type HTMLLIElement[]*/([])
     for (const shrimp of valid_shrimps){
         //console.log(Object.keys(shrimp));
         const pos=shrimp.pos;
-        html_to_render_dirty+=
-            "<li>"+
-            shrimp.name.slice(0, pos)+
-            "<mark>"+shrimp.name.slice(pos, pos+input.length)+"</mark>"+
-            shrimp.name.slice(pos+input.length);
+        let list_item=document.createElement("li");
+        list_items.push(list_item);
+        list_item.appendChild(document.createTextNode(shrimp.name.slice(0, pos)));
+        let found_segment=document.createElement("mark");
+        found_segment.innerText=shrimp.name.slice(pos, pos+input.length);
+        list_item.appendChild(found_segment);
+        list_item.appendChild(document.createTextNode(shrimp.name.slice(pos+input.length)));
         if (ShowStats){
             const shrimp_stats=Game.shrimp_list[Game.shrimp_index_by_name[shrimp.name.toLowerCase()]];
-            html_to_render_dirty+=
-            "<br><span class=shrimp-info>";
+            list_item.appendChild(document.createElement("br"));
+            let shrimp_info=document.createElement("span");
+            shrimp_info.classList.add("shrimp-info");
+            list_item.append(shrimp_info);
             for (const key of Object.keys(shrimp_stats)){
                 if (key=="name"){
                     continue;
                 }
-                html_to_render_dirty+=getShrimpStat(shrimp_stats, key); 
-                html_to_render_dirty+=", ";
+                shrimp_info.innerText+=getShrimpStat(shrimp_stats, key); 
+                shrimp_info.innerText+=", ";
             }
-            html_to_render_dirty+="</span>";
         }
-        html_to_render_dirty+="<input type=\"hidden\" value=\""+shrimp.name+"\"/>"+
-            "</li>";
+        let hidden_input_elem=document.createElement("input");
+        list_item.appendChild(hidden_input_elem);
+        hidden_input_elem.type="hidden";
+        hidden_input_elem.value=shrimp.name;
     }
     //console.log(html_to_render);
-    const html_to_render_clean=DOMPurify.sanitize(html_to_render_dirty);
-    AutofillResults.innerHTML=html_to_render_clean;
+    AutofillResults.innerHTML="";
+    for (const item of list_items){ 
+        AutofillResults.appendChild(item);
+    }
     addListEners();
 }
 function addListEners(){

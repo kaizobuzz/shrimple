@@ -16,27 +16,26 @@ function loseGame(){
     renderEndPopup();
 }
 function renderEndPopup(){
-    let html_to_render="";
+    let main_text_node=document.createElement("div");
     if (Game.won){ 
-        html_to_render+="You got today's shrimple in <strong>"+Game.num_guesses+"</strong> "; 
+        main_text_node.appendChild(document.createTextNode("You got today's shrimple in "));
+        let strong=document.createElement("strong");
+        strong.innerText=String(Game.num_guesses)
+        main_text_node.appendChild(strong);
         if (Game.num_guesses==1){
-            html_to_render+="guess"
+            main_text_node.appendChild(document.createTextNode(" guess"));
         } else{
-            html_to_render+="guesses";
+            main_text_node.appendChild(document.createTextNode(" guesses"));
         }
     } else{
-        html_to_render+="You didn't get today's shrimple"
+        main_text_node.appendChild(document.createTextNode("You didn't get today's shrimple"));
     }
-    html_to_render+="<br><br>Try again in ";
-    renderTimer(html_to_render);
-    let promise=getRemainingTime()
-    promise.then((remainingtime)=>{
-        FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render+remainingtime);
-    });
-    FinalResults.hidden=false;
-    FinalResults.style.opacity=1;
-    ShareButton.disabled=false;
-    Game.active=false;
+    for (let i=0; i<2; i++){ 
+        main_text_node.appendChild(document.createElement("br"));
+    }
+    main_text_node.appendChild(document.createTextNode("Try again in "));
+    FinalResultsText.appendChild(main_text_node);
+    renderTimer(main_text_node);
 }
 async function reloadPage(){
     await sleep(5);
@@ -50,10 +49,18 @@ async function getRemainingTime(){
     }
     return Math.floor((secondsleft/(60*60))%60)+"h "+Math.floor((secondsleft/60))%(60)+"m "+secondsleft%(60)+"s";
 }
-/**@param {string} html_to_render  */
-async function renderTimer(html_to_render){
+/**@param {HTMLElement} result_node  */
+async function renderTimer(result_node){
+    let time_node=document.createTextNode("");
+    result_node.appendChild(time_node);
+    let time=await getRemainingTime();
+    time_node.nodeValue=time;
+    FinalResults.hidden=false;
+    FinalResults.style.opacity=String(1);
+    ShareButton.disabled=false;
+    Game.active=false;
     while (true){
-        FinalResultsText.innerHTML=DOMPurify.sanitize(html_to_render)+await getRemainingTime();
+        time_node.nodeValue=await getRemainingTime();
         await sleep(1);
     }
 }

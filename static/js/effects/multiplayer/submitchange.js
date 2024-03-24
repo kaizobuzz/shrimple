@@ -28,9 +28,9 @@ function renderGuess(new_guess, player_id){
     let target_player=Players[player_index];
     target_player.guesses.push(new_guess);
     let guess_div=target_player.guess_node;
-    let guessHtml="<div class='other-row'>";
-    guessHtml+=getGuessResultHtmlWithClasses(new_guess.Results, "other-column")+"</div>";
-    guess_div.innerHTML+=guessHtml; 
+    let row_div=getGuessResultHtmlWithClasses(new_guess.Results, "other-column");
+    row_div.classList.add("other-row")
+    guess_div.appendChild(row_div); 
     if (new_guess.Status==GuessStatus.CorrectGuess){ 
         speedUpTimerPermanent();
         guess_div.innerHTML="";
