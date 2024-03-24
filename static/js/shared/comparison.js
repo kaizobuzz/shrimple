@@ -97,34 +97,38 @@ function getComparisonImagesByArray(comparisonarray){
 function getComparisonImages(comparisons){
     return getComparisonImagesByArray(Object.values(comparisons));
 }
-/**
- * @param {Comparisons} comparisons 
- * @returns {string[]}
- */
-function getComparisonHtml(comparisons){
-    let html_to_render=[];
-    const keys=Object.keys(comparisons);
-    for (const key of keys){
+/**@param {number[]} comparisonarray 
+ * @returns {string[]} */
+function getComparisonHtmlByArray(comparisonarray){
+    let html_to_render=/**@type string[]*/([]);
+    for (const value of comparisonarray){
         //html_to_render+=key+": ";
-        if(comparisons[key] == TooLarge) {
+        if(value == TooLarge) {
             html_to_render.push("⬇️")
-        } else if(comparisons[key] == TooSmall) {
+        } else if(value == TooSmall) {
             html_to_render.push("⬆️")
-        } else if(comparisons[key] == Equal) {
+        } else if(value == Equal) {
             html_to_render.push("🟩")
-        } else if(comparisons[key] == PartialEqual) {
+        } else if(value == PartialEqual) {
             html_to_render.push("🟨")
-        } else if(comparisons[key] == UnknownComparison) {
+        } else if(value == UnknownComparison) {
             html_to_render.push("🟪")
-        } else if(comparisons[key]==HiddenComparison){ 
+        } else if(value==HiddenComparison){ 
             html_to_render.push("⬛")
-        } else if(comparisons[key] == NotEqual) {
+        } else if(value == NotEqual) {
             html_to_render.push("🟥")
         } else {
             html_to_render.push("uh there was an error")
         }
     }
-    return html_to_render;
+    return html_to_render
+}
+/**
+ * @param {Comparisons} comparisons 
+ * @returns {string[]}
+ */
+function getComparisonHtml(comparisons){
+    return getComparisonHtmlByArray(Object.values(comparisons));
 }
 /**
  * @param {Shrimp} shrimp_guess

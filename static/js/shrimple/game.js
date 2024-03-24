@@ -14,7 +14,7 @@
  * awaiting_promises: Promise<any>[];
  * active: boolean; 
  * num_guesses: number;
- * guesses: string[];
+ * guesses: number[][];
  * shrimp_list: Shrimp[];
  * daily_shrimp_name: string;
  * daily_shrimp: ?Shrimp;
@@ -27,7 +27,7 @@ let Game = {
     awaiting_promises: [],
     active: false,
     num_guesses: 0,
-    guesses: [],
+    guesses: [[]],
     shrimp_list: [], 
     daily_shrimp_name: "",
     daily_shrimp: null,

@@ -12,7 +12,7 @@ function setAllHiddenComparison(){
 }
 function submitEmptyGuess(){
     const comparisons=setAllHiddenComparison();
-    Game.guesses.push(getComparisonHtml(comparisons).join(""));
+    Game.guesses.push(Object.values(comparisons));
     let guess_row=getGuessResultHtmlWithClasses(Object.values(comparisons));
     guess_row.classList.add(FLEX_ROW_CLASS);
     let skip_text_col=document.createElement("div");

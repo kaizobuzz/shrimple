@@ -14,7 +14,7 @@
  * awaiting_promises: Promise<any>[];
  * active: boolean; 
  * num_guesses: number;
- * guesses: string[];
+ * guesses: number[][];
  * shrimp_list: Shrimp[];
  * first_shrimp_name: string;
  * second_shrimp_name: string;
@@ -31,7 +31,7 @@ let Game={
     current_shrimp: null,
     next_shrimp: null,
     first_shrimp_name: "",
-    guesses: [],
+    guesses: [[]],
     second_shrimp_name: "",
     shrimp_list: [],
     shrimp_names_lowercase: [],

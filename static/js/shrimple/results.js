@@ -1,7 +1,14 @@
 // @ts-check
+function get_guess_result_emojis(){
+    let guess_html="";
+    for (const guess of Game.guesses){
+        guess_html+=getComparisonHtmlByArray(guess).join("")+"\n"
+    }
+    return guess_html;
+}
 async function getTextToCopy(){
     let result=Game.won ? Game.num_guesses : "X"; 
-    let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+Game.guesses.join("\n");
+    let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+get_guess_result_emojis();
     navigator.clipboard.writeText(text_to_copy);
     ClipboardMessage.style.opacity=String(1);
     await sleep(1);

@@ -33,7 +33,7 @@ function getGuessResultHtml(input_shrimp, comparisons){
     let row_div=getGuessResultHtmlWithClasses(Object.values(comparisons), 'column');
     nodes.push(row_div);
     row_div.classList.add(FLEX_ROW_CLASS);
-    Game.guesses.push(getComparisonHtml(comparisons).join("")); 
+    Game.guesses.push(Object.values(comparisons)); 
     let tooltip_col=document.createElement("div");
     row_div.appendChild(tooltip_col);
     tooltip_col.classList.add("tooltip", FLEX_COL_CLASS);
