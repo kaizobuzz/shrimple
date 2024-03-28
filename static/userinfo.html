@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css"/>
+    <script src="/js/htmx.min.js"></script>
+    <title id=""> User Info </title>
+</head>
+<body>
+        <div> User Info Page!! </div>
+        <div id="user info" hx-get="/api/v1/userinfo" hx-trigger="load" hx-target="this" hx-swap="innerHTML"></div>
+</body>
+

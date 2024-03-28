@@ -19,6 +19,7 @@ func Start_Server() {
 	http.HandleFunc("/api/v1/signup", AccountCreationHandler)
 	http.HandleFunc("/api/v1/login", LoginHandler)
 	http.HandleFunc("/api/v1/usercard", UserCardHandler)
+    http.HandleFunc("/api/v1/userinfo", UserInfoHandler)
 	println("Starting Server on port " + port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
