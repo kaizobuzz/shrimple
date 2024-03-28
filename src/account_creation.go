@@ -42,6 +42,12 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
+        return
 	}
+    err=templates.UseStringTemplate("Account created successfully", templates.SuccessMessage, &w)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+    }
 	return
 }
