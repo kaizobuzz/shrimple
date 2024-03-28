@@ -16,10 +16,14 @@ async function getTextToCopy(){
 }
 function winGame(){
     Game.won=true;
+    Game.active=false;
+    setLocalStorage();
     renderEndPopup();
 }
 function loseGame(){
     Game.won=false;
+    Game.active=false;
+    setLocalStorage();
     renderEndPopup();
 }
 function renderEndPopup(){
@@ -65,7 +69,6 @@ async function renderTimer(result_node){
     FinalResults.hidden=false;
     FinalResults.style.opacity=String(1);
     ShareButton.disabled=false;
-    Game.active=false;
     while (true){
         time_node.nodeValue=await getRemainingTime();
         await sleep(1);
