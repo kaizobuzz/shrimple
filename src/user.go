@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-var UserMap shared.Locked[map[string]*User]
+var UserMap shared.Locked[map[int64]*User]
 
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
@@ -16,7 +16,12 @@ func GetUserByName(username string) *User {
 
     var u *User = nil;
     usermap := UserMap.SafeAccessInner();
-    u = usermap[username]
+    for _, user := range usermap {
+        if user.Username == username {
+            u = user;
+            break;
+        }
+    }
     UserMap.Lock.Unlock()
     return u
 }
@@ -51,13 +56,13 @@ func CreateUser(username, password string) error {
 		OutgoingFriendRequests: []int64{},
     }
 
-	usermap[username] = new_user
+	usermap[new_user.Id] = new_user
     UserMap.Lock.Unlock()
 
 	err := WriteUsersToFile()
 	if err != nil {
-        UserMap.SafeProcessInner(func(x map[string]*User){
-            delete(x, username)
+        UserMap.SafeProcessInner(func(x map[int64]*User){
+            delete(x, new_user.Id)
         });
 		return err
 	}
@@ -165,7 +170,7 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
-    UserMap = shared.Locked[map[string]*User]{Value: make(map[string]*User)}
+    UserMap = shared.Locked[map[int64]*User]{Value: make(map[int64]*User)}
 	var jsonuserlist []jsonUser
 
 	file, err := os.ReadFile("data/users.json")
@@ -176,13 +181,13 @@ func ReadUsersFromFile() error {
     if err != nil {
         return err
     }
-    adduserstomap := func (usermap map[string]*User) error{
+    adduserstomap := func (usermap map[int64]*User) error{
         for _, u := range jsonuserlist {
             user, err := deserializeUser(u)
             if err != nil {
                 return err
             }
-            usermap[user.Username] = user
+            usermap[user.Id] = user
         }
         return nil
     }
