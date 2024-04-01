@@ -8,7 +8,17 @@ import (
 	"sync"
 )
 
+type User = shared.User
+
 var UserMap shared.Locked[map[int64]*User]
+
+func GetUserById(id int64) *User {
+    var u *User = nil;
+    usermap := UserMap.SafeAccessInner()
+    u = usermap[id]
+    UserMap.Lock.Unlock()
+    return u;
+}
 
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
@@ -26,15 +36,6 @@ func GetUserByName(username string) *User {
     return u
 }
 
-type User struct {
-	Username               string
-	Id                     int64
-	PasswordHash           string
-	Experience             int64
-	Friends                []int64 //list of user ids
-	IncomingFriendRequests []int64 // list of user ids
-	OutgoingFriendRequests []int64 // list of user ids
-}
 
 func CreateUser(username, password string) error {
 	if UsernameTaken(username) {
