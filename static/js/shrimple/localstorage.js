@@ -22,9 +22,11 @@ function checkLocalStorage(){
 }
 /**@param {number} num_guesses  */
 function addToHistory(num_guesses){
-    let history_string=localStorage.getItem("guess_history");
+    let history_string=localStorage.getItem("guess_history"+mode);
     let history=/**@type Number[]*/(history_string!=null ? JSON.parse(history_string) : Array(MAX_GUESSES).fill(0));
-    history[num_guesses-1]+=1;
-    localStorage.setItem("guess_history", JSON.stringify(history));
+    if (num_guesses!=-1){
+        history[num_guesses-1]+=1;
+    }
+    localStorage.setItem("guess_history"+mode, JSON.stringify(history));
     return history;
 }

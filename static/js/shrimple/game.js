@@ -65,7 +65,7 @@ function initializeGameVariablesFromServer(){
         }
         SubmitOverride.comparison_shrimp=Game.daily_shrimp;
         if (Game.num_guesses>0&&Game.active==false){
-            renderEndPopup();
+            renderEndPopup(false);
         }
         return;
     }

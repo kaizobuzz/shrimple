@@ -123,6 +123,15 @@ li:hover {
     visibility: visible;
     opacity: 1;
 }
+.history-item {
+    height: 2.5em;
+    width: 0%;
+    background-color: #93b991;
+    transition: width 0.5s;
+}
+.float-right{
+    float: right;
+}
 
 .row {
     text-align: center;
@@ -132,7 +141,23 @@ li:hover {
     flex-wrap: wrap;
     flex: 0;
 }
+.row-no-wrap{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex: 0;
+}
+.main-flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex-basis: 100%;
+    flex: 1;
+}
 
+.container-size{
+    width: 24em;
+}
 .column {
     display: flex;
     flex-direction: column;

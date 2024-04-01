@@ -79,10 +79,4 @@
     position: absolute;
     top: 50%;
 }
-.main-flex{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    flex-basis: 100%;
-    flex: 1;
-}
+

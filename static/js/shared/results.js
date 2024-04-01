@@ -7,6 +7,7 @@ let ClipboardMessage=assertNotNull(document.getElementById("clipboard-message"))
 let CloseButton=assertButtonElement(document.getElementById("results-close"));
 let OpenButton=assertButtonElement(document.getElementById("results-open"));
 OpenButton.addEventListener("click", async function(){
+    OpenButtonFunction();
     OpenButton.hidden=true;
     FinalResults.hidden=false;
     await sleep(0.05);
@@ -22,5 +23,6 @@ let ClipboardFunction=async function(){};
 ShareButton.addEventListener("click", function(){
     ClipboardFunction();
 });
+let OpenButtonFunction=async function(){}
 
 
