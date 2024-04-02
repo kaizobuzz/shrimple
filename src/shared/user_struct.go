@@ -8,4 +8,5 @@ type User struct {
 	Friends                []int64 //list of user ids
 	IncomingFriendRequests []int64 // list of user ids
 	OutgoingFriendRequests []int64 // list of user ids
+    GuessHistory           map[string]map[int64]int; // string is gamemode
 }

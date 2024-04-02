@@ -44,6 +44,11 @@ func CreateUser(username, password string) error {
 	hash := hashPassword(username, password)
     
     usermap := UserMap.SafeAccessInner()
+    
+    var guesshistorymap map[string]map[int64]int = make(map[string]map[int64]int)
+    for _, gamemode := range SHRIMPLE_GAMEMODES {
+        guesshistorymap[gamemode] = make(map[int64]int)
+    }
 
     var new_user *User = &User{
 		Username: username,
@@ -55,6 +60,7 @@ func CreateUser(username, password string) error {
 		Friends:                []int64{},
 		IncomingFriendRequests: []int64{},
 		OutgoingFriendRequests: []int64{},
+        GuessHistory: guesshistorymap,
     }
 
 	usermap[new_user.Id] = new_user
