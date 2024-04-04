@@ -64,7 +64,7 @@ async function getRemainingTime(){
 /**@param {HTMLElement} result_node*
  @param {boolean} from_end*/
 async function renderObjectsOriginally(result_node, from_end){
-    let history=from_end ? addToHistory(Game.num_guesses) : addToHistory(-1);
+    let history=from_end ? await addToHistory(Game.num_guesses) : await getHistory();
     let sum=history.reduce(function(sum, number){return sum+number}, 0) 
     let lengths=history.map(function(number){return Math.floor((number/sum)*80)})
     let history_bar_nodes=/**@type HTMLDivElement[]*/([])

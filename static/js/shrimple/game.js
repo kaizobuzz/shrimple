@@ -21,6 +21,7 @@
  * shrimp_names_lowercase: string[];
  * shrimp_index_by_name: Object.<string, number> ;
  * won: boolean;
+ * date: number;
  * }}
  */
 let Game = {
@@ -34,6 +35,7 @@ let Game = {
     shrimp_names_lowercase: [],
     shrimp_index_by_name: {},
     won: false,
+    date: getCurrentDate(),
 }
 /**
  * @template T
@@ -52,7 +54,8 @@ function getMode(){
     let url=window.location.href;
     let mode_pos=url.indexOf(mode_text)+mode_text.length;
     if (mode_pos==-1){
-        console.error("no mode");
+        window.location.href="shrimple.html?mode=shrimple"
+        return;
     }
     return url.slice(mode_pos);
 }
