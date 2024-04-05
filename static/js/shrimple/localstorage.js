@@ -8,14 +8,17 @@ function getCurrentDate(){
 function setLocalStorage(){
     localStorage.setItem("game"+mode, JSON.stringify(Game));
     localStorage.setItem("guess_results"+mode, GuessResultsDiv.innerHTML); 
+    localStorage.setItem("date"+mode, String(getCurrentDate()));
 }
 function checkLocalStorage(){
-    if ((Game.date)!=getCurrentDate()){
+    let game=localStorage.getItem("game"+mode);
+    let time=localStorage.getItem("date"+mode);
+    if (time!=null&&time!=String(getCurrentDate())){
         localStorage.removeItem("game"+mode);
         localStorage.removeItem("guess_results"+mode);
+        localStorage.removeItem("date"+mode);
         return [null, null];
     }
-    let game=localStorage.getItem("game"+mode);
     let guess_results=localStorage.getItem("guess_results"+mode); 
     return [game, guess_results];
 }
