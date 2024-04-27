@@ -236,6 +236,7 @@ func addGuessWithPlayerExists(game *game, message *Message) error {
 	if err != nil {
 		return err
 	}
+    player.Guesses = append(player.Guesses, guess)
 	if guess.Status == CorrectGuess {
 		player.Guesses = make([]Guess, 0)
 	}
@@ -243,7 +244,6 @@ func addGuessWithPlayerExists(game *game, message *Message) error {
 		player.Lives -= 1
 		player.Guesses = make([]Guess, 0)
 	}
-	player.Guesses = append(player.Guesses, guess)
 	return nil
 }
 func getCurrentGameStateResponse(game *game, _ *Message) MessageResult {
@@ -330,7 +330,17 @@ Loop:
 		}
 		//process_start := time.Now()
 		switch message.Type {
-		case NewGuess, NewEffect, PlayerDied:
+        case NewGuess:
+            response:=sendBasicEvents(game, message)
+            if response.Err==nil{
+                err:=addGuessWithPlayerExists(game, message) 
+                if err!=nil{
+                    response.Err=err
+                    response.Statuscode=http.StatusBadRequest
+                }
+            }
+            game.Responses <-response
+        case NewEffect, PlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
 		case Join:
 			game.Responses <- joinResponse(game, message)

@@ -11,10 +11,9 @@ import (
 )
 
 
-type GuessStatus int8
 
 const (
-	Normal GuessStatus = iota
+	Normal int = iota
 	CorrectGuess
 	OutofGuesses
 )

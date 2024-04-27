@@ -26,8 +26,8 @@ func (m *Message) clone() Message {
 }
 
 type Guess struct {
-	Results [NUM_SHRIMP_FIELDS]uint8
-	Status  GuessStatus
+	Results [NUM_SHRIMP_FIELDS]int
+	Status  int
 }
 
 type player struct {

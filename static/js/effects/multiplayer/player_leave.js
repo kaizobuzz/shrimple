@@ -19,3 +19,7 @@ async function SchedulePlayerNodeRemoval(target_player){
     await sleep(1);
     target_player.node.remove();
 }
+
+function DisconnectFromGame(){
+    sendEvent(MessageType.Disconnect, "");
+}
