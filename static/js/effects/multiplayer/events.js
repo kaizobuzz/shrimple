@@ -141,7 +141,11 @@ async function receiveEvents(){
             case MessageType.PlayerDied:
                 break;
             case MessageType.Disconnect:
+                DisconnectPlayer(message.Jsondata, "disconnected");
                 //TODO
+                break;
+            case MessageType.Kick:
+                DisconnectPlayer(message.Jsondata, "kicked");
                 break;
             case MessageType.Join:
                 addPlayer({Name: message.Id, IsReady: false});

@@ -42,6 +42,9 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+.disconnected{
+    background-color: #ad7e84;
+}
 #display-name-input-div{
     background-color: #38383b;
     position: absolute;
