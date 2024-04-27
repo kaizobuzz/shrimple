@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"shrimple/src/shared"
+    "log"
 )
 
 type GuessHistoryEntry struct {
@@ -61,6 +62,10 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+    if err:=WriteUsersToFile(); err!=nil{
+        log.Println(err)
+        //TODO might change or will stay if changed to using database
+    }
 	w.Write(bytes)
 }
 
