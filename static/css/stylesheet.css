@@ -130,3 +130,11 @@ details[open] {
     transform: translate(-50%, -50%);
 
 }
+.result-colour{
+    width: 36em;
+    margin-left: auto;
+    margin-right: auto;
+    border-color: #676668;
+    background-color: #3b3a3b;
+
+}

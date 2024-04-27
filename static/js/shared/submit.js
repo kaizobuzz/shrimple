@@ -1,5 +1,4 @@
 // @ts-check
-const MAX_GUESSES=6;
 const FLEX_COL_CLASS="column"
 const FLEX_ROW_CLASS="row"
 const IMGCLASS="comparison"

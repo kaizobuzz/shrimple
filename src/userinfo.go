@@ -21,7 +21,7 @@ func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
     user_id_string := u.Query().Get("userid")
     var user_id int64;
     user_id, err = strconv.ParseInt(user_id_string, 10, 64)
-
+    //TODO handle this error
     var user *User = GetUserById(user_id);
 
     if user != nil {

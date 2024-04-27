@@ -16,5 +16,6 @@ func UserCardHandler(w http.ResponseWriter, r *http.Request) {
 		// logged in user
 		fmt.Printf("Logged in user: %s", *user)
 		w.Write([]byte(fmt.Sprintf("Logged In as %s", *user)))
+        // the fmt.Sprintf allows for XSS so this should eventually be changed into a tempalte
 	}
 }
