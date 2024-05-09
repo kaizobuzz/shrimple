@@ -6,7 +6,10 @@ import (
 	"net/http"
 	"shrimple/multiplayer"
 	"shrimple/src/shared"
+    "shrimple/src/database"
 )
+
+
 func Start_Server() {
 	Initialize()
 	fmt.Print(SERVER_PRITAVE_KEY)
@@ -29,6 +32,17 @@ func Start_Server() {
 }
 
 func Initialize() {
+    if err:=database.InitializeDB("data/users.db"); err!=nil{
+        log.Fatal(err)
+    }
+    if err:=database.PrepareStatements(database.Database); err!=nil{
+        log.Fatal(err)
+    }
+    count, err:=database.GetCount()
+    currentID=count
+    if err!=nil{
+        log.Fatal(err)
+    }
 	multiplayer.IntializeMap()
 	GetPepper()
 	if err := shared.GetShrimpJson(); err != nil {

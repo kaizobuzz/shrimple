@@ -10,8 +10,6 @@ import (
 	"shrimple/src/shared"
 )
 
-
-
 const (
 	Normal int = iota
 	CorrectGuess

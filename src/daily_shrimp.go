@@ -22,7 +22,10 @@ var SHRIMPLE_GAMEMODES = [...]string{
 }
 
 func getBaseDailyNumber(offset int64) int{
-    s:=rand.NewSource((time.Now().UTC().UnixMilli()/(1000*60*60*24))+offset)
+    offset = ((offset >> 16) ^ offset) * 0x119de1f3;
+    offset = ((offset >> 16) ^ offset) * 0x119de1f3;
+    offset = (offset >> 16) ^ offset;
+    s:=rand.NewSource((time.Now().UTC().UnixMilli()/(1000*60*60*24))^offset) //TODO change offset to be more random
     r:=rand.New(s) 
     return r.Intn(len(shared.ShrimpList.Shrimps))
 }
@@ -40,7 +43,7 @@ func DailyShrimpName(w http.ResponseWriter, r *http.Request) {
 		i := getBaseDailyNumber(0)
 		w.Write([]byte(shared.ShrimpList.Shrimps[i].Name))
 	} else if mode == SHRIMPLE_GAMEMODE_CLAMPLICATED {
-        i := getBaseDailyNumber(17)
+        i := getBaseDailyNumber(0x124985798294f0)
         w.Write([]byte(shared.ShrimpList.Shrimps[i].Name))
 	} else if mode == SHRIMPLE_GAMEMODE_SHRIMPOSSIBLE {
 		w.WriteHeader(http.StatusNotImplemented) // not implemented

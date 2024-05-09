@@ -13,11 +13,9 @@ type User = shared.User
 var UserMap shared.Locked[map[int64]*User]
 
 func GetUserById(id int64) *User {
-    var u *User = nil;
     usermap := UserMap.SafeAccessInner()
-    u = usermap[id]
-    UserMap.Lock.Unlock()
-    return u;
+    defer UserMap.Lock.Unlock()
+    return usermap[id]
 }
 
 func GetUserByName(username string) *User {
@@ -36,7 +34,8 @@ func GetUserByName(username string) *User {
     return u
 }
 
-
+var currentID int64
+var currentIDMutex sync.Mutex
 func CreateUser(username, password string) error {
 	if UsernameTaken(username) {
 		return errors.New("Account already exists with that name")
@@ -141,6 +140,7 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 		IncomingFriendRequests: incoming_friend_requests,
 		OutgoingFriendRequests: outgoing_friend_requests,
 	}, nil
+    //TODO will change with using a database but this doesn't receive the guess history so cant just replicate the same thing directly, probably will decide to not always return a whole user so that'll probably be kept in mind anyways but just yknow
 }
 
 var UserFileLock sync.Mutex

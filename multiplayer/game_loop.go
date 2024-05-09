@@ -86,7 +86,7 @@ func getPlayerIndex(game *game, message *Message) (int, error) {
 }
 func checkPlayerActivity(game *game) {
 	for _, player := range game.Players {
-		if time.Since(player.LastTime) > time.Minute {
+		if time.Since(player.LastTime) > time.Second*30 {
 			sendEventToOtherPlayers(game, -1, &Message{
 				Type: Disconnect,
 				Id:   player.DisplayName,
@@ -182,6 +182,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 			Statuscode: http.StatusBadRequest}
 	}
 	player := game.Players[player_index]
+    player.LastTime=time.Now()
 	messages_json, err := json.Marshal(player.Messages)
 	if err != nil {
 		return MessageResult{

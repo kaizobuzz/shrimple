@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"shrimple/src/shared"
+	"shrimple/src/database"
 	"slices"
 )
 
@@ -50,14 +50,12 @@ func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
 	if slices.Contains(user.OutgoingFriendRequests, target_user.Id) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
-	user.OutgoingFriendRequests = append(user.OutgoingFriendRequests, target_user.Id)
-	target_user.IncomingFriendRequests = append(target_user.IncomingFriendRequests, user.Id)
-	if err := WriteUsersToFile(); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
+    err=database.UpdateFriendRequests(user.Id, target_user.Id, database.SentRequest)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
 	//TODO thingy
 }
 func checkFriendRequests(w http.ResponseWriter, r *http.Request) {
@@ -84,32 +82,13 @@ func acceptFriendRequest(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
-	}
-	receiving_user.IncomingFriendRequests, err = shared.UnstableDelete(
-		receiving_user.IncomingFriendRequests,
-		sending_user.Id,
-	)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
-		return
-	}
-	sending_user.OutgoingFriendRequests, err = shared.UnstableDelete(
-		sending_user.OutgoingFriendRequests,
-		receiving_user.Id,
-	)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
-		return
-	}
-	receiving_user.Friends = append(receiving_user.Friends, sending_user.Id)
-	sending_user.Friends = append(sending_user.Friends, receiving_user.Id)
-	if err := WriteUsersToFile(); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	}	
+    err=database.UpdateFriendRequests(sending_user.Id, receiving_user.Id, database.AcceptedRequest)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
 	w.WriteHeader(http.StatusOK)
 	//TODO send message
 }

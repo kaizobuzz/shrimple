@@ -42,7 +42,7 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
+    //TODO maybe a hard cutoff for guess date or just compare it to the latest (if this is done then it'll probably be better stored as a 6 length array with an extra field of last guess date, where the date is set on the time of creation of the object)
 	_, already_played_that_day := mode_guess_history[historyentry.GuessDate]
 	if already_played_that_day {
 		w.WriteHeader(http.StatusBadRequest)
