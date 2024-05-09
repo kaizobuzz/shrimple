@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"shrimple/src/database"
 	"shrimple/src/shared"
 	"sync"
 )
@@ -12,65 +13,60 @@ type User = shared.User
 
 var UserMap shared.Locked[map[int64]*User]
 
-func GetUserById(id int64) *User {
-    usermap := UserMap.SafeAccessInner()
-    defer UserMap.Lock.Unlock()
-    return usermap[id]
+func GetUserById(id int64) (*User, error) {
+    return database.SelectFullUserFromId(id)
 }
 
 func GetUserByName(username string) *User {
 	// exists to abstract over what variable is used to index into UserMap
 	// for a planned change to indexing by id
 
-    var u *User = nil;
-    usermap := UserMap.SafeAccessInner();
-    for _, user := range usermap {
-        if user.Username == username {
-            u = user;
-            break;
-        }
-    }
-    UserMap.Lock.Unlock()
-    return u
+	var u *User = nil
+	usermap := UserMap.SafeAccessInner()
+	for _, user := range usermap {
+		if user.Username == username {
+			u = user
+			break
+		}
+	}
+	UserMap.Lock.Unlock()
+	return u
 }
 
 var currentID int64
 var currentIDMutex sync.Mutex
+
 func CreateUser(username, password string) error {
-	if UsernameTaken(username) {
+    taken, err:=UsernameTaken(username) 
+    if err!=nil{
+        return err
+    }
+    if taken{
 		return errors.New("Account already exists with that name")
 	}
 	hash := hashPassword(username, password)
-    
-    usermap := UserMap.SafeAccessInner()
-    
-    var guesshistorymap map[string]map[int64]int = make(map[string]map[int64]int)
-    for _, gamemode := range SHRIMPLE_GAMEMODES {
-        guesshistorymap[gamemode] = make(map[int64]int)
-    }
 
-    var new_user *User = &User{
-		Username: username,
-		Id: int64(
-			len(usermap),
-		), //should be a mutex to avoid duplicate ids but oh well
+	var guesshistorymap map[string]map[int64]int = make(map[string]map[int64]int)
+	for _, gamemode := range SHRIMPLE_GAMEMODES {
+		guesshistorymap[gamemode] = make(map[int64]int)
+	}
+	currentIDMutex.Lock()
+	var new_user *User = &User{
+		Username:               username,
+		Id:                     currentID,
 		PasswordHash:           hash,
 		Experience:             0,
 		Friends:                []int64{},
 		IncomingFriendRequests: []int64{},
 		OutgoingFriendRequests: []int64{},
-        GuessHistory: guesshistorymap,
-    }
+		GuessHistory:           guesshistorymap,
+	}
+	currentID++
+	currentIDMutex.Unlock()
 
-	usermap[new_user.Id] = new_user
-    UserMap.Lock.Unlock()
-
-	err := WriteUsersToFile()
-	if err != nil {
-        UserMap.SafeProcessInner(func(x map[int64]*User){
-            delete(x, new_user.Id)
-        });
+	if err := database.AddNewUser(new_user); err != nil {
 		return err
+        //TODO currentID mutex might get messed up here?
 	}
 	return nil
 }
@@ -140,20 +136,20 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 		IncomingFriendRequests: incoming_friend_requests,
 		OutgoingFriendRequests: outgoing_friend_requests,
 	}, nil
-    //TODO will change with using a database but this doesn't receive the guess history so cant just replicate the same thing directly, probably will decide to not always return a whole user so that'll probably be kept in mind anyways but just yknow
+	//TODO will change with using a database but this doesn't receive the guess history so cant just replicate the same thing directly, probably will decide to not always return a whole user so that'll probably be kept in mind anyways but just yknow
 }
 
 var UserFileLock sync.Mutex
 
 func WriteUsersToFile() error {
-    UserFileLock.Lock()
-    defer UserFileLock.Unlock()
+	UserFileLock.Lock()
+	defer UserFileLock.Unlock()
 	var userlist []User
 	for _, value := range UserMap.SafeAccessInner() {
 		userlist = append(userlist, *value)
 	}
-    UserMap.Lock.Unlock();
-    
+	UserMap.Lock.Unlock()
+
 	bytes, err := json.Marshal(userlist)
 	if err != nil {
 		return err
@@ -177,39 +173,36 @@ func WriteUsersToFile() error {
 }
 
 func ReadUsersFromFile() error {
-    UserMap = shared.Locked[map[int64]*User]{Value: make(map[int64]*User)}
+	UserMap = shared.Locked[map[int64]*User]{Value: make(map[int64]*User)}
 	var jsonuserlist []jsonUser
 
 	file, err := os.ReadFile("data/users.json")
 	if err != nil {
 		return err
 	}
-    err = json.Unmarshal(file, &jsonuserlist)
-    if err != nil {
-        return err
-    }
-    adduserstomap := func (usermap map[int64]*User) error{
-        for _, u := range jsonuserlist {
-            user, err := deserializeUser(u)
-            if err != nil {
-                return err
-            }
-            usermap[user.Id] = user
-        }
-        return nil
-    }
+	err = json.Unmarshal(file, &jsonuserlist)
+	if err != nil {
+		return err
+	}
+	adduserstomap := func(usermap map[int64]*User) error {
+		for _, u := range jsonuserlist {
+			user, err := deserializeUser(u)
+			if err != nil {
+				return err
+			}
+			usermap[user.Id] = user
+		}
+		return nil
+	}
 
-    adding_err:=shared.SafeProcessLockedWithReturn(&UserMap, adduserstomap)
-    if adding_err != nil {
-        return adding_err
-    }
+	adding_err := shared.SafeProcessLockedWithReturn(&UserMap, adduserstomap)
+	if adding_err != nil {
+		return adding_err
+	}
 
 	return nil
 }
 
-func UsernameTaken(username string) bool {
-	if GetUserByName(username) != nil {
-		return true
-	}
-	return false
+func UsernameTaken(username string) (bool, error) {
+    return database.CheckIfUsernameExists(username)
 }

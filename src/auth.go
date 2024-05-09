@@ -7,8 +7,8 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"shrimple/src/database"
 	"slices"
 	"time"
 )
@@ -120,10 +120,10 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
 }
 
 func SignedPassword(username string) ([]byte, error) {
-	var user = GetUserByName(username)
-	if user == nil {
-		return nil, errors.New("User does not exist")
+    _, password_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
+	if err != nil {
+		return nil, err
 	}
-	var passwordhash = sha256.Sum256([]byte(user.PasswordHash))
-	return SignWithServerPrivateKey(passwordhash)
+	var password_hash_bytes = sha256.Sum256([]byte(password_hash))
+	return SignWithServerPrivateKey(password_hash_bytes)
 }

@@ -7,50 +7,45 @@ import (
 	"log"
 	"net/http"
 	"shrimple/src/database"
-	"slices"
+	"strconv"
 )
 
-func getCurrentUser(r *http.Request) (user *User, err error) {
-	username := LoggedInUser(r)
-	if username == nil {
-		return nil, errors.New("user does not have valid session token")
-	}
-	user = GetUserByName(*username)
-	if user == nil {
-		return nil, fmt.Errorf(
-			"username %s despite having a session token does not correspond to any user",
-			*username,
-		)
-	}
-	return user, nil
+func getIdFromRequest(r *http.Request)(id int64, err error){
+    username:=LoggedInUser(r)
+    if username==nil{
+        return -1, errors.New("request does not have username associated with it")
+    }
+    id, _, err=database.SelectAuthenticationFieldsFromUsername(*username)
+    if err!=nil{
+        return -1, err
+    }
+    return id, nil
 }
-func getUsersForRequests(r *http.Request) (user *User, target *User, err error) {
+
+func getUsersForRequests(r *http.Request) (sending_id int64, receiving_id int64, err error) {
 	if err := r.ParseForm(); err != nil {
-		return nil, nil, err
+		return -1, -1, err
 	}
-	target_username := r.FormValue("username")
-	target_user := GetUserByName(target_username)
-	if target_user != nil {
-		return nil, nil, fmt.Errorf("target username: %s is invalid", target_username)
-	}
-	user, err = getCurrentUser(r)
+	target_id_string := r.FormValue("id")
+    target_id, err:=strconv.ParseInt(target_id_string, 10, 64)
 	if err != nil {
-		return nil, nil, err
+		return -1, -1, fmt.Errorf("target username: %s is invalid", target_id_string)
 	}
-	return user, target_user, nil
+    user_id, err:=getIdFromRequest(r)
+	if err != nil {
+		return -1, -1, err
+	}
+	return user_id, target_id, nil
 }
 
 func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
-	user, target_user, err := getUsersForRequests(r)
+	sending_id, receiving_id, err := getUsersForRequests(r)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
-	}
-	if slices.Contains(user.OutgoingFriendRequests, target_user.Id) {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-	}
-    err=database.UpdateFriendRequests(user.Id, target_user.Id, database.SentRequest)
+	}	
+    err=database.UpdateFriendRequests(sending_id, receiving_id, database.SentRequest)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusInternalServerError)
@@ -59,16 +54,24 @@ func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
 	//TODO thingy
 }
 func checkFriendRequests(w http.ResponseWriter, r *http.Request) {
-	user, err := getCurrentUser(r)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	log.Println(user)
-	var users []string = make([]string, 0)
-	//TODO need to get other usernames from id
-	userjson, err := json.Marshal(users)
+    id, err:=getIdFromRequest(r)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    request_ids, err:=database.SelectIncomingFriendRequestsFromId(id)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    requests, err:=database.GetUsernameListFromIdList(request_ids)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+    }
+	userjson, err := json.Marshal(requests)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -83,7 +86,7 @@ func acceptFriendRequest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}	
-    err=database.UpdateFriendRequests(sending_user.Id, receiving_user.Id, database.AcceptedRequest)
+    err=database.UpdateFriendRequests(sending_user, receiving_user, database.AcceptedRequest)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusInternalServerError)

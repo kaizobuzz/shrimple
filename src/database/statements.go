@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"shrimple/src/shared"
 	"strings"
 )
@@ -9,11 +10,11 @@ import (
 type User = shared.User
 
 type SqlUser struct {
-	Id                     int64
-	Username               string
-	PasswordHash           string
-	Experience             int64
-	GuessHistory           []byte //blob
+	Id           int64
+	Username     string
+	PasswordHash string
+	Experience   int64
+	GuessHistory []byte //blob
 }
 
 var sqlQuerySelectFullUserFromId *sql.Stmt /*Order of Scanning arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
@@ -40,24 +41,30 @@ var sqlQueryAddUserStatement *sql.Stmt /*Order of Arguments goes {Id, Username, 
 const sql_string_ADD_USER_STATEMENT = "INSERT INTO " + UserTableName +
 	" VALUES (?, ?, ?, ?, ?)"
 
+var sqlQuerySelectGuessHistoryFromUsername *sql.Stmt
+
+const sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME = "SELECT " +
+	UserFieldGuessHistory + " FROM " + UserTableName + " WHERE " + UserFieldUsername + " = ?"
+
 var sqlQuerySelectGuessHistoryFromId *sql.Stmt
 
 const sql_string_SELECT_GUESS_HISTORY_FROM_ID = "SELECT " +
 	UserFieldGuessHistory + " FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
 
-
-var sqlQueryUpdateGuessHistoryWithId *sql.Stmt /*Args order {GuessHistory, Id} */
-const sql_string_UPDATE_GUESS_HISTORY_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldGuessHistory + " = ? WHERE " + UserFieldId + " = ?"
+var sqlQueryUpdateGuessHistoryWithUsername *sql.Stmt /*Args order {GuessHistory, Id} */
+const sql_string_UPDATE_GUESS_HISTORY_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldGuessHistory + " = ? WHERE " + UserFieldUsername + " = ?"
 
 var sqlQuerySelectFriendsFromId *sql.Stmt
-const sql_string_SELECT_FRIENDS_FROM_ID="SELECT "+FriendFieldId2+" FROM "+FriendTableName+" WHERE "+FriendFieldId1+" = ?"
+
+const sql_string_SELECT_FRIENDS_FROM_ID = "SELECT " + FriendFieldId2 + " FROM " + FriendTableName + " WHERE " + FriendFieldId1 + " = ?"
 
 var sqlQuerySelectOutgoingFriendRequestsFromId *sql.Stmt
-const sql_string_SELECT_OUTGOING_FRIEND_REQUESTS_FROM_ID="SELECT "+FriendRequestFieldReceivingId+" FROM "+FriendRequestTableName+" WHERE "+FriendRequestFieldSendingId+" = ?"
+
+const sql_string_SELECT_OUTGOING_FRIEND_REQUESTS_FROM_ID = "SELECT " + FriendRequestFieldReceivingId + " FROM " + FriendRequestTableName + " WHERE " + FriendRequestFieldSendingId + " = ?"
 
 var sqlQuerySelectIncomingFriendRequestsFromId *sql.Stmt
-const sql_string_SELECT_INCOMING_FRIEND_REQUESTS_FROM_ID="SELECT "+FriendRequestFieldSendingId+" FROM "+FriendRequestTableName+" WHERE "+FriendRequestFieldReceivingId+" = ?"
 
+const sql_string_SELECT_INCOMING_FRIEND_REQUESTS_FROM_ID = "SELECT " + FriendRequestFieldSendingId + " FROM " + FriendRequestTableName + " WHERE " + FriendRequestFieldReceivingId + " = ?"
 
 var sqlQueryAddOutgoingFriendRequest *sql.Stmt /*Args order, {sending_id, receiving_id}*/
 const sql_string_ADD_FRIEND_REQUEST = "INSERT INTO " + FriendRequestTableName + " VALUES (?, ?)"
@@ -71,6 +78,13 @@ var sqlQueryRemoveFriend *sql.Stmt                                              
 const sql_string_REMOVE_FRIEND = "DELETE FROM " + FriendTableName + " WHERE " + FriendFieldId1 + " = ? AND " + FriendFieldId2 + " = ?"
 
 const start_sql_string_SELECT_USERNAMES_FROM_ID_START = "SELECT " + UserFieldId + ", " + UserFieldUsername + " FROM " + UserTableName + " WHERE " + UserFieldId + " IN (?"
+
+var sqlQueryCheckIfUsernameExists *sql.Stmt
+
+const sql_string_CHECK_IF_USERNAME_EXISTS = "SELECT COUNT(1) FROM " + UserTableName + " WHERE " + UserFieldUsername + " = ?"
+
+var sqlQueryCheckIfFriendRequestExists *sql.Stmt /*Args order, {sending_id, receiving_id}*/
+const sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS = "SELECT COUNT(1) FROM " + FriendRequestTableName + " WHERE " + FriendRequestFieldSendingId + " = ? AND " + FriendRequestFieldReceivingId + " = ?"
 
 func PrepareStatements(database *sql.DB) error {
 	var err error
@@ -102,30 +116,39 @@ func PrepareStatements(database *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	sqlQuerySelectGuessHistoryFromId, err = database.Prepare(
-		sql_string_SELECT_GUESS_HISTORY_FROM_ID,
+	sqlQuerySelectGuessHistoryFromUsername, err = database.Prepare(
+		sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME,
 	)
 	if err != nil {
 		return err
 	}
-    sqlQuerySelectFriendsFromId, err = database.Prepare(
-        sql_string_SELECT_FRIENDS_FROM_ID,
-    )
-    if err!=nil{
-        return err
-    }
-    sqlQuerySelectIncomingFriendRequestsFromId, err = database.Prepare(
-        sql_string_SELECT_INCOMING_FRIEND_REQUESTS_FROM_ID,
-    )
-    if err!=nil{
-        return err
-    }
-    sqlQuerySelectOutgoingFriendRequestsFromId, err = database.Prepare(
-        sql_string_SELECT_OUTGOING_FRIEND_REQUESTS_FROM_ID,
-    )
-    if err!=nil{
-        return err
-    }
+	sqlQuerySelectGuessHistoryFromId, err = database.Prepare(
+		sql_string_SELECT_GUESS_HISTORY_FROM_ID,
+	)
+	sqlQueryUpdateGuessHistoryWithUsername, err = database.Prepare(
+		sql_string_UPDATE_GUESS_HISTORY_WITH_ID,
+	)
+	if err != nil {
+		return err
+	}
+	sqlQuerySelectFriendsFromId, err = database.Prepare(
+		sql_string_SELECT_FRIENDS_FROM_ID,
+	)
+	if err != nil {
+		return err
+	}
+	sqlQuerySelectIncomingFriendRequestsFromId, err = database.Prepare(
+		sql_string_SELECT_INCOMING_FRIEND_REQUESTS_FROM_ID,
+	)
+	if err != nil {
+		return err
+	}
+	sqlQuerySelectOutgoingFriendRequestsFromId, err = database.Prepare(
+		sql_string_SELECT_OUTGOING_FRIEND_REQUESTS_FROM_ID,
+	)
+	if err != nil {
+		return err
+	}
 	sqlQueryAddOutgoingFriendRequest, err = database.Prepare(
 		sql_string_ADD_FRIEND_REQUEST,
 	)
@@ -146,6 +169,18 @@ func PrepareStatements(database *sql.DB) error {
 	}
 	sqlQueryRemoveFriend, err = database.Prepare(
 		sql_string_REMOVE_FRIEND,
+	)
+	if err != nil {
+		return err
+	}
+	sqlQueryCheckIfUsernameExists, err = database.Prepare(
+		sql_string_CHECK_IF_USERNAME_EXISTS,
+	)
+	if err != nil {
+		return err
+	}
+	sqlQueryCheckIfFriendRequestExists, err = database.Prepare(
+		sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS,
 	)
 	if err != nil {
 		return err
@@ -179,44 +214,68 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 		PasswordHash: sql_user.PasswordHash,
 		Experience:   sql_user.Experience,
 	}
-    user.Friends=make([]int64, 0)
-    friend_rows, err:=sqlQuerySelectFriendsFromId.Query(user.Id)
-    defer friend_rows.Close()
-    if err!=nil{
-        return nil, err
-    }
-    for friend_rows.Next(){
-        var id int64
-        friend_rows.Scan(&id)
-        user.Friends = append(user.Friends, id)
-    }
-    user.IncomingFriendRequests=make([]int64, 0)
-    incoming_friend_request_rows, err:=sqlQuerySelectIncomingFriendRequestsFromId.Query(user.Id)
-    defer incoming_friend_request_rows.Close()
-    if err!=nil{
-        return nil, err
-    }
-    for incoming_friend_request_rows.Next(){
-        var id int64
-        incoming_friend_request_rows.Scan(&id)
-        user.IncomingFriendRequests=append(user.IncomingFriendRequests, id)
-    }
-    user.OutgoingFriendRequests=make([]int64, 0)
-    outgoing_friend_request_rows, err:=sqlQuerySelectOutgoingFriendRequestsFromId.Query(user.Id)
-    defer outgoing_friend_request_rows.Close()
-    if err!=nil{
-        return nil, err
-    }
-    for outgoing_friend_request_rows.Next(){
-        var id int64 
-        outgoing_friend_request_rows.Scan(&id)
-        user.OutgoingFriendRequests = append(user.OutgoingFriendRequests, id)
-    }
-	
+	if user.Friends, err = SelectFriendsFromId(user.Id); err != nil {
+		return nil, err
+	}
+	if user.IncomingFriendRequests, err = SelectIncomingFriendRequestsFromId(user.Id); err != nil {
+		return nil, err
+	}
+	if user.OutgoingFriendRequests, err = SelectOutgoingFriendRequestsFromId(user.Id); err != nil {
+		return nil, err
+	}
 	if err := DecodeGob(sql_user.GuessHistory, &user.GuessHistory); err != nil {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func SelectFriendsFromId(id int64) ([]int64, error) {
+	friend_rows, err := sqlQuerySelectFriendsFromId.Query(id)
+	if err != nil {
+		return nil, err
+	}
+	defer friend_rows.Close()
+	friendlist := make([]int64, 0)
+	for friend_rows.Next() {
+		var id int64
+		if err := friend_rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		friendlist = append(friendlist, id)
+	}
+	return friendlist, nil
+}
+func SelectIncomingFriendRequestsFromId(id int64) ([]int64, error) {
+	friend_rows, err := sqlQuerySelectIncomingFriendRequestsFromId.Query(id)
+	if err != nil {
+		return nil, err
+	}
+	defer friend_rows.Close()
+	friend_request_list := make([]int64, 0)
+	for friend_rows.Next() {
+		var id int64
+		if err := friend_rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		friend_request_list = append(friend_request_list, id)
+	}
+	return friend_request_list, nil
+}
+func SelectOutgoingFriendRequestsFromId(id int64) ([]int64, error) {
+	friend_request_rows, err := sqlQuerySelectOutgoingFriendRequestsFromId.Query(id)
+	if err != nil {
+		return nil, err
+	}
+	defer friend_request_rows.Close()
+	friend_request_list := make([]int64, 0)
+	for friend_request_rows.Next() {
+		var id int64
+		if err := friend_request_rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		friend_request_list = append(friend_request_list, id)
+	}
+	return friend_request_list, nil
 }
 
 func SelectAuthenticationFieldsFromId(
@@ -255,7 +314,7 @@ func AddNewUser(user *User) error {
 		PasswordHash: user.PasswordHash,
 		Experience:   user.Experience,
 	}
-	var err error	
+	var err error
 	if sql_user.GuessHistory, err = EncodeGob(&user.GuessHistory); err != nil {
 		return err
 	}
@@ -266,21 +325,30 @@ func AddNewUser(user *User) error {
 		sql_user.Experience,
 		sql_user.GuessHistory,
 	)
-    //TODO currently making the assumption that any user sent is valid including the friends, 
-    for _, friend_id:=range user.Friends{
-        err=useAddFriendQuery(user.Id, friend_id)
-        if err!=nil{
-            return err
-        }
-    }
+	//TODO currently making the assumption that any user sent is valid including the friends,
+	for _, friend_id := range user.Friends {
+		err = useAddFriendQuery(user.Id, friend_id)
+		if err != nil {
+			return err
+		}
+	}
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
+func SelectGuessHistoryFromUsername(
+	username string,
+) (guess_history map[string]map[int64]int, err error) {
+	row := sqlQuerySelectGuessHistoryFromUsername.QueryRow(username)
+	return SelectGuessHistoryGivenRow(row)
+}
 func SelectGuessHistoryFromId(id int64) (guess_history map[string]map[int64]int, err error) {
 	row := sqlQuerySelectGuessHistoryFromId.QueryRow(id)
+	return SelectGuessHistoryGivenRow(row)
+}
+func SelectGuessHistoryGivenRow(row *sql.Row) (guess_history map[string]map[int64]int, err error) {
 	guess_history_bytes := make([]byte, 0)
 	err = row.Scan(
 		&guess_history_bytes,
@@ -293,13 +361,14 @@ func SelectGuessHistoryFromId(id int64) (guess_history map[string]map[int64]int,
 		return nil, err
 	}
 	return guess_history, nil
+
 }
-func UpdateGuessHistoryWithId(id int64, guess_history map[string]map[int64]int) error {
+func UpdateGuessHistoryWithUsername(username string, guess_history map[string]map[int64]int) error {
 	guess_history_bytes, err := EncodeGob(guess_history)
 	if err != nil {
 		return err
 	}
-	_, err = sqlQueryUpdateGuessHistoryWithId.Exec(guess_history_bytes, id)
+	_, err = sqlQueryUpdateGuessHistoryWithUsername.Exec(guess_history_bytes, username)
 	if err != nil {
 		return err
 	}
@@ -350,7 +419,18 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 			return err
 		}
 	case AcceptedRequest:
-		err := useAddFriendQuery(sending_id, receiving_id)
+		exists, err := CheckIfRequestExists(sending_id, receiving_id)
+		if err != nil {
+			return err
+		}
+		if !exists {
+			return fmt.Errorf(
+				"Friend request between ids %d and %d does not exist",
+				sending_id,
+				receiving_id,
+			)
+		}
+		err = useAddFriendQuery(sending_id, receiving_id)
 		if err != nil {
 			return err
 		}
@@ -361,11 +441,22 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 	}
 	return nil
 }
-func RemoveFriend(id_1 int64, id_2 int64) error{
-    if err:=useDeleteFriendQuery(id_1, id_2); err!=nil{
-        return err
-    }
-    return nil
+func CheckIfRequestExists(sending_id int64, receiving_id int64) (bool, error) {
+	row := sqlQueryCheckIfFriendRequestExists.QueryRow(sending_id, receiving_id)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return false, err
+	}
+	if count == 1 {
+		return true, nil
+	}
+	return false, nil
+}
+func RemoveFriend(id_1 int64, id_2 int64) error {
+	if err := useDeleteFriendQuery(id_1, id_2); err != nil {
+		return err
+	}
+	return nil
 }
 
 type IdUsernamePair struct {
@@ -408,4 +499,15 @@ func GetUsernameListFromIdList(ids []int64) ([]IdUsernamePair, error) {
 		return nil, err
 	}
 	return usernames, nil
+}
+func CheckIfUsernameExists(username string) (bool, error) {
+	row := sqlQueryCheckIfUsernameExists.QueryRow(username)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return false, err
+	}
+	if count == 1 {
+		return true, nil
+	}
+	return false, nil
 }

@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"shrimple/src/database"
 	"shrimple/src/templates"
 	"time"
 )
@@ -27,11 +28,11 @@ func hashPassword(username, password string) string {
 
 func verifyPassword(username, password string) bool {
 	hash := hashPassword(username, password)
-	var user = GetUserByName(username)
-	if user == nil {
-		return false
+    _, database_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
+	if err != nil {
+        return false
 	}
-	if user.PasswordHash == hash {
+	if database_hash == hash {
 		return true
 	}
 	return false

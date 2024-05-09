@@ -8,13 +8,18 @@ import (
 )
 
 func createAccount(username, password, confirmpassword string) error {
-	if UsernameTaken(username) {
+    taken, err:=UsernameTaken(username) 
+    if err!=nil{
+        log.Println(err)
+        return errors.New("Check for username failed")
+    }
+    if taken{
 		return errors.New("Username Already Taken!")
 	}
 	if password != confirmpassword {
 		return errors.New("Passwords do not match!")
 	}
-	err := CreateUser(username, password)
+	err = CreateUser(username, password)
 	if err != nil {
 		log.Println(err)
 		return errors.New("Account Creation Failed")

@@ -2,9 +2,9 @@ package src
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
-	"shrimple/src/shared"
-    "log"
+	"shrimple/src/database"
 )
 
 type GuessHistoryEntry struct {
@@ -12,9 +12,9 @@ type GuessHistoryEntry struct {
 	GuessDate  int64
 	NumGuesses int
 }
-type GuessHistoryRequest struct{
-    GameMode string
-    UserId int
+type GuessHistoryRequest struct {
+	GameMode string
+	UserId   int64
 }
 
 func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
@@ -36,13 +36,17 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// store the decoded data in the user's struct
-	var user *User = GetUserByName(*username)
-	mode_guess_history, has_mode := user.GuessHistory[historyentry.GameMode]
+	guess_history, err := database.SelectGuessHistoryFromUsername(*username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	mode_guess_history, has_mode := guess_history[historyentry.GameMode]
 	if !has_mode {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-    //TODO maybe a hard cutoff for guess date or just compare it to the latest (if this is done then it'll probably be better stored as a 6 length array with an extra field of last guess date, where the date is set on the time of creation of the object)
+	//TODO maybe a hard cutoff for guess date or just compare it to the latest (if this is done then it'll probably be better stored as a 6 length array with an extra field of last guess date, where the date is set on the time of creation of the object)
 	_, already_played_that_day := mode_guess_history[historyentry.GuessDate]
 	if already_played_that_day {
 		w.WriteHeader(http.StatusBadRequest)
@@ -62,39 +66,38 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-    if err:=WriteUsersToFile(); err!=nil{
-        log.Println(err)
-        //TODO might change or will stay if changed to using database
-    }
+	if err := database.UpdateGuessHistoryWithUsername(*username, guess_history); err != nil {
+		log.Println(err)
+		//TODO idk
+	}
 	w.Write(bytes)
 }
 
 func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
-    var history_request *GuessHistoryRequest = &GuessHistoryRequest{}
+	var history_request *GuessHistoryRequest = &GuessHistoryRequest{}
 	var decoder *json.Decoder = json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(history_request)
-    if err!=nil{
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    var user *User
-    if history_request.UserId==-1{
-        var username *string = LoggedInUser(r)
-	    if username == nil {
-		    w.WriteHeader(http.StatusBadRequest)
-		    return
-	    }   
-	    user= GetUserByName(*username)
-    } else{
-        user=shared.SafeProcessLockedWithReturn(&UserMap, func(user_map map[int64]*User)*User {
-            return user_map[int64(history_request.UserId)]}) 
-    }
-    if user==nil{
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    mode_guess_history, has_mode := user.GuessHistory[history_request.GameMode]
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var guess_history map[string]map[int64]int
+	if history_request.UserId == -1 {
+		var username *string = LoggedInUser(r)
+		if username == nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		guess_history, err = database.SelectGuessHistoryFromUsername(*username)
+	} else {
+		guess_history, err = database.SelectGuessHistoryFromId(history_request.UserId)
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	mode_guess_history, has_mode := guess_history[history_request.GameMode]
 	if !has_mode {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -111,4 +114,3 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write(bytes)
 }
-

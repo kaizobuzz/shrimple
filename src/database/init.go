@@ -83,16 +83,11 @@ const sql_string_GET_COUNT = "SELECT COUNT(" + UserFieldId + ") FROM " + UserTab
 
 // hai btw this is unscalable as fuck
 func GetCount() (int64, error) {
-	rows, err := Database.Query(sql_string_GET_COUNT)
-	if err != nil {
+	row := Database.QueryRow(sql_string_GET_COUNT)
+	var count int64
+	if err := row.Scan(&count); err != nil {
 		return -1, err
 	}
-	defer rows.Close()
-	var count int64
-	for rows.Next() {
-		if err := rows.Scan(&count); err != nil {
-			return -1, err
-		}
-	}
-    return count, nil
+
+	return count, nil
 }
