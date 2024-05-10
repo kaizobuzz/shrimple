@@ -90,9 +90,9 @@ function initializeGameVariablesFromServer(){
 }
 let mode=getMode();
 console.log(mode);
-if (mode==Modes.shrimple){
+if (mode==Modes.Shrimple){
 
-} else if (mode==Modes.clamplicated){
+} else if (mode==Modes.Clamplicated){
     changeSubmitFunction();
 } else {
 }
