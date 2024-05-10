@@ -48,7 +48,4 @@ func Initialize() {
 	if err := shared.GetShrimpJson(); err != nil {
 		log.Fatal(err)
 	}
-	if err := ReadUsersFromFile(); err != nil {
-		log.Fatal(err)
-	}
 }
