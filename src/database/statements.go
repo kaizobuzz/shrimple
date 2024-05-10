@@ -238,7 +238,14 @@ func useDeleteFriendQuery(id_1 int64, id_2 int64) error {
 func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpdate) error {
 	switch status {
 	case SentRequest:
-		_, err := sqlQueryAddOutgoingFriendRequest.Exec(sending_id, receiving_id)
+        exists, err:=CheckIfRequestExists(receiving_id, sending_id)
+        if err!=nil{
+            return err
+        }
+        if exists{
+            return fmt.Errorf("Request between %d and %d already exists", receiving_id, sending_id)
+        }
+		_, err = sqlQueryAddOutgoingFriendRequest.Exec(sending_id, receiving_id)
 		if err != nil {
 			return err
 		}
