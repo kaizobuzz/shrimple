@@ -10,22 +10,19 @@ import (
 
 type User = shared.User
 
-
 func GetUserById(id int64) (*User, error) {
-    return database.SelectFullUserFromId(id)
+	return database.SelectFullUserFromId(id)
 }
-
-
 
 var currentID int64
 var currentIDMutex sync.Mutex
 
 func CreateUser(username, password string) error {
-    taken, err:=UsernameTaken(username) 
-    if err!=nil{
-        return err
-    }
-    if taken{
+	taken, err := UsernameTaken(username)
+	if err != nil {
+		return err
+	}
+	if taken {
 		return errors.New("Account already exists with that name")
 	}
 	hash := hashPassword(username, password)
@@ -50,7 +47,7 @@ func CreateUser(username, password string) error {
 
 	if err := database.AddNewUser(new_user); err != nil {
 		return err
-        //TODO currentID mutex might get messed up here?
+		//TODO currentID mutex might get messed up here?
 	}
 	return nil
 }
@@ -123,11 +120,6 @@ func deserializeUser(user_json jsonUser) (*User, error) {
 	//TODO will change with using a database but this doesn't receive the guess history so cant just replicate the same thing directly, probably will decide to not always return a whole user so that'll probably be kept in mind anyways but just yknow
 }
 
-
-
-
-
-
 func UsernameTaken(username string) (bool, error) {
-    return database.CheckIfUsernameExists(username)
+	return database.CheckIfUsernameExists(username)
 }

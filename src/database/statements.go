@@ -86,104 +86,81 @@ const sql_string_CHECK_IF_USERNAME_EXISTS = "SELECT COUNT(1) FROM " + UserTableN
 var sqlQueryCheckIfFriendRequestExists *sql.Stmt /*Args order, {sending_id, receiving_id}*/
 const sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS = "SELECT COUNT(1) FROM " + FriendRequestTableName + " WHERE " + FriendRequestFieldSendingId + " = ? AND " + FriendRequestFieldReceivingId + " = ?"
 
+type StatementPreparer struct {
+	database *sql.DB
+	err      error
+}
+
+func (s *StatementPreparer) PrepareStatement(global_stmt **sql.Stmt, sql_string string) {
+	if s.err != nil {
+		return
+	}
+	*global_stmt, s.err = s.database.Prepare(sql_string)
+}
+
 func PrepareStatements(database *sql.DB) error {
-	var err error
-	sqlQuerySelectFullUserFromId, err = database.Prepare(
+	statement_preparer := StatementPreparer{database: database}
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectFullUserFromId,
 		sql_string_SELECT_FULL_USER_FROM_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectFullUserFromUsername, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectFullUserFromUsername,
 		sql_string_SELECT_FULL_USER_FROM_USERNAME,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectAuthenticationFieldsFromId, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectAuthenticationFieldsFromId,
 		sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectAuthenticationFieldsFromUsername, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectAuthenticationFieldsFromUsername,
 		sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQueryAddUserStatement, err = database.Prepare(sql_string_ADD_USER_STATEMENT)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectGuessHistoryFromUsername, err = database.Prepare(
-		sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME,
-	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectGuessHistoryFromId, err = database.Prepare(
+	statement_preparer.PrepareStatement(&sqlQueryAddUserStatement, sql_string_ADD_USER_STATEMENT)
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectGuessHistoryFromId,
 		sql_string_SELECT_GUESS_HISTORY_FROM_ID,
 	)
-	sqlQueryUpdateGuessHistoryWithUsername, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectGuessHistoryFromUsername,
+		sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME,
+	)
+	statement_preparer.PrepareStatement(
+		&sqlQueryUpdateGuessHistoryWithUsername,
 		sql_string_UPDATE_GUESS_HISTORY_WITH_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectFriendsFromId, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectFriendsFromId,
 		sql_string_SELECT_FRIENDS_FROM_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectIncomingFriendRequestsFromId, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectIncomingFriendRequestsFromId,
 		sql_string_SELECT_INCOMING_FRIEND_REQUESTS_FROM_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQuerySelectOutgoingFriendRequestsFromId, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQuerySelectOutgoingFriendRequestsFromId,
 		sql_string_SELECT_OUTGOING_FRIEND_REQUESTS_FROM_ID,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQueryAddOutgoingFriendRequest, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQueryAddOutgoingFriendRequest,
 		sql_string_ADD_FRIEND_REQUEST,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQueryRemoveOutgoingFriendRequest, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQueryRemoveOutgoingFriendRequest,
 		sql_string_REMOVE_FRIEND_REQUEST,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQueryAddFriend, err = database.Prepare(
-		sql_string_ADD_FRIENDS,
-	)
-	if err != nil {
-		return err
-	}
-	sqlQueryRemoveFriend, err = database.Prepare(
-		sql_string_REMOVE_FRIEND,
-	)
-	if err != nil {
-		return err
-	}
-	sqlQueryCheckIfUsernameExists, err = database.Prepare(
+	statement_preparer.PrepareStatement(&sqlQueryAddFriend, sql_string_ADD_FRIENDS)
+	statement_preparer.PrepareStatement(&sqlQueryRemoveFriend, sql_string_REMOVE_FRIEND)
+	statement_preparer.PrepareStatement(
+		&sqlQueryCheckIfUsernameExists,
 		sql_string_CHECK_IF_USERNAME_EXISTS,
 	)
-	if err != nil {
-		return err
-	}
-	sqlQueryCheckIfFriendRequestExists, err = database.Prepare(
+	statement_preparer.PrepareStatement(
+		&sqlQueryCheckIfFriendRequestExists,
 		sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS,
 	)
-	if err != nil {
-		return err
+	if statement_preparer.err != nil {
+		return statement_preparer.err
 	}
 	return nil
 }
