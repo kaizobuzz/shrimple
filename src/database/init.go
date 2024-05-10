@@ -37,43 +37,36 @@ const sql_string_CREATE_SENDING_ID_INDEX = "CREATE INDEX if NOT EXISTS index_sen
 
 const sql_string_CREATE_RECEIVING_ID_INDEX = "CREATE INDEX if NOT EXISTS index_receiving_id ON " + FriendRequestTableName + "(" + FriendRequestFieldReceivingId + ")"
 
+// idk just for use in initing
+type StatementExecuter struct {
+	database *sql.DB
+	err      error
+}
+
+func (s *StatementExecuter) exec(sql_string string) {
+	if s.err != nil {
+		return
+	}
+	_, s.err = s.database.Exec(sql_string)
+}
+
 func InitializeDB(filepath string) error {
 	var err error
 	Database, err = sql.Open("sqlite3", "./"+filepath)
 	if err != nil {
 		return err
 	}
-	_, err = Database.Exec(sql_string_CREATE_USER_TABLE)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_USERNAME_INDEX)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_FRIEND_TABLE)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_FRIEND_INDEX_1)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_FRIEND_INDEX_2)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_FRIEND_REQUESTS_TABLE)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_SENDING_ID_INDEX)
-	if err != nil {
-		return err
-	}
-	_, err = Database.Exec(sql_string_CREATE_RECEIVING_ID_INDEX)
-	if err != nil {
-		return err
+	statement_executer := StatementExecuter{database: Database}
+	statement_executer.exec(sql_string_CREATE_USER_TABLE)
+	statement_executer.exec(sql_string_CREATE_USERNAME_INDEX)
+	statement_executer.exec(sql_string_CREATE_FRIEND_TABLE)
+	statement_executer.exec(sql_string_CREATE_FRIEND_INDEX_1)
+	statement_executer.exec(sql_string_CREATE_FRIEND_INDEX_2)
+	statement_executer.exec(sql_string_CREATE_FRIEND_REQUESTS_TABLE)
+	statement_executer.exec(sql_string_CREATE_SENDING_ID_INDEX)
+	statement_executer.exec(sql_string_CREATE_RECEIVING_ID_INDEX)
+	if statement_executer.err != nil {
+		return statement_executer.err
 	}
 
 	return nil
