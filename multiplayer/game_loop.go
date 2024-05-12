@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 	"net/http"
 	"shrimple/src/shared"
@@ -127,7 +126,6 @@ func joinResponse(game *game, message *Message) MessageResult {
 		}
 	}
 	response := addPlayer(game, message)
-	defer log.Println("this function should've returned")
 	if response.Err == nil {
 		fmt.Println(response.Message)
 		message.Id = response.Message.Jsondata
@@ -151,7 +149,6 @@ func getStartStateResponse(game *game, message *Message) MessageResult {
 	current_players := make([]ClientStartPlayer, 0)
 	player_index, err := getPlayerIndex(game, message)
 	if err != nil {
-		log.Println("state ?")
 		return MessageResult{
 			Err:        err,
 			Statuscode: http.StatusBadRequest}
