@@ -238,13 +238,13 @@ func useDeleteFriendQuery(id_1 int64, id_2 int64) error {
 func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpdate) error {
 	switch status {
 	case SentRequest:
-        exists, err:=CheckIfRequestExists(receiving_id, sending_id)
-        if err!=nil{
-            return err
-        }
-        if exists{
-            return fmt.Errorf("Request between %d and %d already exists", receiving_id, sending_id)
-        }
+		exists, err := CheckIfRequestExists(receiving_id, sending_id)
+		if err != nil {
+			return err
+		}
+		if exists {
+			return fmt.Errorf("Request between %d and %d already exists", receiving_id, sending_id)
+		}
 		_, err = sqlQueryAddOutgoingFriendRequest.Exec(sending_id, receiving_id)
 		if err != nil {
 			return err
@@ -274,6 +274,8 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 		if err != nil {
 			return err
 		}
+	default:
+		return fmt.Errorf("FriendUpdate num %d not valid", status)
 	}
 	return nil
 }
@@ -346,4 +348,57 @@ func CheckIfUsernameExists(username string) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func SearchForUsernames(substring string) ([]IdUsernamePair, error) {
+	usernames, err := searchForPattern("", "%", substring)
+	if err != nil {
+		return nil, err
+	}
+	if len(usernames) < UserSearchLimit {
+		usernames, err = searchForPattern("%", "%", substring)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return usernames, nil
+}
+func searchForPattern(left, right, substring string) ([]IdUsernamePair, error) {
+	rows, err := sqlQuerySearchForUsername.Query(escapeLike(left, right, substring))
+	if err != nil {
+		return nil, err
+	}
+	usernames := make([]IdUsernamePair, 0)
+	for rows.Next() {
+		var id int64
+		var username string
+		if err := rows.Scan(&username, &id); err != nil {
+			return nil, err
+		}
+		usernames = append(usernames, IdUsernamePair{Username: username, Id: id})
+	}
+	return usernames, nil
+}
+
+// https://github.com/go-gorm/gorm/issues/5972
+func escapeLike(left, right, word string) string {
+	var n int
+	for i := range word {
+		if c := word[i]; c == '%' || c == '_' || c == '\\' {
+			n++
+		}
+	}
+	// No characters to escape.
+	if n == 0 {
+		return left + word + right
+	}
+	var b strings.Builder
+	b.Grow(len(word) + n)
+	for _, c := range word {
+		if c == '%' || c == '_' || c == '\\' {
+			b.WriteByte('\\')
+		}
+		b.WriteRune(c)
+	}
+	return left + b.String() + right
 }

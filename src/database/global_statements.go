@@ -65,6 +65,11 @@ const sql_string_CHECK_IF_USERNAME_EXISTS = "SELECT COUNT(1) FROM " + UserTableN
 var sqlQueryCheckIfFriendRequestExists *sql.Stmt /*Args order, {sending_id, receiving_id}*/
 const sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS = "SELECT COUNT(1) FROM " + FriendRequestTableName + " WHERE " + FriendRequestFieldSendingId + " = ? AND " + FriendRequestFieldReceivingId + " = ?"
 
+
+const UserSearchLimit=20
+var sqlQuerySearchForUsername *sql.Stmt /*Scanning order {Username, id} , please use EscapeLike to prevent accidental wildcards where unwanted*/
+const sql_string_SEARCH_FOR_USERNAME = "SELECT "+UserFieldUsername+", "+UserFieldId+" FROM "+UserTableName+" WHERE "+UserFieldUsername+" LIKE ? LIMIT 20"
+
 type StatementPreparer struct {
 	database *sql.DB
 	err      error
@@ -138,6 +143,10 @@ func PrepareStatements(database *sql.DB) error {
 		&sqlQueryCheckIfFriendRequestExists,
 		sql_string_CHECK_IF_FRIEND_REQUEST_EXISTS,
 	)
+    statement_preparer.PrepareStatement(
+        &sqlQuerySearchForUsername,
+        sql_string_SEARCH_FOR_USERNAME,
+    )
 	if statement_preparer.err != nil {
 		return statement_preparer.err
 	}
