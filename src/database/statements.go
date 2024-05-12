@@ -350,7 +350,12 @@ func CheckIfUsernameExists(username string) (bool, error) {
 	return false, nil
 }
 
+const max_SUBSTR_LENGTH=30//TODO idk unmagic the number
+
 func SearchForUsernames(substring string) ([]IdUsernamePair, error) {
+    if len(substring)>max_SUBSTR_LENGTH{
+        return nil, fmt.Errorf("substring %s is too long, length %d, (max %d)", substring, len(substring), max_SUBSTR_LENGTH)
+    }
 	usernames, err := searchForPattern("", "%", substring)
 	if err != nil {
 		return nil, err
@@ -380,7 +385,7 @@ func searchForPattern(left, right, substring string) ([]IdUsernamePair, error) {
 	return usernames, nil
 }
 
-// https://github.com/go-gorm/gorm/issues/5972
+// function from https://github.com/go-gorm/gorm/issues/5972
 func escapeLike(left, right, word string) string {
 	var n int
 	for i := range word {

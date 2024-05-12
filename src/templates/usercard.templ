@@ -1,0 +1,15 @@
+package templates
+
+import "fmt"
+
+templ UserCard(logged_in bool, id int64, username string) {
+	if !logged_in {
+		<a class="usercard-class" href="/login.html" id="usercard">
+			Not Logged In
+		</a>
+	} else{
+        <a class="usercard-class" href={ templ.URL("/userinfo.html?userid="+fmt.Sprintf("%d", id))}>
+            Logged In as {username}
+        </a>
+    }
+}

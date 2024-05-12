@@ -13,3 +13,4 @@ func UseStringTemplate(message string, template string_template, w *http.Respons
    return template(message).Render(context.Background(), *w) 
 }
 
+

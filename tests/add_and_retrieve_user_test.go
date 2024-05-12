@@ -161,4 +161,11 @@ func TestAddingUser(t *testing.T) {
     if count!=int64(len(first_var.Friends)+2){
         t.Fatal(count)
     }
+    slice, err:=database.SearchForUsernames("hin")
+    if err!=nil{
+        t.Fatal(err)
+    }
+    if len(slice)!=1{
+        t.Fatal(len(slice), slice)
+    }
 }

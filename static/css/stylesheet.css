@@ -23,6 +23,13 @@ body {
     float: right;
     cursor: pointer;
 }
+.usercard-class {
+    color: #C6C9CD;
+    text-decoration: none;
+    float: right;
+    cursor: pointer;
+
+}
 #usercard:hover{
     position: relative;
     background-color: #595b60;
