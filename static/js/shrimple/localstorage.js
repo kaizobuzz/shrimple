@@ -25,6 +25,12 @@ function checkLocalStorage(){
 /**@param {number} num_guesses  
  * @returns {Promise<number[]>}*/
 async function addToHistory(num_guesses){ 
+    let history_string=localStorage.getItem("guess_history"+mode);
+    let history=/**@type Number[]*/(history_string!=null ? JSON.parse(history_string) : Array(MAX_GUESSES).fill(0));
+    if (num_guesses!=-1){
+        history[num_guesses-1]+=1;
+    }
+    localStorage.setItem("guess_history"+mode, JSON.stringify(history));
     let guess_history_entry={
         GameMode: mode,
         GuessDate: Game.date,
@@ -46,12 +52,6 @@ async function addToHistory(num_guesses){
         }
         return guess_history_array;
     }
-    let history_string=localStorage.getItem("guess_history"+mode);
-    let history=/**@type Number[]*/(history_string!=null ? JSON.parse(history_string) : Array(MAX_GUESSES).fill(0));
-    if (num_guesses!=-1){
-        history[num_guesses-1]+=1;
-    }
-    localStorage.setItem("guess_history"+mode, JSON.stringify(history));
     return history;
 
 }
