@@ -8,7 +8,6 @@ import (
 )
 
 func UserCardHandler(w http.ResponseWriter, r *http.Request) {
-	//TODO: this function was written to test stuff and is therefore put together rather sloppily
 	var user *string = LoggedInUser(r)
 	if user == nil {
         templates.UserCard(false, -1, "").Render(context.Background(), w) 
@@ -18,8 +17,5 @@ func UserCardHandler(w http.ResponseWriter, r *http.Request) {
             w.WriteHeader(http.StatusInternalServerError)
         }
         templates.UserCard(true, id, *user).Render(context.Background(), w) 
-
-		// logged in user
-        // the fmt.Sprintf allows for XSS so this should eventually be changed into a tempalte
 	}
 }

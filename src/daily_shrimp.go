@@ -25,7 +25,7 @@ func getBaseDailyNumber(offset int64) int{
     offset = ((offset >> 16) ^ offset) * 0x119de1f3;
     offset = ((offset >> 16) ^ offset) * 0x119de1f3;
     offset = (offset >> 16) ^ offset;
-    s:=rand.NewSource((time.Now().UTC().UnixMilli()/(1000*60*60*24))^offset) //TODO change offset to be more random
+    s:=rand.NewSource((time.Now().UTC().UnixMilli()/(1000*60*60*24))^offset)     
     r:=rand.New(s) 
     return r.Intn(len(shared.ShrimpList.Shrimps))
 }

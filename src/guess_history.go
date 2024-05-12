@@ -68,7 +68,6 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := database.UpdateGuessHistoryWithUsername(*username, guess_history); err != nil {
 		log.Println(err)
-		//TODO idk
 	}
 	w.Write(bytes)
 }
