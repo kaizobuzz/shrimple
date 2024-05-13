@@ -27,6 +27,7 @@ func createAccount(username, password, confirmpassword string) error {
 	return nil
 }
 
+//TODO check if there is a possible denial of service attack by spamming this endpoint
 func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Println(err)
