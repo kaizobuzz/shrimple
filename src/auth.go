@@ -120,10 +120,14 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
 }
 
 func SignedPassword(username string) ([]byte, error) {
-    _, password_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
+    password_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
 	if err != nil {
 		return nil, err
 	}
-	var password_hash_bytes = sha256.Sum256([]byte(password_hash))
-	return SignWithServerPrivateKey(password_hash_bytes)
+    if len(password_hash.Hash)!=_ARGON2_KEYLENGTH{
+        return nil, fmt.Errorf("password hash stored has wrong keylength, %d expected, %d found", _ARGON2_KEYLENGTH, len(password_hash.Hash))
+    }
+    //TODO make sure this is a safe conversion
+	var password_hash_bytes = *(*[_ARGON2_KEYLENGTH]byte)(password_hash.Hash)
+    return SignWithServerPrivateKey(password_hash_bytes)
 }

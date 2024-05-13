@@ -12,7 +12,7 @@ func UserCardHandler(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
         templates.UserCard(false, -1, "").Render(context.Background(), w) 
 	} else {
-        id, _, err:=database.SelectAuthenticationFieldsFromUsername(*user)
+        id, err:=database.SelectIdFromUsername(*user)
         if err!=nil{
             w.WriteHeader(http.StatusInternalServerError)
         }

@@ -1,9 +1,11 @@
 package tests
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"shrimple/src/database"
+	"shrimple/src/shared"
 	"slices"
 	"testing"
 	"time"
@@ -33,7 +35,7 @@ func TestAddingUser(t *testing.T) {
 	first_var := User{
 		Username:     username,
 		Id:           id,
-		PasswordHash: "214897985172985ujroiwofaniewpfeuofebouib21i33ib31b3u23u21b3",
+		PasswordHash: shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 		Experience:   0,
 		Friends: []int64{
 			3,
@@ -64,9 +66,10 @@ func TestAddingUser(t *testing.T) {
 	}
 	for _, friend_id := range first_var.Friends {
 		next_var := User{
-			Username:               fmt.Sprint(friend_id) + "idk",
-			Id:                     friend_id,
-			PasswordHash:           "idkaerihaorp",
+			Username: fmt.Sprint(friend_id) + "idk",
+			Id:       friend_id,
+
+			PasswordHash:           shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 			Experience:             0,
 			Friends:                []int64{},
 			IncomingFriendRequests: []int64{},
@@ -78,9 +81,9 @@ func TestAddingUser(t *testing.T) {
 		}
 	}
 	next_var := User{
-		Username:               fmt.Sprint(2138) + "idk",
-		Id:                     2138,
-		PasswordHash:           "idkaerihaorp",
+		Username: fmt.Sprint(2138) + "idk",
+		Id:       2138,
+		PasswordHash:           shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 		Experience:             0,
 		Friends:                []int64{},
 		IncomingFriendRequests: []int64{},
@@ -119,11 +122,11 @@ func TestAddingUser(t *testing.T) {
 	if fmt.Sprint(first_var.GuessHistory) != fmt.Sprint(second_var.GuessHistory) {
 		t.Fatal(second_var.GuessHistory, first_var.GuessHistory)
 	}
-	test_username, password_hash, err := database.SelectAuthenticationFieldsFromId(id)
+	password_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
 	if err != nil {
 		t.Fatal(second_var.Username, err)
 	}
-	if test_username != first_var.Username || password_hash != first_var.PasswordHash {
+	if !bytes.Equal(password_hash.Hash, first_var.PasswordHash.Hash) {
 		t.Fatal("idk")
 	}
 	test_slice, err := database.GetUsernameListFromIdList(first_var.Friends)
@@ -154,18 +157,18 @@ func TestAddingUser(t *testing.T) {
 	if !slices.Contains(second_var.Friends, id) {
 		t.Fatal(second_var.Friends)
 	}
-    count, err:=database.GetCount()
-    if err!=nil{
-        t.Fatal(err)
-    }
-    if count!=int64(len(first_var.Friends)+2){
-        t.Fatal(count)
-    }
-    slice, err:=database.SearchForUsernames("hin")
-    if err!=nil{
-        t.Fatal(err)
-    }
-    if len(slice)!=1{
-        t.Fatal(len(slice), slice)
-    }
+	count, err := database.GetCount()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count != int64(len(first_var.Friends)+2) {
+		t.Fatal(count)
+	}
+	slice, err := database.SearchForUsernames("hin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(slice) != 1 {
+		t.Fatal(len(slice), slice)
+	}
 }

@@ -7,17 +7,19 @@ const sql_string_SELECT_FULL_USER_FROM_ID = "SELECT * FROM " + UserTableName + "
 var sqlQuerySelectFullUserFromUsername *sql.Stmt /*Order of Scanning arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
 const sql_string_SELECT_FULL_USER_FROM_USERNAME = "SELECT * FROM " + UserTableName + " WHERE " + UserFieldUsername + " = ?"
 
-var sqlQuerySelectAuthenticationFieldsFromId *sql.Stmt /*returns {Id, Username, PasswordHash} */
-const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID = "SELECT " +
-	UserFieldId + ", " +
-	UserFieldUsername + ", " +
-	UserFieldPasswordHash +
-	" FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
+var sqlQuerySelectIdFromUsername *sql.Stmt
+const sql_string_SELECT_ID_FROM_USERNAME = "SELECT " + 
+    UserFieldId +
+    " FROM "+UserTableName+ " WHERE " + UserFieldUsername + " = ?"
+var sqlQuerySelectUsernameFromId *sql.Stmt
+
+const sql_string_SELECT_USERNAME_FROM_ID = "SELECT " + 
+    UserFieldUsername +
+    " FROM "+UserTableName+ " WHERE " + UserFieldId + " = ?"
+
 
 var sqlQuerySelectAuthenticationFieldsFromUsername *sql.Stmt /*returns {Id, Username, PasswordHash} */
 const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME = "SELECT " +
-	UserFieldId + ", " +
-	UserFieldUsername + ", " +
 	UserFieldPasswordHash +
 	" FROM " + UserTableName + " WHERE " + UserFieldUsername + " = ?"
 
@@ -93,9 +95,13 @@ func PrepareStatements(database *sql.DB) error {
 		sql_string_SELECT_FULL_USER_FROM_USERNAME,
 	)
 	statement_preparer.PrepareStatement(
-		&sqlQuerySelectAuthenticationFieldsFromId,
-		sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID,
+		&sqlQuerySelectUsernameFromId,
+		sql_string_SELECT_USERNAME_FROM_ID,
 	)
+    statement_preparer.PrepareStatement(
+        &sqlQuerySelectIdFromUsername,
+        sql_string_SELECT_ID_FROM_USERNAME,
+    )
 	statement_preparer.PrepareStatement(
 		&sqlQuerySelectAuthenticationFieldsFromUsername,
 		sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME,

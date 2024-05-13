@@ -13,7 +13,7 @@ func BenchmarkTestFunction(b *testing.B) {
         first_var:=User{
             Username: "",
             Id: 302,
-            PasswordHash: "214897985172985ujroiwofaniewpfeuofebouib21i33ib31b3u23u21b3", 
+            PasswordHash: shared.HashSalt{Salt: []byte("idk"), Hash: []byte("Yeah just pretend this is a real password")}, 
             Experience: 0,
             Friends: []int64{3, 5, 7, 312948721894, 2138, 4214, 13,4,1525, 14143, 156413, 1414243, 15256, 13837, 12142421, 1259879},
             IncomingFriendRequests: []int64{},
@@ -67,7 +67,7 @@ func BenchmarkJsonEncoding(b *testing.B){
     first_var:=User{
             Username: "",
             Id: 302,
-            PasswordHash: "214897985172985ujroiwofaniewpfeuofebouib21i33ib31b3u23u21b3", 
+            PasswordHash: shared.HashSalt{Salt: []byte("idk"), Hash: []byte("Yeah just pretend this is a real password")}, 
             Experience: 0,
             Friends: []int64{3, 5, 7, 312948721894, 2138, 4214, 13,4,1525, 14143, 156413, 1414243, 15256, 13837, 12142421, 1259879},
             IncomingFriendRequests: []int64{},

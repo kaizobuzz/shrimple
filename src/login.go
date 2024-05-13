@@ -1,9 +1,9 @@
 package src
 
 import (
-	"crypto/sha256"
+	"bytes"
+	"crypto/rand"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,36 +11,67 @@ import (
 	"net/http"
 	"os"
 	"shrimple/src/database"
+	"shrimple/src/shared"
 	"shrimple/src/templates"
 	"time"
+
+	"golang.org/x/crypto/argon2"
 )
 
-var pepper string
+var _Pepper string
+type HashSalt =shared.HashSalt
 
-func hashPassword(username, password string) string {
-	if len(pepper) == 0 {
-		log.Fatal(errors.New("pepper too short (0 chars)"))
+
+func randomSecret(length uint32) ([]byte, error) {
+	secret := make([]byte, length)
+
+	_, err := rand.Read(secret)
+	if err != nil {
+		return nil, err
 	}
-	password = password + pepper + username
-	hash := sha256.Sum256([]byte(password))
-	return hex.EncodeToString(hash[:])
+	return secret, nil
+}
+//TODO figure out good numbers for these
+const (
+    _SALT_LEN=16
+    _ARGON2_TIME=3
+    _ARGON2_MEMORY=16*1024
+    _ARGON2_THREADS=2
+    _ARGON2_KEYLENGTH=32
+)
+func GeneratePassword(password string)(*HashSalt, error){
+    salt, err:=randomSecret(_SALT_LEN)
+    if err!=nil{
+        return nil, err
+    }
+    return hashPassword(salt, password), nil
 }
 
-func verifyPassword(username, password string) bool {
-	hash := hashPassword(username, password)
-    _, database_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
+func hashPassword(salt []byte, password string)(*HashSalt){
+	if len(_Pepper) == 0 {
+		log.Fatal(errors.New("pepper too short (0 chars)"))
+	}
+	password = password + _Pepper
+    hash:=argon2.IDKey([]byte(password), salt, _ARGON2_TIME, _ARGON2_MEMORY, _ARGON2_THREADS, _ARGON2_KEYLENGTH)
+    return &HashSalt{Salt: salt, Hash: hash}
+}
+
+func verifyPassword(username string, password string) bool {
+    database_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
 	if err != nil {
         return false
 	}
-	if database_hash == hash {
+	hash := hashPassword(database_hash.Salt, password)
+	if bytes.Equal(database_hash.Hash, hash.Hash) {
 		return true
 	}
 	return false
 }
 func GetPepper() {
+    //TODO this should be done in a more secure way
 	pepperbyte, err := os.ReadFile("data/pepper")
-	pepper = string(pepperbyte)
-	if len(pepper) == 0 {
+	_Pepper = string(pepperbyte)
+	if len(_Pepper) == 0 {
 		log.Fatal(errors.New("pepper too short (0 chars)"))
 	}
 	if err != nil {

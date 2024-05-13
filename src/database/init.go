@@ -10,7 +10,7 @@ var Database *sql.DB
 const sql_string_CREATE_USER_TABLE = "CREATE TABLE if NOT EXISTS " + UserTableName + " ( " +
 	UserFieldId + " INTEGER PRIMARY KEY, " +
 	UserFieldUsername + " TEXT UNIQUE, " +
-	UserFieldPasswordHash + " TEXT NOT NULL, " +
+	UserFieldPasswordHash + " BLOB NOT NULL, " +
 	UserFieldExperience + " INTEGER NOT NULL, " +
 	UserFieldGuessHistory + " BLOB NOT NULL)"
 

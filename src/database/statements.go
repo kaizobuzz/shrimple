@@ -12,7 +12,7 @@ type User = shared.User
 type SqlUser struct {
 	Id           int64
 	Username     string
-	PasswordHash string
+	PasswordHash []byte
 	Experience   int64
 	GuessHistory []byte //blob
 }
@@ -40,9 +40,11 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 	user := User{
 		Username:     sql_user.Username,
 		Id:           sql_user.Id,
-		PasswordHash: sql_user.PasswordHash,
 		Experience:   sql_user.Experience,
 	}
+    if err:=DecodeGob(sql_user.PasswordHash, &user.PasswordHash); err!=nil{
+        return nil, err
+    }
 	if user.Friends, err = SelectFriendsFromId(user.Id); err != nil {
 		return nil, err
 	}
@@ -107,43 +109,55 @@ func SelectOutgoingFriendRequestsFromId(id int64) ([]int64, error) {
 	return friend_request_list, nil
 }
 
-func SelectAuthenticationFieldsFromId(
-	id int64,
-) (username string, password_hash string, err error) {
-	row := sqlQuerySelectAuthenticationFieldsFromId.QueryRow(id)
-	_, username, password_hash, err = SelectAuthenticationFieldsGivenRow(row)
-	return username, password_hash, err
+func SelectIdFromUsername(username string)(id int64, err error){
+    row:=sqlQuerySelectIdFromUsername.QueryRow(username)
+    if err=row.Scan(&id); err!=nil{
+        return -1, err
+    }
+    return id, nil
 }
+
+func SelectUsernameFromId(id int64)(username string, err error){
+    row:=sqlQuerySelectUsernameFromId.QueryRow(id)
+    if err=row.Scan(&username); err!=nil{
+        return "", err
+    }
+    return username, nil
+}
+
+
 func SelectAuthenticationFieldsFromUsername(
 	username string,
-) (id int64, password_hash string, err error) {
+) (password_hash *shared.HashSalt, err error) {
 	row := sqlQuerySelectAuthenticationFieldsFromUsername.QueryRow(username)
-	id, _, password_hash, err = SelectAuthenticationFieldsGivenRow(row)
-	return id, password_hash, err
+	return SelectAuthenticationFieldsGivenRow(row)
 }
 func SelectAuthenticationFieldsGivenRow(
 	row *sql.Row,
-) (id int64, username string, password_hash string, err error) {
-	err = row.Scan(
-		&id,
-		&username,
-		&password_hash,
-	)
-	if err != nil {
-		return -1, "", "", err
+) (password_hash *shared.HashSalt, err error) {
+    var password_hash_bytes []byte
+    if err := row.Scan(&password_hash_bytes); err != nil {
+		return nil, err
 	}
-	return id, username, password_hash, nil
+    password_hash=&shared.HashSalt{}
+    if err := DecodeGob(password_hash_bytes, &password_hash); err!=nil{
+        return nil, err
+    }
+	return password_hash, nil
 }
 
 /*IMPORTANT Currently does not add friend requests */
 func AddNewUser(user *User) error {
+    password_hash_bytes, err:=EncodeGob(user.PasswordHash)
+    if err!=nil{
+        return err
+    }
 	sql_user := SqlUser{
 		Id:           user.Id,
 		Username:     user.Username,
-		PasswordHash: user.PasswordHash,
+		PasswordHash: password_hash_bytes,
 		Experience:   user.Experience,
 	}
-	var err error
 	if sql_user.GuessHistory, err = EncodeGob(&user.GuessHistory); err != nil {
 		return err
 	}

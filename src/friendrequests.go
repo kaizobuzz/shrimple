@@ -15,7 +15,7 @@ func getIdFromRequest(r *http.Request)(id int64, err error){
     if username==nil{
         return -1, errors.New("request does not have username associated with it")
     }
-    id, _, err=database.SelectAuthenticationFieldsFromUsername(*username)
+    id, err=database.SelectIdFromUsername(*username)
     if err!=nil{
         return -1, err
     }
