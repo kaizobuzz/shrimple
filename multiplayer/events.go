@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	Normal int = iota
-	CorrectGuess
-	OutofGuesses
+	GuessStatusNormal int = iota
+	GuessStatusCorrectGuess
+	GuessStatusOutofGuesses
 )
 
 const CONTENT_TYPE = "Content-Type"
@@ -63,7 +63,7 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statuscode)
 		return
 	}
-	if message.Type != Join {
+	if message.Type != MessageTypeJoin {
 		log.Println("message type: ", message.Type, " is not join")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -80,7 +80,7 @@ func getNewPlayerId(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	if response.Message.Type != RawText {
+	if response.Message.Type != MessageTypeRawText {
 		log.Println(
 			"response message type: ",
 			response.Message.Type,
@@ -110,10 +110,10 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch response.Message.Type {
-	case NoContent:
+	case MessageTypeNoContent:
 		w.WriteHeader(http.StatusNoContent)
 		return
-	case PlayerList:
+	case MessageTypePlayerList:
 		response_json, err := json.Marshal(response.Message)
 		if err != nil {
 			log.Println(err)
@@ -140,8 +140,8 @@ func CheckForEvents(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(response.Statuscode)
 		return
 	}
-	if response.Message.Type != NestedMessages {
-		log.Println("response message type: ", response.Message.Type, " is not ", NestedMessages)
+	if response.Message.Type != MessageTypeNestedMessages {
+		log.Println("response message type: ", response.Message.Type, " is not ", MessageTypeNestedMessages)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -153,7 +153,7 @@ func GetGameStateEvent(w http.ResponseWriter, r *http.Request){
         w.WriteHeader(http.StatusGone)
     }
     message:=&Message{ 
-        Type: GetFullState,
+        Type: MessageTypeGetFullState,
         Id: "",
         Jsondata: "",
     }

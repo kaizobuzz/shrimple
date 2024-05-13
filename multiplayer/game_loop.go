@@ -30,30 +30,30 @@ type ClientPlayer struct {
 }
 
 const (
-	NewGuess int = iota
-	NewEffect
-	PlayerList
-	PlayerDied
-	Join
-	Disconnect
-	Ready
-	Unready
-	GameStart
-	GetEvents
-	GetStartState
-	NoContent
-	RawText
-	NestedMessages
-	GetFullState
-	FullGameState
-	VoteKick
-	Kick
-	SendChat
+	MessageTypeNewGuess int = iota
+	MessageTypeNewEffect
+	MessageTypePlayerList
+	MessageTypePlayerDied
+	MessageTypeJoin
+	MessageTypeDisconnect
+	MessageTypeReady
+	MessageTypeUnready
+	MessageTypeGameStart
+	MessageTypeGetEvents
+	MessageTypeGetStartState
+	MessageTypeNoContent
+	MessageTypeRawText
+	MessageTypeNestedMessages
+	MessageTypeGetFullState
+	MessageTypeFullGameState
+	MessageTypeVoteKick
+	MessageTypeKick
+	MessageTypeSendChat
 )
 const (
-	DisplayNameTaken   string = "Display name taken"
-	GameAlreadyStarted string = "Game already started"
-	GameNotStarted     string = "Game not started"
+	ErrorDisplayNameTaken   string = "Display name taken"
+	ErrorGameAlreadyStarted string = "Game already started"
+	ErrorGameNotStarted     string = "Game not started"
 )
 
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
@@ -87,7 +87,7 @@ func checkPlayerActivity(game *game) {
 	for _, player := range game.Players {
 		if time.Since(player.LastTime) > time.Second*30 {
 			sendEventToOtherPlayers(game, -1, &Message{
-				Type: Disconnect,
+				Type: MessageTypeDisconnect,
 				Id:   player.DisplayName,
 			})
 			game.Players, _ = shared.UnstableDelete(game.Players, player)
@@ -100,7 +100,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 		return p.DisplayName == display_name
 	}) {
 		return MessageResult{
-			Err:        errors.New(DisplayNameTaken),
+			Err:        errors.New(ErrorDisplayNameTaken),
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -112,7 +112,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 	game.Players = append(game.Players, &new_player)
 	return MessageResult{
 		Message: &Message{
-			Type:     RawText,
+			Type:     MessageTypeRawText,
 			Jsondata: new_player.Userid,
 		},
 		Statuscode: http.StatusOK,
@@ -121,7 +121,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 func joinResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{
-			Err:        errors.New(GameAlreadyStarted),
+			Err:        errors.New(ErrorGameAlreadyStarted),
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -142,7 +142,7 @@ func sendBasicEvents(game *game, message *Message) MessageResult {
 	}
 	sendEventToOtherPlayers(game, player_index, message)
 	return MessageResult{
-		Message:    &Message{Type: NoContent},
+		Message:    &Message{Type: MessageTypeNoContent},
 		Statuscode: http.StatusNoContent}
 }
 func getStartStateResponse(game *game, message *Message) MessageResult {
@@ -166,7 +166,7 @@ func getStartStateResponse(game *game, message *Message) MessageResult {
 			Statuscode: http.StatusInternalServerError}
 	}
 	return MessageResult{Message: &Message{
-		Type:     PlayerList,
+		Type:     MessageTypePlayerList,
 		Jsondata: string(current_players_json),
 	},
 		Statuscode: http.StatusOK}
@@ -188,7 +188,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 	}
 	player.Messages = make([]*Message, 0)
 	return MessageResult{Message: &Message{
-		Type:     NestedMessages,
+		Type:     MessageTypeNestedMessages,
 		Jsondata: string(messages_json),
 	},
 		Statuscode: http.StatusOK,
@@ -197,7 +197,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 func readyUnreadyResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{
-			Err:        errors.New(GameAlreadyStarted),
+			Err:        errors.New(ErrorGameAlreadyStarted),
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -208,7 +208,7 @@ func readyUnreadyResponse(game *game, message *Message) MessageResult {
 			Statuscode: http.StatusBadRequest}
 	}
 	sendEventToOtherPlayers(game, player_index, message)
-	return MessageResult{Message: &Message{Type: NoContent},
+	return MessageResult{Message: &Message{Type: MessageTypeNoContent},
 		Statuscode: http.StatusNoContent}
 }
 func checkIfAllReadyWithPlayerExists(game *game, message *Message) {
@@ -219,7 +219,7 @@ func checkIfAllReadyWithPlayerExists(game *game, message *Message) {
 	}) && len(game.Players) >= 2 {
 		game.HasStarted = true
 		sendEventToOtherPlayers(game, -1, &Message{
-			Type: GameStart,
+			Type: MessageTypeGameStart,
 		})
 	}
 }
@@ -235,10 +235,10 @@ func addGuessWithPlayerExists(game *game, message *Message) error {
 		return err
 	}
     player.Guesses = append(player.Guesses, guess)
-	if guess.Status == CorrectGuess {
+	if guess.Status == GuessStatusCorrectGuess {
 		player.Guesses = make([]Guess, 0)
 	}
-	if guess.Status == OutofGuesses {
+	if guess.Status == GuessStatusOutofGuesses {
 		player.Lives -= 1
 		player.Guesses = make([]Guess, 0)
 	}
@@ -257,7 +257,7 @@ func getCurrentGameStateResponse(game *game, _ *Message) MessageResult {
 			Statuscode: http.StatusInternalServerError}
 	}
 	return MessageResult{Message: &Message{
-		Type:     FullGameState,
+		Type:     MessageTypeFullGameState,
 		Jsondata: string(player_json),
 	},
 		Statuscode: http.StatusOK,
