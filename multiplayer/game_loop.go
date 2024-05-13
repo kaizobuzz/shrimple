@@ -291,12 +291,12 @@ func voteToKickResponse(game *game, message *Message) MessageResult {
 		target_player.VotedAgainst = append(target_player.VotedAgainst, sending_player.Userid)
 		if len(game.Players)-len(target_player.VotedAgainst) <= ((len(game.Players)-1)/4)+1 {
 			sendEventToOtherPlayers(game, -1, &Message{
-				Type: Kick, Id: "", Jsondata: target_player.DisplayName},
+				Type: MessageTypeKick, Id: "", Jsondata: target_player.DisplayName},
 			)
 		}
 	}
 	return MessageResult{
-		Message:    &Message{Type: NoContent},
+		Message:    &Message{Type: MessageTypeNoContent},
 		Err:        nil,
 		Statuscode: http.StatusNoContent,
 	}
@@ -311,7 +311,7 @@ func sendChatResponse(game *game, message *Message) MessageResult {
 	}
 	sendEventToOtherPlayers(game, player_index, message)
 	return MessageResult{
-		Message:    &Message{Type: NoContent},
+		Message:    &Message{Type: MessageTypeNoContent},
 		Statuscode: http.StatusNoContent,
 	}
 }
@@ -328,7 +328,7 @@ Loop:
 		}
 		//process_start := time.Now()
 		switch message.Type {
-        case NewGuess:
+        case MessageTypeNewGuess:
             response:=sendBasicEvents(game, message)
             if response.Err==nil{
                 err:=addGuessWithPlayerExists(game, message) 
@@ -338,39 +338,39 @@ Loop:
                 }
             }
             game.Responses <-response
-        case NewEffect, PlayerDied:
+        case MessageTypeNewEffect, MessageTypePlayerDied:
 			game.Responses <- sendBasicEvents(game, message)
-		case Join:
+		case MessageTypeJoin:
 			game.Responses <- joinResponse(game, message)
-		case Disconnect:
+		case MessageTypeDisconnect:
 			response := sendBasicEvents(game, message)
 			if response.Err == nil {
 				player_index, _ := getPlayerIndex(game, message)
 				game.Players = shared.UnstableDeleteIndex(game.Players, player_index)
 			}
 			game.Responses <- response
-		case Ready:
+		case MessageTypeReady:
 			response := readyUnreadyResponse(game, message)
 			if response.Err == nil {
 				checkIfAllReadyWithPlayerExists(game, message)
 			}
 			game.Responses <- response
-		case Unready:
+		case MessageTypeUnready:
 			response := readyUnreadyResponse(game, message)
 			if response.Err == nil {
 				player_index, _ := getPlayerIndex(game, message)
 				game.Players[player_index].IsReady = false
 			}
 			game.Responses <- response
-		case GetStartState:
+		case MessageTypeGetStartState:
 			game.Responses <- getStartStateResponse(game, message)
-		case GetEvents:
+		case MessageTypeGetEvents:
 			game.Responses <- getEventsResponse(game, message)
-		case GetFullState:
+		case MessageTypeGetFullState:
 			game.Responses <- getCurrentGameStateResponse(game, message)
-		case VoteKick:
+		case MessageTypeVoteKick:
 			game.Responses <- voteToKickResponse(game, message)
-		case SendChat:
+		case MessageTypeSendChat:
 			game.Responses <- sendChatResponse(game, message)
 		default:
 			game.Responses <- MessageResult{
