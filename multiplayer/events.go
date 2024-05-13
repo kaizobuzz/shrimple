@@ -16,11 +16,6 @@ const (
 	GuessStatusOutofGuesses
 )
 
-const CONTENT_TYPE = "Content-Type"
-const JSON_HEADER = "application/json"
-const PLAYER_1 = "1"
-const PLAYER_2 = "2"
-
 func getGameId(r *http.Request) (*game, error) {
 	u := &url.URL{}
 	err := u.UnmarshalBinary([]byte(r.Referer()))
