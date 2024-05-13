@@ -47,6 +47,7 @@ func GeneratePassword(password string)(*HashSalt, error){
     return hashPassword(salt, password), nil
 }
 
+//always returns a non nil hashsalt
 func hashPassword(salt []byte, password string)(*HashSalt){
 	if len(_Pepper) == 0 {
 		log.Fatal(errors.New("pepper too short (0 chars)"))
