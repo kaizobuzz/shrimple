@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"shrimple/src/database"
-	"strconv"
 )
 
 func getIdFromRequest(r *http.Request)(id int64, err error){
@@ -26,10 +25,10 @@ func getUsersForRequests(r *http.Request) (sending_id int64, receiving_id int64,
 	if err := r.ParseForm(); err != nil {
 		return -1, -1, err
 	}
-	target_id_string := r.FormValue("id")
-    target_id, err:=strconv.ParseInt(target_id_string, 10, 64)
-	if err != nil {
-		return -1, -1, fmt.Errorf("target username: %s is invalid", target_id_string)
+    decoder:=json.NewDecoder(r.Body)
+    var target_id int64
+    if err:=decoder.Decode(&target_id); err != nil {
+        return -1, -1, fmt.Errorf("unable to unmarshal request")
 	}
     user_id, err:=getIdFromRequest(r)
 	if err != nil {
@@ -94,4 +93,19 @@ func acceptFriendRequest(w http.ResponseWriter, r *http.Request) {
     }
 	w.WriteHeader(http.StatusOK)
 	//TODO send message
+}
+func rejectFriendRequest(w http.ResponseWriter, r *http.Request) {
+    receiving_user, sending_user, err := getUsersForRequests(r)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}	
+    err=database.UpdateFriendRequests(sending_user, receiving_user, database.RejectedRequest)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+	w.WriteHeader(http.StatusOK)
 }
