@@ -21,10 +21,7 @@ func getIdFromRequest(r *http.Request)(id int64, err error){
     return id, nil
 }
 
-func getUsersForRequests(r *http.Request) (sending_id int64, receiving_id int64, err error) {
-	if err := r.ParseForm(); err != nil {
-		return -1, -1, err
-	}
+func getUsersForRequests(r *http.Request) (sending_id int64, receiving_id int64, err error) {	
     decoder:=json.NewDecoder(r.Body)
     var target_id int64
     if err:=decoder.Decode(&target_id); err != nil {
