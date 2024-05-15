@@ -72,11 +72,11 @@ func InitializeDB(filepath string) error {
 	return nil
 }
 
-const sql_string_GET_COUNT = "SELECT COUNT(" + UserFieldId + ") FROM " + UserTableName
+const sql_string_GET_MAX_UID = "SELECT MAX(" + UserFieldId + ") FROM " + UserTableName
 
 // hai btw this is unscalable as fuck
-func GetCount() (int64, error) {
-	row := Database.QueryRow(sql_string_GET_COUNT)
+func GetMaxUid() (int64, error) {
+	row := Database.QueryRow(sql_string_GET_MAX_UID)
 	var count int64
 	if err := row.Scan(&count); err != nil {
 		return -1, err

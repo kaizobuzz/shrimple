@@ -38,7 +38,7 @@ func Initialize() {
     if err:=database.PrepareStatements(database.Database); err!=nil{
         log.Fatal(err)
     }
-    count, err:=database.GetCount()
+    count, err:=database.GetMaxUid()
     currentID=count
     if err!=nil{
         log.Fatal(err)

@@ -157,11 +157,11 @@ func TestAddingUser(t *testing.T) {
 	if !slices.Contains(second_var.Friends, id) {
 		t.Fatal(second_var.Friends)
 	}
-	count, err := database.GetCount()
+	count, err := database.GetMaxUid()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if count != int64(len(first_var.Friends)+2) {
+	if count != 312948721894 {
 		t.Fatal(count)
 	}
 	slice, err := database.SearchForUsernames("hin")
