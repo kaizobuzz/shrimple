@@ -51,10 +51,13 @@ const (
 	MessageTypeSendChat
 )
 const (
-	ErrorDisplayNameTaken   string = "Display name taken"
-	ErrorGameAlreadyStarted string = "Game already started"
-	ErrorGameNotStarted     string = "Game not started"
+	ErrorStringDisplayNameTaken   string = "Display name taken"
+	ErrorStringGameAlreadyStarted string = "Game already started"
+	ErrorStringGameNotStarted     string = "Game not started"
 )
+var ErrDisplayNameTaken=errors.New(ErrorStringDisplayNameTaken)
+var ErrGameNotStarted=errors.New(ErrorStringGameNotStarted)
+var ErrGameAlreadyStarted=errors.New(ErrorStringGameAlreadyStarted)
 
 func sendEventToOtherPlayers(game *game, playerindex int, message *Message) {
 	sending_message := message.clone()
@@ -100,7 +103,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 		return p.DisplayName == display_name
 	}) {
 		return MessageResult{
-			Err:        errors.New(ErrorDisplayNameTaken),
+			Err:        ErrDisplayNameTaken,
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -121,7 +124,7 @@ func addPlayer(game *game, message *Message) MessageResult {
 func joinResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{
-			Err:        errors.New(ErrorGameAlreadyStarted),
+			Err:        ErrGameAlreadyStarted,
 			Statuscode: http.StatusConflict,
 		}
 	}
@@ -197,7 +200,7 @@ func getEventsResponse(game *game, message *Message) MessageResult {
 func readyUnreadyResponse(game *game, message *Message) MessageResult {
 	if game.HasStarted {
 		return MessageResult{
-			Err:        errors.New(ErrorGameAlreadyStarted),
+			Err:        ErrGameAlreadyStarted,
 			Statuscode: http.StatusConflict,
 		}
 	}

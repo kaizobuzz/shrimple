@@ -25,7 +25,7 @@ func getUsersForRequests(r *http.Request) (sending_id int64, receiving_id int64,
     decoder:=json.NewDecoder(r.Body)
     var target_id int64
     if err:=decoder.Decode(&target_id); err != nil {
-        return -1, -1, fmt.Errorf("unable to unmarshal request")
+        return -1, -1, fmt.Errorf("unable to unmarshal request %v", r)
 	}
     user_id, err:=getIdFromRequest(r)
 	if err != nil {
