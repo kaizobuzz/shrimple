@@ -71,16 +71,3 @@ func InitializeDB(filepath string) error {
 
 	return nil
 }
-
-const sql_string_GET_MAX_UID = "SELECT MAX(" + UserFieldId + ") FROM " + UserTableName
-
-// hai btw this is unscalable as fuck
-func GetMaxUid() (int64, error) {
-	row := Database.QueryRow(sql_string_GET_MAX_UID)
-	var count int64
-	if err := row.Scan(&count); err != nil {
-		return -1, err
-	}
-
-	return count, nil
-}
