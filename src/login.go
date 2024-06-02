@@ -158,6 +158,21 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	var cookie = http.Cookie{
+		Name:     "sessiontoken",
+		Value:    "",
+		Path:     "/",
+        Expires: time.Unix(0, 0),
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	};
+    
+    http.SetCookie(w, &cookie)
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func LoggedInUser(r *http.Request) *string {
 	cookie, err := r.Cookie("sessiontoken")
 	if err != nil {

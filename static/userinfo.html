@@ -7,9 +7,15 @@
     <title id=""> User Info </title>
 </head>
 <body>
+    <div id="settings-bar">
+        <a class="new-link" href="index.html">
+            <button id="home-button">Back to homepage</button>
+        </a>
+    </div>
         <div> User Info Page!! </div>
         <div id="user info" hx-get="/api/v1/userinfo" hx-trigger="load" hx-target="this" hx-swap="innerHTML"></div>
         <div id="history-results"></div>
+        <button id="logoutbutton" onclick="fetch('/api/v1/logout')">Logout</button>
         <script src="/js/shared/utils.js"></script>
         <script src="/js/shared/localstorage.js"></script>
         <script src="/js/display/userinfo.js"></script>
