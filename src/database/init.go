@@ -17,8 +17,8 @@ const sql_string_CREATE_USER_TABLE = "CREATE TABLE if NOT EXISTS " + UserTableNa
 const sql_string_CREATE_USERNAME_INDEX = `CREATE UNIQUE INDEX if NOT EXISTS index_username ON ` + UserTableName + "(" + UserFieldUsername + ")"
 
 const sql_string_CREATE_FRIEND_TABLE = "CREATE TABLE if NOT EXISTS " + FriendTableName + " ( " +
-	FriendFieldId1 + " INTEGER, " +
-	FriendFieldId2 + " INTEGER, " +
+	FriendFieldId1 + " TEXT, " +
+	FriendFieldId2 + " TEXT, " +
 	"FOREIGN KEY (" + FriendFieldId1 + ") REFERENCES " + UserTableName + "(" + UserFieldId + ")," +
 	"FOREIGN KEY (" + FriendFieldId1 + ") REFERENCES " + UserTableName + "(" + UserFieldId + ")," +
 	"constraint PK_FRIEND_TABLE PRIMARY KEY (" + FriendFieldId1 + "," + FriendFieldId2 + "))"
@@ -27,8 +27,8 @@ const sql_string_CREATE_FRIEND_INDEX_1 = "CREATE INDEX if NOT EXISTS index_id_1 
 
 const sql_string_CREATE_FRIEND_INDEX_2 = "CREATE INDEX if NOT EXISTS index_id_1 ON " + FriendTableName + "(" + FriendFieldId2 + ")"
 
-const sql_string_CREATE_FRIEND_REQUESTS_TABLE = "CREATE TABLE if NOT EXISTS " + FriendRequestTableName + " ( " + FriendRequestFieldSendingId + " INTEGER, " +
-	FriendRequestFieldReceivingId + " INTEGER, " +
+const sql_string_CREATE_FRIEND_REQUESTS_TABLE = "CREATE TABLE if NOT EXISTS " + FriendRequestTableName + " ( " + FriendRequestFieldSendingId + " TEXT, " +
+	FriendRequestFieldReceivingId + " TEXT, " +
 	"FOREIGN KEY (" + FriendRequestFieldSendingId + ") REFERENCES " + UserTableName + "(" + UserFieldId + ")" +
 	"FOREIGN KEY (" + FriendRequestFieldReceivingId + ") REFERENCES " + UserTableName + "(" + UserFieldId + ")," +
 	"constraint PK_FRIEND_REQUEST_TABLE PRIMARY KEY (" + FriendRequestFieldSendingId + "," + FriendRequestFieldReceivingId + "))"
