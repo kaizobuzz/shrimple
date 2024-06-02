@@ -4,9 +4,20 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
     <script src="/js/purify.min.js"></script>
+    <script src="/js/htmx.min.js"></script>
 </head>
 
 <body>
+    <div id="settings-bar">
+        <a class="new-link" href="index.html">
+            <button id="home-button">Back to homepage</button>
+        </a>
+        <div id="settings">
+            <a id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button"
+                hx-target="this" hx-swap="innerHTML">
+            </a>
+        </div>
+    </div>
     <div id="start-info">
         <div class="pad">
             <div class="center">
@@ -34,9 +45,6 @@
                     <button class="main-buttons">Endless</button>
                 </a>
                 <br><br>
-                <a href="/login.html">
-                    <button class="main-buttons">Login</button>
-                </a>
             </div>
         </div>
     </div>

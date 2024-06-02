@@ -24,6 +24,7 @@ func Start_Server() {
 	http.HandleFunc("/api/v1/userinfo", UserInfoHandler)
 	http.HandleFunc("/api/v1/postguesshistoryentry", GuessHistoryEntryReciever)
 	http.HandleFunc("/api/v1/getguesshistoryentry", GetGuessHistoryEntry)
+    http.HandleFunc("/api/v1/logout", LogoutHandler)
 	println("Starting Server on port " + port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
