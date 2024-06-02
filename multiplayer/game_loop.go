@@ -1,12 +1,11 @@
 package multiplayer
 
 import (
-	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math/rand"
+    "crypto/rand"
 	"net/http"
 	"shrimple/src/shared"
 	"slices"
@@ -109,9 +108,15 @@ func addPlayer(game *game, message *Message) MessageResult {
 	}
 	new_player := getNewEmptyPlayer()
 	new_player.DisplayName = display_name
-	source := rand.NewSource(time.Now().UnixNano())
-	display_sum := sha256.Sum256([]byte(new_player.DisplayName + fmt.Sprintf("%d", source.Int63())))
-	new_player.Userid = base64.StdEncoding.EncodeToString(display_sum[:])
+    key:=make([]byte, 32)
+    _, err := rand.Read(key)
+    if err!=nil{
+        return MessageResult{
+            Err: err,
+            Statuscode: http.StatusInternalServerError,
+        }
+    }
+	new_player.Userid = base64.StdEncoding.EncodeToString(key)
 	game.Players = append(game.Players, &new_player)
 	return MessageResult{
 		Message: &Message{

@@ -10,7 +10,7 @@ import (
 type User = shared.User
 
 type SqlUser struct {
-	Id           int64
+	Id           string
 	Username     string
 	PasswordHash []byte
 	Experience   int64
@@ -21,7 +21,7 @@ func SelectFullUserFromUsername(username string) (*User, error) {
 	row := sqlQuerySelectFullUserFromUsername.QueryRow(username)
 	return SelectFullUserGivenRow(row)
 }
-func SelectFullUserFromId(id int64) (*User, error) {
+func SelectFullUserFromId(id string) (*User, error) {
 	row := sqlQuerySelectFullUserFromId.QueryRow(id)
 	return SelectFullUserGivenRow(row)
 }
@@ -60,15 +60,15 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 	return &user, nil
 }
 
-func SelectFriendsFromId(id int64) ([]int64, error) {
+func SelectFriendsFromId(id string) ([]string, error) {
 	friend_rows, err := sqlQuerySelectFriendsFromId.Query(id)
 	if err != nil {
 		return nil, err
 	}
 	defer friend_rows.Close()
-	friendlist := make([]int64, 0)
+	friendlist := make([]string, 0)
 	for friend_rows.Next() {
-		var id int64
+		var id string
 		if err := friend_rows.Scan(&id); err != nil {
 			return nil, err
 		}
@@ -76,15 +76,15 @@ func SelectFriendsFromId(id int64) ([]int64, error) {
 	}
 	return friendlist, nil
 }
-func SelectIncomingFriendRequestsFromId(id int64) ([]int64, error) {
+func SelectIncomingFriendRequestsFromId(id string) ([]string, error) {
 	friend_rows, err := sqlQuerySelectIncomingFriendRequestsFromId.Query(id)
 	if err != nil {
 		return nil, err
 	}
 	defer friend_rows.Close()
-	friend_request_list := make([]int64, 0)
+	friend_request_list := make([]string, 0)
 	for friend_rows.Next() {
-		var id int64
+		var id string
 		if err := friend_rows.Scan(&id); err != nil {
 			return nil, err
 		}
@@ -92,15 +92,15 @@ func SelectIncomingFriendRequestsFromId(id int64) ([]int64, error) {
 	}
 	return friend_request_list, nil
 }
-func SelectOutgoingFriendRequestsFromId(id int64) ([]int64, error) {
+func SelectOutgoingFriendRequestsFromId(id string) ([]string, error) {
 	friend_request_rows, err := sqlQuerySelectOutgoingFriendRequestsFromId.Query(id)
 	if err != nil {
 		return nil, err
 	}
 	defer friend_request_rows.Close()
-	friend_request_list := make([]int64, 0)
+	friend_request_list := make([]string, 0)
 	for friend_request_rows.Next() {
-		var id int64
+		var id string
 		if err := friend_request_rows.Scan(&id); err != nil {
 			return nil, err
 		}
@@ -109,10 +109,10 @@ func SelectOutgoingFriendRequestsFromId(id int64) ([]int64, error) {
 	return friend_request_list, nil
 }
 
-func SelectIdFromUsername(username string)(id int64, err error){
+func SelectIdFromUsername(username string)(id string, err error){
     row:=sqlQuerySelectIdFromUsername.QueryRow(username)
     if err=row.Scan(&id); err!=nil{
-        return -1, err
+        return "", err
     }
     return id, nil
 }
@@ -226,7 +226,7 @@ const (
 	AcceptedRequest
 )
 
-func useAddFriendQuery(id_1 int64, id_2 int64) error {
+func useAddFriendQuery(id_1 string, id_2 string) error {
 	_, err := sqlQueryAddFriend.Exec(id_1, id_2)
 	if err != nil {
 		return err
@@ -237,7 +237,7 @@ func useAddFriendQuery(id_1 int64, id_2 int64) error {
 	}
 	return nil
 }
-func useDeleteFriendQuery(id_1 int64, id_2 int64) error {
+func useDeleteFriendQuery(id_1 string, id_2 string) error {
 	_, err := sqlQueryRemoveFriend.Exec(id_1, id_2)
 	if err != nil {
 		return err
@@ -249,7 +249,7 @@ func useDeleteFriendQuery(id_1 int64, id_2 int64) error {
 	return nil
 }
 
-func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpdate) error {
+func UpdateFriendRequests(sending_id string, receiving_id string, status FriendUpdate) error {
 	switch status {
 	case SentRequest:
 		exists, err := CheckIfRequestExists(receiving_id, sending_id)
@@ -257,7 +257,7 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 			return err
 		}
 		if exists {
-			return fmt.Errorf("Request between %d and %d already exists", receiving_id, sending_id)
+			return fmt.Errorf("Request between %s and %s already exists", receiving_id, sending_id)
 		}
 		_, err = sqlQueryAddOutgoingFriendRequest.Exec(sending_id, receiving_id)
 		if err != nil {
@@ -275,7 +275,7 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 		}
 		if !exists {
 			return fmt.Errorf(
-				"Friend request between ids %d and %d does not exist",
+				"Friend request between ids %s and %s does not exist",
 				sending_id,
 				receiving_id,
 			)
@@ -293,7 +293,7 @@ func UpdateFriendRequests(sending_id int64, receiving_id int64, status FriendUpd
 	}
 	return nil
 }
-func CheckIfRequestExists(sending_id int64, receiving_id int64) (bool, error) {
+func CheckIfRequestExists(sending_id string, receiving_id string) (bool, error) {
 	row := sqlQueryCheckIfFriendRequestExists.QueryRow(sending_id, receiving_id)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -304,7 +304,7 @@ func CheckIfRequestExists(sending_id int64, receiving_id int64) (bool, error) {
 	}
 	return false, nil
 }
-func RemoveFriend(id_1 int64, id_2 int64) error {
+func RemoveFriend(id_1 string, id_2 string) error {
 	if err := useDeleteFriendQuery(id_1, id_2); err != nil {
 		return err
 	}
@@ -312,7 +312,7 @@ func RemoveFriend(id_1 int64, id_2 int64) error {
 }
 
 type IdUsernamePair struct {
-	Id       int64
+	Id       string
 	Username string
 }
 
@@ -321,7 +321,7 @@ TODO if a user is deleted this will keep returning errors without knowing why
 I think this means if a user is ever deleted it's probably best to go through the friend lists of everyone and delete them or such but idk exactly
 IMPORTANT: Does not return values in the same order as sent in, should not matter as most requests will be sent new i think but yeah
 */
-func GetUsernameListFromIdList(ids []int64) ([]IdUsernamePair, error) {
+func GetUsernameListFromIdList(ids []string) ([]IdUsernamePair, error) {
 	if len(ids) == 0 {
 		return make([]IdUsernamePair, 0), nil
 	}
@@ -340,7 +340,7 @@ func GetUsernameListFromIdList(ids []int64) ([]IdUsernamePair, error) {
 	defer rows.Close()
 	usernames := make([]IdUsernamePair, 0, len(args))
 	for rows.Next() {
-		var id int64
+		var id string
 		var username string
 		if err := rows.Scan(&id, &username); err != nil {
 			return nil, err
@@ -389,7 +389,7 @@ func searchForPattern(left, right, substring string) ([]IdUsernamePair, error) {
 	}
 	usernames := make([]IdUsernamePair, 0)
 	for rows.Next() {
-		var id int64
+		var id string
 		var username string
 		if err := rows.Scan(&username, &id); err != nil {
 			return nil, err

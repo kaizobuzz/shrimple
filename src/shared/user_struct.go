@@ -2,12 +2,12 @@ package shared
 
 type User struct {
 	Username               string
-	Id                     int64
+	Id                     string
 	PasswordHash           HashSalt
 	Experience             int64
-	Friends                []int64 //list of user ids
-	IncomingFriendRequests []int64 // list of user ids
-	OutgoingFriendRequests []int64 // list of user ids
+	Friends                []string //list of user ids
+	IncomingFriendRequests []string // list of user ids
+	OutgoingFriendRequests []string // list of user ids
     GuessHistory           map[string]map[int64]int; // string is gamemode
 }
 

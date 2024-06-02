@@ -10,7 +10,7 @@ import (
 func UserCardHandler(w http.ResponseWriter, r *http.Request) {
 	var user *string = LoggedInUser(r)
 	if user == nil {
-        templates.UserCard(false, -1, "").Render(context.Background(), w) 
+        templates.UserCard(false, "", "").Render(context.Background(), w) 
 	} else {
         id, err:=database.SelectIdFromUsername(*user)
         if err!=nil{

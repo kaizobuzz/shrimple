@@ -8,7 +8,7 @@ import (
 var Database *sql.DB
 
 const sql_string_CREATE_USER_TABLE = "CREATE TABLE if NOT EXISTS " + UserTableName + " ( " +
-	UserFieldId + " INTEGER PRIMARY KEY, " +
+	UserFieldId + " TEXT PRIMARY KEY, " +
 	UserFieldUsername + " TEXT UNIQUE, " +
 	UserFieldPasswordHash + " BLOB NOT NULL, " +
 	UserFieldExperience + " INTEGER NOT NULL, " +

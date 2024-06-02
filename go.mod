@@ -9,4 +9,7 @@ require (
 	golang.org/x/crypto v0.23.0
 )
 
-require golang.org/x/sys v0.20.0 // indirect
+require (
+	github.com/nrednav/cuid2 v1.0.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
+)

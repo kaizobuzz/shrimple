@@ -4,17 +4,14 @@ import (
 	"errors"
 	"shrimple/src/database"
 	"shrimple/src/shared"
-	"sync"
+	"github.com/nrednav/cuid2"
 )
 
 type User = shared.User
 
-func GetUserById(id int64) (*User, error) {
+func GetUserById(id string) (*User, error) {
 	return database.SelectFullUserFromId(id)
 }
-
-var currentID int64
-var currentIDMutex sync.Mutex
 
 func CreateUser(username, password string) error {
 	taken, err := UsernameTaken(username)
@@ -33,20 +30,17 @@ func CreateUser(username, password string) error {
 	for _, gamemode := range SHRIMPLE_GAMEMODES {
 		guesshistorymap[gamemode] = make(map[int64]int)
 	}
-	currentIDMutex.Lock()
+    id:=cuid2.Generate()
 	var new_user *User = &User{
 		Username:               username,
-		Id:                     currentID,
+		Id:                     id,
 		PasswordHash:           *hashsalt,
 		Experience:             0,
-		Friends:                []int64{},
-		IncomingFriendRequests: []int64{},
-		OutgoingFriendRequests: []int64{},
+		Friends:                []string{},
+		IncomingFriendRequests: []string{},
+		OutgoingFriendRequests: []string{},
 		GuessHistory:           guesshistorymap,
 	}
-	currentID++
-	currentIDMutex.Unlock()
-
 	if err := database.AddNewUser(new_user); err != nil {
 		return err
 		//TODO currentID mutex might get messed up here?

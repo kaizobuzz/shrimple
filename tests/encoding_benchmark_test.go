@@ -1,17 +1,14 @@
 package tests
 
 import (
-	"encoding/json"
-	"log"
-	"shrimple/src/database"
 	"shrimple/src/shared"
 	"testing"
 )
 type User=shared.User
 func BenchmarkTestFunction(b *testing.B) { 
-    first_var:=User{
+    /*first_var:=User{
             Username: "",
-            Id: 302,
+            Id: "302",
             PasswordHash: shared.HashSalt{Salt: []byte("idk"), Hash: []byte("Yeah just pretend this is a real password")}, 
             Experience: 0,
             Friends: []int64{3, 5, 7, 312948721894, 2138, 4214, 13,4,1525, 14143, 156413, 1414243, 15256, 13837, 12142421, 1259879},
@@ -61,10 +58,10 @@ func BenchmarkTestFunction(b *testing.B) {
         }
         //log.Println(second_var.OutgoingFriendRequests)
 		//log.Println(second_var.X, second_var.Y, second_var.More_things, second_var.Thing)
-	}
+	}*/
 }
 func BenchmarkJsonEncoding(b *testing.B){
-first_var:=User{
+/*first_var:=User{
             Username: "",
             Id: 302,
             PasswordHash: shared.HashSalt{Salt: []byte("idk"), Hash: []byte("Yeah just pretend this is a real password")}, 
@@ -107,5 +104,5 @@ first_var:=User{
         if err!=nil{
             b.Fatal(err)
         }
-    }
+    }*/
 }

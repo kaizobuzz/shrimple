@@ -24,7 +24,7 @@ func TestAddingUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var id int64 = 302
+	var id string = "302"
 	var username string = "thing"
 	if err := database.InitializeDB("test_data/test.db"); err != nil {
 		t.Fatal(err)
@@ -37,25 +37,25 @@ func TestAddingUser(t *testing.T) {
 		Id:           id,
 		PasswordHash: shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 		Experience:   0,
-		Friends: []int64{
-			3,
-			5,
-			7,
-			312948721894,
-			4214,
-			13,
-			4,
-			1525,
-			14143,
-			156413,
-			1414243,
-			15256,
-			13837,
-			12142421,
-			1259879,
+		Friends: []string{
+			"3",
+			"5",
+			"7",
+			"312948721894",
+			"4214",
+			"13",
+			"4",
+			"1525",
+			"14143",
+			"156413",
+			"1414243",
+			"15256",
+			"13837",
+			"12142421",
+			"1259879",
 		},
-		IncomingFriendRequests: []int64{},
-		OutgoingFriendRequests: []int64{},
+		IncomingFriendRequests: []string{},
+		OutgoingFriendRequests: []string{},
 		GuessHistory:           make(map[string]map[int64]int),
 	}
 	first_var.GuessHistory["shrimple"] = make(map[int64]int)
@@ -71,9 +71,9 @@ func TestAddingUser(t *testing.T) {
 
 			PasswordHash:           shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 			Experience:             0,
-			Friends:                []int64{},
-			IncomingFriendRequests: []int64{},
-			OutgoingFriendRequests: []int64{},
+			Friends:                []string{},
+			IncomingFriendRequests: []string{},
+			OutgoingFriendRequests: []string{},
 			GuessHistory:           make(map[string]map[int64]int),
 		}
 		if err := database.AddNewUser(&next_var); err != nil {
@@ -82,12 +82,12 @@ func TestAddingUser(t *testing.T) {
 	}
 	next_var := User{
 		Username: fmt.Sprint(2138) + "idk",
-		Id:       2138,
+		Id:       "2138",
 		PasswordHash:           shared.HashSalt{Salt: []byte("yeah"), Hash: []byte("idk")},
 		Experience:             0,
-		Friends:                []int64{},
-		IncomingFriendRequests: []int64{},
-		OutgoingFriendRequests: []int64{},
+		Friends:                []string{},
+		IncomingFriendRequests: []string{},
+		OutgoingFriendRequests: []string{},
 		GuessHistory:           make(map[string]map[int64]int),
 	}
 	if err := database.AddNewUser(&next_var); err != nil {
@@ -138,17 +138,17 @@ func TestAddingUser(t *testing.T) {
 	}
 	current_time := time.Now()
 	//Okay this is like slow it takes a whole 8ms
-	if err := database.UpdateFriendRequests(id, 2138, database.SentRequest); err != nil {
+	if err := database.UpdateFriendRequests(id, "2138", database.SentRequest); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(time.Since(current_time).Milliseconds(), "\n")
-	if err := database.UpdateFriendRequests(id, 2138, database.AcceptedRequest); err != nil {
+	if err := database.UpdateFriendRequests(id, "2138", database.AcceptedRequest); err != nil {
 		t.Fatal(err)
 	}
 	//Okay this is like slow it takes a whole 12ms
 	t.Log(time.Since(current_time).Milliseconds(), "\n")
 
-	second_var, err = database.SelectFullUserFromId(2138)
+	second_var, err = database.SelectFullUserFromId("2138")
 
 	t.Log(time.Since(current_time).Milliseconds(), "\n")
 	if err != nil {
@@ -156,13 +156,6 @@ func TestAddingUser(t *testing.T) {
 	}
 	if !slices.Contains(second_var.Friends, id) {
 		t.Fatal(second_var.Friends)
-	}
-	count, err := database.GetMaxUid()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if count != 312948721894 {
-		t.Fatal(count)
 	}
 	slice, err := database.SearchForUsernames("hin")
 	if err != nil {

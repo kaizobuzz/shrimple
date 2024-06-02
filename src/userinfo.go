@@ -5,7 +5,6 @@ import (
     "net/url"
     "log"
     "shrimple/src/templates"
-    "strconv"
     "context"
 )
 
@@ -18,9 +17,7 @@ func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-    user_id_string := u.Query().Get("userid")
-    var user_id int64;
-    user_id, err = strconv.ParseInt(user_id_string, 10, 64)
+    user_id := u.Query().Get("userid")
     //TODO handle this error
 
     user, err:= GetUserById(user_id);
