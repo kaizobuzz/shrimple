@@ -56,14 +56,13 @@ func TestAddingUser(t *testing.T) {
 		},
 		IncomingFriendRequests: []string{},
 		OutgoingFriendRequests: []string{},
-		GuessHistory:           make(map[string]map[int64]int),
+		GuessHistory:           make(map[string]shared.GuessHistory),
 	}
-	first_var.GuessHistory["shrimple"] = make(map[int64]int)
-	first_var.GuessHistory["clamplicated"] = make(map[int64]int)
-	for i := 0; i < 100; i++ {
-		first_var.GuessHistory["shrimple"][int64(i+24000)] = i
-		first_var.GuessHistory["clamplicated"][int64(i+40000)] = i
-	}
+	first_var.GuessHistory["shrimple"] = shared.GuessHistory{}
+	first_var.GuessHistory["clamplicated"] = shared.GuessHistory{
+        Guesses: make([]int, 5),
+        LastDate: shared.GetCurrentDate(),
+    }
 	for _, friend_id := range first_var.Friends {
 		next_var := User{
 			Username: fmt.Sprint(friend_id) + "idk",
@@ -74,7 +73,7 @@ func TestAddingUser(t *testing.T) {
 			Friends:                []string{},
 			IncomingFriendRequests: []string{},
 			OutgoingFriendRequests: []string{},
-			GuessHistory:           make(map[string]map[int64]int),
+			GuessHistory:           make(map[string]shared.GuessHistory),
 		}
 		if err := database.AddNewUser(&next_var); err != nil {
 			t.Fatal(err)
@@ -88,7 +87,7 @@ func TestAddingUser(t *testing.T) {
 		Friends:                []string{},
 		IncomingFriendRequests: []string{},
 		OutgoingFriendRequests: []string{},
-		GuessHistory:           make(map[string]map[int64]int),
+		GuessHistory:           make(map[string]shared.GuessHistory),
 	}
 	if err := database.AddNewUser(&next_var); err != nil {
 		t.Fatal(err)

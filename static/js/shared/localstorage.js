@@ -7,7 +7,7 @@ async function getHistory(mode, userid){
         method: "POST",
         body: JSON.stringify(
         {GameMode: mode, 
-        UserId: userid??-1}), 
+        UserId: userid??""}), 
         headers: {
            "Content-type": "application/json; charset=UFT-8" 
         }

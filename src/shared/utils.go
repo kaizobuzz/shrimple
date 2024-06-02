@@ -3,6 +3,7 @@ import(
     "slices"
     "fmt"
     "sync"
+    "time"
 )
 func UnstableDelete[T comparable](slice []T, value T)([]T, error){
     index:=slices.Index(slice, value)
@@ -15,6 +16,10 @@ func UnstableDeleteIndex[T any](slice []T, index int)([]T){
     slice[index]=slice[len(slice)-1]
     return slice[:len(slice)-1]
 }
+func GetCurrentDate()int64{
+return time.Now().UTC().UnixMilli()/(1000*60*60*24)
+}
+
 
 type Locked[T any] struct {
     Value T 

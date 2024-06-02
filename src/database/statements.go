@@ -8,6 +8,7 @@ import (
 )
 
 type User = shared.User
+type GuessHistory = shared.GuessHistory
 
 type SqlUser struct {
 	Id           string
@@ -183,15 +184,15 @@ func AddNewUser(user *User) error {
 
 func SelectGuessHistoryFromUsername(
 	username string,
-) (guess_history map[string]map[int64]int, err error) {
+) (guess_history map[string]GuessHistory, err error) {
 	row := sqlQuerySelectGuessHistoryFromUsername.QueryRow(username)
 	return SelectGuessHistoryGivenRow(row)
 }
-func SelectGuessHistoryFromId(id int64) (guess_history map[string]map[int64]int, err error) {
+func SelectGuessHistoryFromId(id string) (guess_history map[string]GuessHistory, err error) {
 	row := sqlQuerySelectGuessHistoryFromId.QueryRow(id)
 	return SelectGuessHistoryGivenRow(row)
 }
-func SelectGuessHistoryGivenRow(row *sql.Row) (guess_history map[string]map[int64]int, err error) {
+func SelectGuessHistoryGivenRow(row *sql.Row) (guess_history map[string]GuessHistory, err error) {
 	guess_history_bytes := make([]byte, 0)
 	err = row.Scan(
 		&guess_history_bytes,
@@ -199,14 +200,14 @@ func SelectGuessHistoryGivenRow(row *sql.Row) (guess_history map[string]map[int6
 	if err != nil {
 		return nil, err
 	}
-	guess_history = make(map[string]map[int64]int)
+	guess_history = make(map[string]GuessHistory)
 	if err = DecodeGob(guess_history_bytes, &guess_history); err != nil {
 		return nil, err
 	}
 	return guess_history, nil
 
 }
-func UpdateGuessHistoryWithUsername(username string, guess_history map[string]map[int64]int) error {
+func UpdateGuessHistoryWithUsername(username string, guess_history map[string]GuessHistory) error {
 	guess_history_bytes, err := EncodeGob(guess_history)
 	if err != nil {
 		return err

@@ -8,6 +8,7 @@ import (
 )
 
 type User = shared.User
+type GuessHistory = shared.GuessHistory
 
 func GetUserById(id string) (*User, error) {
 	return database.SelectFullUserFromId(id)
@@ -26,10 +27,10 @@ func CreateUser(username, password string) error {
         return err
     }
 
-	var guesshistorymap map[string]map[int64]int = make(map[string]map[int64]int)
+    guesshistorymap:= make(map[string]GuessHistory)
 	for _, gamemode := range SHRIMPLE_GAMEMODES {
-		guesshistorymap[gamemode] = make(map[int64]int)
-	}
+		guesshistorymap[gamemode] = GuessHistory{LastDate: shared.GetCurrentDate()-1, Guesses: make([]int, 6)}
+    }
     id:=cuid2.Generate()
 	var new_user *User = &User{
 		Username:               username,

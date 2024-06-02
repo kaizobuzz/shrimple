@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"shrimple/src/database"
+	"shrimple/src/shared"
 )
 
 type GuessHistoryEntry struct {
@@ -14,7 +15,7 @@ type GuessHistoryEntry struct {
 }
 type GuessHistoryRequest struct {
 	GameMode string
-	UserId   int64
+	UserId   string
 }
 
 func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
@@ -38,28 +39,37 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 	// store the decoded data in the user's struct
 	guess_history, err := database.SelectGuessHistoryFromUsername(*username)
 	if err != nil {
+        log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	mode_guess_history, has_mode := guess_history[historyentry.GameMode]
 	if !has_mode {
+        log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	//TODO maybe a hard cutoff for guess date or just compare it to the latest (if this is done then it'll probably be better stored as a 6 length array with an extra field of last guess date, where the date is set on the time of creation of the object)
-	_, already_played_that_day := mode_guess_history[historyentry.GuessDate]
-	if already_played_that_day {
+    if mode_guess_history.LastDate>=historyentry.GuessDate{
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+    if historyentry.GuessDate>shared.GetCurrentDate(){
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    if historyentry.NumGuesses>=len(mode_guess_history.Guesses){
+        w.WriteHeader(http.StatusBadRequest)
+    }
+    mode_guess_history.Guesses[historyentry.NumGuesses]++
 
-	mode_guess_history[historyentry.GuessDate] = historyentry.NumGuesses
 
 	// return the guess history for that gamemode back to the user
 	var guess_history_response map[int]int64 = make(map[int]int64)
-	for _, value := range mode_guess_history {
-		guess_history_response[value]++
+	for i, value := range mode_guess_history.Guesses {
+		guess_history_response[i]=int64(value)
 	}
+    guess_history_response[-1]=int64(mode_guess_history.FailedShrimple)
 
 	bytes, err := json.Marshal(guess_history_response)
 	if err != nil {
@@ -78,13 +88,15 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(history_request)
 	if err != nil {
+        log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var guess_history map[string]map[int64]int
-	if history_request.UserId == -1 {
+	var guess_history map[string]GuessHistory
+	if history_request.UserId == "" {
 		var username *string = LoggedInUser(r)
 		if username == nil {
+            log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -93,21 +105,24 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 		guess_history, err = database.SelectGuessHistoryFromId(history_request.UserId)
 	}
 	if err != nil {
+        log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	mode_guess_history, has_mode := guess_history[history_request.GameMode]
 	if !has_mode {
+        log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}	
+    var guess_history_response map[int]int64 = make(map[int]int64)
+	for i, value := range mode_guess_history.Guesses {
+		guess_history_response[i]=int64(value)
 	}
-	var guess_history_response map[int]int64 = make(map[int]int64)
-	for _, value := range mode_guess_history {
-		guess_history_response[value]++
-	}
-
+    guess_history_response[-1]=int64(mode_guess_history.FailedShrimple)
 	bytes, err := json.Marshal(guess_history_response)
 	if err != nil {
+        log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -25,6 +25,7 @@ func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
     if err == nil {
         templates.UserInfo(user).Render(context.Background(), w)
     }else {
+        log.Println(err)
         w.Write([]byte("No User With That ID!!"))
     }
     

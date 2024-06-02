@@ -1,5 +1,11 @@
 package shared
 
+type GuessHistory struct{
+    Guesses []int
+    FailedShrimple int
+    LastDate int64
+}
+
 type User struct {
 	Username               string
 	Id                     string
@@ -8,7 +14,7 @@ type User struct {
 	Friends                []string //list of user ids
 	IncomingFriendRequests []string // list of user ids
 	OutgoingFriendRequests []string // list of user ids
-    GuessHistory           map[string]map[int64]int; // string is gamemode
+    GuessHistory           map[string]GuessHistory;
 }
 
 type HashSalt struct{

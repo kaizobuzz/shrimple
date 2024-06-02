@@ -8,7 +8,7 @@ async function startDisplay(){
         main_history_node.appendChild(branch_node);
         branch_node.appendChild(document.createTextNode(mode+" history"));
         const urlParams = new URLSearchParams(window.location.search);
-        let history=await getHistory(mode, Number(urlParams.get("userid")));
+        let history=await getHistory(mode, urlParams.get("userid"));
         let result=renderBarNodes(history, branch_node);
         let [history_nodes, lengths]=[result.nodes, result.lengths];
         branch_node.hidden=false;
