@@ -9,6 +9,7 @@ import (
 	"shrimple/src/shared"
 )
 
+var getNilrem=shared.GetNilrem
 
 func Start_Server() {
 	Initialize()
@@ -33,7 +34,7 @@ func Start_Server() {
 }
 
 func Initialize() {
-    if nilrem:=shared.GetNilrem(); nilrem!=nil{
+    if nilrem:=getNilrem(); nilrem!=nil{
         log.Fatal(nilrem)
     }
 	if err := database.InitializeDB("data/users.db"); err != nil {
