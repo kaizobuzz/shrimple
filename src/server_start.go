@@ -9,6 +9,7 @@ import (
 	"shrimple/src/shared"
 )
 
+
 func Start_Server() {
 	Initialize()
 	fmt.Print(SERVER_PRITAVE_KEY)
@@ -32,6 +33,9 @@ func Start_Server() {
 }
 
 func Initialize() {
+    if nilrem:=shared.GetNilrem(); nilrem!=nil{
+        log.Fatal(nilrem)
+    }
 	if err := database.InitializeDB("data/users.db"); err != nil {
 		log.Fatal(err)
 	}
