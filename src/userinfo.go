@@ -2,7 +2,6 @@ package src
 
 import (
     "net/http"
-    "net/url"
     "log"
     "shrimple/src/templates"
     "context"
