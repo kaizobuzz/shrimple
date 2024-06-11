@@ -7,13 +7,15 @@ import (
 	"shrimple/src/templates"
 )
 
+const _MAXIMUM_USERNAME_LENGTH = 60
+
 func createAccount(username, password, confirmpassword string) error {
-    taken, err:=UsernameTaken(username) 
-    if err!=nil{
-        log.Println(err)
-        return errors.New("Check for username failed")
-    }
-    if taken{
+	taken, err := UsernameTaken(username)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Check for username failed")
+	}
+	if taken {
 		return errors.New("Username Already Taken!")
 	}
 	if password != confirmpassword {
@@ -27,7 +29,7 @@ func createAccount(username, password, confirmpassword string) error {
 	return nil
 }
 
-//TODO check if there is a possible denial of service attack by spamming this endpoint
+// TODO check if there is a possible denial of service attack by spamming this endpoint
 func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Println(err)
@@ -48,12 +50,20 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-        return
+		return
 	}
-    err=templates.UseStringTemplate("Account created successfully", templates.SuccessMessage, &w)
-    if err!=nil{
-        log.Println(err)
-        w.WriteHeader(http.StatusInternalServerError)
-    }
+	{
+		cookie, err := CreateCookie(username)
+		if err != nil {
+			log.Println(err)
+		} else {
+			http.SetCookie(w, cookie)
+		}
+	}
+	err = templates.UseStringTemplate("Account created successfully", templates.SuccessMessage, &w)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 	return
 }

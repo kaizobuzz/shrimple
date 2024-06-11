@@ -5,10 +5,23 @@ import (
 	"shrimple/src/database"
 	"shrimple/src/shared"
 	"github.com/nrednav/cuid2"
+    "net/http"
+    "net/url"
 )
 
 type User = shared.User
 type GuessHistory = shared.GuessHistory
+
+func getUserIdRefererVal(r *http.Request)(string, error){
+    u := &url.URL{}
+    err := u.UnmarshalBinary([]byte(r.Referer()))
+    if err != nil {
+        return "", err
+    }
+    user_id := u.Query().Get("userid")
+    return user_id, shared.GetNilrem()
+
+}
 
 func GetUserById(id string) (*User, error) {
 	return database.SelectFullUserFromId(id)
@@ -44,7 +57,6 @@ func CreateUser(username, password string) error {
 	}
 	if err := database.AddNewUser(new_user); err != nil {
 		return err
-		//TODO currentID mutex might get messed up here?
 	}
 	return nil
 }

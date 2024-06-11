@@ -49,7 +49,6 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	//TODO maybe a hard cutoff for guess date or just compare it to the latest (if this is done then it'll probably be better stored as a 6 length array with an extra field of last guess date, where the date is set on the time of creation of the object)
     if mode_guess_history.LastDate>=historyentry.GuessDate{
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -60,6 +59,7 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
     }
     if historyentry.NumGuesses>=len(mode_guess_history.Guesses){
         w.WriteHeader(http.StatusBadRequest)
+        return
     }
     mode_guess_history.Guesses[historyentry.NumGuesses]++
 
