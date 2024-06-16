@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+	"os"
+    "errors"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -51,6 +53,17 @@ func (s *StatementExecuter) exec(sql_string string) {
 }
 
 func InitializeDB(filepath string) error {
+    if _, err := os.Stat("./"+filepath); err!=nil{
+        if errors.Is(err, os.ErrNotExist){
+            f, err:=os.Create("./"+filepath)
+            if err!=nil{
+                return err
+            }
+            f.Close()
+        } else{
+            return err
+        }
+    }
 	var err error
 	Database, err = sql.Open("sqlite3", "./"+filepath)
 	if err != nil {
