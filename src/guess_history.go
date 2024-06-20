@@ -61,13 +61,17 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    mode_guess_history.Guesses[historyentry.NumGuesses]++
+    if historyentry.NumGuesses>=0{
+        mode_guess_history.Guesses[historyentry.NumGuesses-1]++ 
+    } else{
+        mode_guess_history.FailedShrimple++
+    }
 
 
 	// return the guess history for that gamemode back to the user
 	var guess_history_response map[int]int64 = make(map[int]int64)
 	for i, value := range mode_guess_history.Guesses {
-		guess_history_response[i]=int64(value)
+		guess_history_response[i]=int64(value+1)
 	}
     guess_history_response[-1]=int64(mode_guess_history.FailedShrimple)
 
@@ -117,7 +121,7 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 	}	
     var guess_history_response map[int]int64 = make(map[int]int64)
 	for i, value := range mode_guess_history.Guesses {
-		guess_history_response[i]=int64(value)
+		guess_history_response[i]=int64(value+1)
 	}
     guess_history_response[-1]=int64(mode_guess_history.FailedShrimple)
 	bytes, err := json.Marshal(guess_history_response)
