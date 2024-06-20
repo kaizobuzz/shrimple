@@ -20,8 +20,8 @@ type GuessHistoryRequest struct {
 
 func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 	//get the logged in user
-	var username *string = LoggedInUser(r)
-	if username == nil {
+	var id *string = LoggedInUser(r)
+	if id == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -37,7 +37,7 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// store the decoded data in the user's struct
-	guess_history, err := database.SelectGuessHistoryFromUsername(*username)
+	guess_history, err := database.SelectGuessHistoryFromId(*id)
 	if err != nil {
         log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -57,7 +57,7 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    if historyentry.NumGuesses>=len(mode_guess_history.Guesses){
+    if historyentry.NumGuesses>len(mode_guess_history.Guesses){
         w.WriteHeader(http.StatusBadRequest)
         return
     }
@@ -80,7 +80,7 @@ func GuessHistoryEntryReciever(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if err := database.UpdateGuessHistoryWithUsername(*username, guess_history); err != nil {
+	if err := database.UpdateGuessHistoryWithId(*id, guess_history); err != nil {
 		log.Println(err)
 	}
 	w.Write(bytes)
@@ -98,13 +98,13 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 	}
 	var guess_history map[string]GuessHistory
 	if history_request.UserId == "" {
-		var username *string = LoggedInUser(r)
-		if username == nil {
+		var id *string = LoggedInUser(r)
+		if id == nil {
             log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		guess_history, err = database.SelectGuessHistoryFromUsername(*username)
+		guess_history, err = database.SelectGuessHistoryFromId(*id)
 	} else {
 		guess_history, err = database.SelectGuessHistoryFromId(history_request.UserId)
 	}
@@ -121,7 +121,7 @@ func GetGuessHistoryEntry(w http.ResponseWriter, r *http.Request) {
 	}	
     var guess_history_response map[int]int64 = make(map[int]int64)
 	for i, value := range mode_guess_history.Guesses {
-		guess_history_response[i]=int64(value+1)
+		guess_history_response[i+1]=int64(value)
 	}
     guess_history_response[-1]=int64(mode_guess_history.FailedShrimple)
 	bytes, err := json.Marshal(guess_history_response)

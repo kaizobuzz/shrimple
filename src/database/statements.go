@@ -118,7 +118,7 @@ func SelectIdFromUsername(username string)(id string, err error){
     return id, nil
 }
 
-func SelectUsernameFromId(id int64)(username string, err error){
+func SelectUsernameFromId(id string)(username string, err error){
     row:=sqlQuerySelectUsernameFromId.QueryRow(id)
     if err=row.Scan(&username); err!=nil{
         return "", err
@@ -127,6 +127,10 @@ func SelectUsernameFromId(id int64)(username string, err error){
 }
 
 
+func SelectAuthenticationFieldsFromId(id string) (password_hash *shared.HashSalt, err error) {
+    row := sqlQuerySelectAuthenticationFieldsFromId.QueryRow(id)
+    return SelectAuthenticationFieldsGivenRow(row)
+}
 func SelectAuthenticationFieldsFromUsername(
 	username string,
 ) (password_hash *shared.HashSalt, err error) {
@@ -207,12 +211,12 @@ func SelectGuessHistoryGivenRow(row *sql.Row) (guess_history map[string]GuessHis
 	return guess_history, nil
 
 }
-func UpdateGuessHistoryWithUsername(username string, guess_history map[string]GuessHistory) error {
+func UpdateGuessHistoryWithId(id string, guess_history map[string]GuessHistory) error {
 	guess_history_bytes, err := EncodeGob(guess_history)
 	if err != nil {
 		return err
 	}
-	_, err = sqlQueryUpdateGuessHistoryWithUsername.Exec(guess_history_bytes, username)
+	_, err = sqlQueryUpdateGuessHistoryWithId.Exec(guess_history_bytes, id)
 	if err != nil {
 		return err
 	}

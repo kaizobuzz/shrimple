@@ -19,7 +19,7 @@ func getUserIdRefererVal(r *http.Request)(string, error){
         return "", err
     }
     user_id := u.Query().Get("userid")
-    return user_id, shared.GetNilrem()
+    return user_id, nil
 
 }
 

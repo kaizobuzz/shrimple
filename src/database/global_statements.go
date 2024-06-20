@@ -22,6 +22,11 @@ var sqlQuerySelectAuthenticationFieldsFromUsername *sql.Stmt /*returns {Id, User
 const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME = "SELECT " +
 	UserFieldPasswordHash +
 	" FROM " + UserTableName + " WHERE " + UserFieldUsername + " = ?"
+var sqlQuerySelectAuthenticationFieldsFromId *sql.Stmt /*returns {Id, Username, PasswordHash} */
+const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID = "SELECT " +
+	UserFieldPasswordHash +
+	" FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
+
 
 var sqlQueryAddUserStatement *sql.Stmt /*Order of Arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
 const sql_string_ADD_USER_STATEMENT = "INSERT INTO " + UserTableName +
@@ -35,8 +40,8 @@ var sqlQuerySelectGuessHistoryFromId *sql.Stmt
 const sql_string_SELECT_GUESS_HISTORY_FROM_ID = "SELECT " +
 	UserFieldGuessHistory + " FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
 
-var sqlQueryUpdateGuessHistoryWithUsername *sql.Stmt /*Args order {GuessHistory, Id} */
-const sql_string_UPDATE_GUESS_HISTORY_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldGuessHistory + " = ? WHERE " + UserFieldUsername + " = ?"
+var sqlQueryUpdateGuessHistoryWithId *sql.Stmt /*Args order {GuessHistory, Id} */
+const sql_string_UPDATE_GUESS_HISTORY_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldGuessHistory + " = ? WHERE " + UserFieldId + " = ?"
 
 var sqlQuerySelectFriendsFromId *sql.Stmt
 const sql_string_SELECT_FRIENDS_FROM_ID = "SELECT " + FriendFieldId2 + " FROM " + FriendTableName + " WHERE " + FriendFieldId1 + " = ?"
@@ -106,6 +111,10 @@ func PrepareStatements(database *sql.DB) error {
 		&sqlQuerySelectAuthenticationFieldsFromUsername,
 		sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME,
 	)
+    statement_preparer.PrepareStatement(
+        &sqlQuerySelectAuthenticationFieldsFromId,
+        sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID,
+    )
 	statement_preparer.PrepareStatement(&sqlQueryAddUserStatement, sql_string_ADD_USER_STATEMENT)
 	statement_preparer.PrepareStatement(
 		&sqlQuerySelectGuessHistoryFromId,
@@ -116,7 +125,7 @@ func PrepareStatements(database *sql.DB) error {
 		sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME,
 	)
 	statement_preparer.PrepareStatement(
-		&sqlQueryUpdateGuessHistoryWithUsername,
+		&sqlQueryUpdateGuessHistoryWithId,
 		sql_string_UPDATE_GUESS_HISTORY_WITH_ID,
 	)
 	statement_preparer.PrepareStatement(

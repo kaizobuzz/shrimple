@@ -28,7 +28,7 @@ func generate_private_key() error {
 }
 
 type TokenData struct {
-	Username        string
+	Id        string
 	Expiration      time.Time
 	Signed_password []byte
 }
@@ -77,7 +77,7 @@ func SignWithServerPrivateKey(data [32]byte) ([]byte, error) {
 	return Signature, nil
 }
 
-func VerifySessionToken(base64_token string) (*string /*username*/, bool /* valid */, error) {
+func VerifySessionToken(base64_token string) (id *string, valid bool, err error) {
 	//fmt.Printf("base64 representation of token: %s", base64_token)
 	var num_bytes int = base64.StdEncoding.DecodedLen(len([]byte(base64_token)))
 	var json_token []byte = make([]byte, num_bytes)
@@ -100,7 +100,7 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
 		fmt.Printf("Error signing token data in verifysessiontoken: %s", err)
 		return nil, false, err
 	}
-	correct_password_signature, err := SignedPassword(token.Tokendata.Username)
+	correct_password_signature, err := SignedPassword(token.Tokendata.Id)
 	if err != nil {
 		return nil, false, err
 	}
@@ -116,11 +116,11 @@ func VerifySessionToken(base64_token string) (*string /*username*/, bool /* vali
 		fmt.Print("Token has incorrect password signature!")
 		return nil, false, nil
 	}
-	return &token.Tokendata.Username, true, nil
+	return &token.Tokendata.Id, true, nil
 }
 
-func SignedPassword(username string) ([]byte, error) {
-    password_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
+func SignedPassword(id string) ([]byte, error) {
+    password_hash, err := database.SelectAuthenticationFieldsFromId(id)
 	if err != nil {
 		return nil, err
 	}

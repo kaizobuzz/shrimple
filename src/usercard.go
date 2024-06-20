@@ -8,14 +8,14 @@ import (
 )
 
 func UserCardHandler(w http.ResponseWriter, r *http.Request) {
-	var user *string = LoggedInUser(r)
-	if user == nil {
+	var id *string = LoggedInUser(r)
+	if id == nil {
         templates.UserCard(false, "", "").Render(context.Background(), w) 
 	} else {
-        id, err:=database.SelectIdFromUsername(*user)
+        user, err:=database.SelectUsernameFromId(*id)
         if err!=nil{
             w.WriteHeader(http.StatusInternalServerError)
         }
-        templates.UserCard(true, id, *user).Render(context.Background(), w) 
+        templates.UserCard(true, *id, user).Render(context.Background(), w) 
 	}
 }

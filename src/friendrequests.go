@@ -10,15 +10,11 @@ import (
 )
 
 func getIdFromRequest(r *http.Request)(id string, err error){
-    username:=LoggedInUser(r)
-    if username==nil{
+    user_id:=LoggedInUser(r)
+    if user_id==nil{
         return "", errors.New("request does not have username associated with it")
-    }
-    id, err=database.SelectIdFromUsername(*username)
-    if err!=nil{
-        return "", err
-    }
-    return id, nil
+    } 
+    return *user_id, nil
 }
 
 func getUsersForRequests(r *http.Request) (sending_id string, receiving_id string, err error) {	

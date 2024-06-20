@@ -24,6 +24,7 @@ func Start_Server() {
 	http.HandleFunc("/api/v1/login", LoginHandler)
 	http.HandleFunc("/api/v1/usercard", UserCardHandler)
 	http.HandleFunc("/api/v1/userinfo", UserInfoHandler)
+    http.HandleFunc("/api/v1/usersettings", getUserSettings)
 	http.HandleFunc("/api/v1/postguesshistoryentry", GuessHistoryEntryReciever)
 	http.HandleFunc("/api/v1/getguesshistoryentry", GetGuessHistoryEntry)
     http.HandleFunc("/api/v1/logout", LogoutHandler)
