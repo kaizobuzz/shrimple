@@ -120,7 +120,7 @@ func PrepareStatements(database *sql.DB) error {
     )
     statement_preparer.PrepareStatement(
         &sqlQueryUpdateAuthenticationFieldWithId,
-        sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID
+        sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID,
     )
 	statement_preparer.PrepareStatement(&sqlQueryAddUserStatement, sql_string_ADD_USER_STATEMENT)
 	statement_preparer.PrepareStatement(
