@@ -53,7 +53,7 @@ func AccountCreationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	{
-		cookie, err := CreateCookie(username)
+		cookie, err := CreateCookieFromUsername(username)
 		if err != nil {
 			log.Println(err)
 		} else {

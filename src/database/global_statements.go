@@ -27,6 +27,9 @@ const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID = "SELECT " +
 	UserFieldPasswordHash +
 	" FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
 
+var sqlQueryUpdateAuthenticationFieldWithId *sql.Stmt /*Order of Argument goes {Id, PasswordHash}*/
+const sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldPasswordHash + " = ? WHERE " + UserFieldId + " = ?"
+
 
 var sqlQueryAddUserStatement *sql.Stmt /*Order of Arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
 const sql_string_ADD_USER_STATEMENT = "INSERT INTO " + UserTableName +
@@ -114,6 +117,10 @@ func PrepareStatements(database *sql.DB) error {
     statement_preparer.PrepareStatement(
         &sqlQuerySelectAuthenticationFieldsFromId,
         sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID,
+    )
+    statement_preparer.PrepareStatement(
+        &sqlQueryUpdateAuthenticationFieldWithId,
+        sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID
     )
 	statement_preparer.PrepareStatement(&sqlQueryAddUserStatement, sql_string_ADD_USER_STATEMENT)
 	statement_preparer.PrepareStatement(

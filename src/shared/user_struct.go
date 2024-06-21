@@ -14,6 +14,7 @@ type Settings struct {
 }
 type PrivacySettings struct {
 	ViewUserInfo Privacy
+    ViewGuessHistory bool
 }
 
 func GetDefaultSettings() Settings {

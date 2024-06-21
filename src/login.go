@@ -59,11 +59,22 @@ func hashPassword(salt []byte, password string) *HashSalt {
 	return &HashSalt{Salt: salt, Hash: hash}
 }
 
-func verifyPassword(username string, password string) bool {
+func verifyPasswordFromUsername(username string, password string) bool {
 	database_hash, err := database.SelectAuthenticationFieldsFromUsername(username)
 	if err != nil {
 		return false
 	}
+	return verifyPassword(database_hash, password)
+}
+func verifyPasswordFromId(id string, password string) bool {
+	database_hash, err := database.SelectAuthenticationFieldsFromId(id)
+	if err != nil {
+		return false
+	}
+	return verifyPassword(database_hash, password)
+}
+
+func verifyPassword(database_hash *shared.HashSalt, password string) bool {
 	hash := hashPassword(database_hash.Salt, password)
 	if bytes.Equal(database_hash.Hash, hash.Hash) {
 		return true
@@ -81,14 +92,17 @@ func GetPepper() {
 		log.Fatal(err)
 	}
 }
-
-func CreateCookie(username string) (*http.Cookie, error) {
-	var expiration = time.Now().Add(time.Hour * 24)
-
+func CreateCookieFromUsername(username string) (*http.Cookie, error) {
 	id, err := database.SelectIdFromUsername(username)
 	if err != nil {
 		return nil, errors.New("Couldn't select id")
 	}
+	return CreateCookie(id)
+}
+
+func CreateCookie(id string) (*http.Cookie, error) {
+	var expiration = time.Now().Add(time.Hour * 24)
+
 	signed_password, err := SignedPassword(id)
 	if err != nil {
 		return nil, err
@@ -134,7 +148,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var username string = r.FormValue("username")
 	var password string = r.FormValue("password")
 
-	if !verifyPassword(username, password) {
+	if !verifyPasswordFromUsername(username, password) {
 		err := templates.UseStringTemplate("Incorrect Credentials", templates.ErrorLoginForm, &w)
 		if err != nil {
 			log.Println(err)
@@ -144,7 +158,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// generate token
-	cookie, err := CreateCookie(username)
+	cookie, err := CreateCookieFromUsername(username)
 	if err != nil {
 		err := templates.UseStringTemplate(err.Error(), templates.ErrorLoginForm, &w)
 		if err != nil {
@@ -165,6 +179,70 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func passwordChangeSubHandler(r *http.Request) (id string, err error) {
+	user_id := LoggedInUser(r)
+	if user_id == nil {
+		return "", errors.New("Failed to validate token")
+	}
+	if err := r.ParseForm(); err != nil {
+		log.Println(err)
+		return "", errors.New("Failed to parse form")
+	}
+	old_password := r.FormValue("oldpassword")
+	new_password := r.FormValue("newpassword")
+	confirm_password := r.FormValue("confirmpassword")
+	if new_password != confirm_password {
+		return "", errors.New("Passwords do not match")
+	}
+	if !verifyPasswordFromId(*user_id, old_password) {
+		return "", errors.New("Old password is incorrect")
+	}
+	if err := updatePassword(*user_id, new_password); err != nil {
+		log.Println(err)
+		return "", errors.New("Failed to update password")
+	}
+	return id, nil
+}
+
+func passwordChangeHandler(w http.ResponseWriter, r *http.Request) {
+	//TODO not correct form
+	user_id, err := passwordChangeSubHandler(r)
+	if err != nil {
+		err := templates.UseStringTemplate("Failed to create token", templates.ErrorLoginForm, &w)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
+	cookie, err := CreateCookie(user_id)
+	if err != nil {
+		err := templates.UseStringTemplate("Failed to create token", templates.ErrorLoginForm, &w)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
+	http.SetCookie(w, cookie)
+	err = templates.UseStringTemplate("Password changed sucessfully", templates.ErrorLoginForm, &w)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	return
+}
+func updatePassword(id string, new_password string) error {
+	hash, err := GeneratePassword(new_password)
+	if err != nil {
+		return err
+	}
+	if err := database.UpdateAuthenticationFieldsWithId(id, hash); err != nil {
+		return err
+	}
+	return nil
+}
+
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	var cookie = http.Cookie{
 		Name:     "sessiontoken",
@@ -180,7 +258,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func LoggedInUser(r *http.Request) *string {
+func LoggedInUser(r *http.Request) (id *string) {
 	cookie, err := r.Cookie("sessiontoken")
 	if err != nil {
 		fmt.Print("error getting session token")

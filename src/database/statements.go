@@ -151,6 +151,18 @@ func SelectAuthenticationFieldsGivenRow(
 	return password_hash, nil
 }
 
+func UpdateAuthenticationFieldsWithId(id string, password_hash *shared.HashSalt) error{
+    password_hash_bytes, err:= EncodeGob(password_hash)
+    if err!=nil{
+        return err
+    }
+    _, err=sqlQueryUpdateAuthenticationFieldWithId.Exec(id, password_hash_bytes)
+    if err!=nil{
+        return err
+    }
+    return nil
+}
+
 /*IMPORTANT Currently does not add friend requests */
 func AddNewUser(user *User) error {
     password_hash_bytes, err:=EncodeGob(user.PasswordHash)
