@@ -9,6 +9,11 @@ async function startDisplay(){
         branch_node.appendChild(document.createTextNode(mode+" history"));
         const urlParams = new URLSearchParams(window.location.search);
         let history=await getHistory(mode, urlParams.get("userid"));
+        if (history==null){
+            branch_node.appendChild(document.createTextNode("guess history not available"));
+            branch_node.hidden=false;
+            continue;
+        }
         let result=renderBarNodes(history, branch_node);
         let [history_nodes, lengths]=[result.nodes, result.lengths];
         branch_node.hidden=false;

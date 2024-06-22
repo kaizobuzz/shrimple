@@ -1,8 +1,8 @@
 //@ts-check
 /** @param {string} mode 
- * @param {number|undefined} userid 
- * @returns {Promise<number[]>}*/
-async function getHistory(mode, userid){
+ * @param {string|undefined} userid 
+ * @returns {Promise<number[]|null>}*/
+async function getHistory(mode, userid){ 
     const response=await fetch("/api/v1/getguesshistoryentry", {
         method: "POST",
         body: JSON.stringify(
@@ -20,12 +20,16 @@ async function getHistory(mode, userid){
         }
         return guess_history_array;
     }
+    
     if (userid==undefined){
         let history_string=localStorage.getItem("guess_history"+mode);
         let history=/**@type Number[]*/(history_string!=null ? JSON.parse(history_string) : Array(MAX_GUESSES).fill(0));
         localStorage.setItem("guess_history"+mode, JSON.stringify(history));
         return history;
     } else{
-        return Array(MAX_GUESSES).fill(0);
+        return null;
     }
 }
+
+
+

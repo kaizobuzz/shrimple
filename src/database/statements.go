@@ -16,6 +16,7 @@ type SqlUser struct {
 	PasswordHash []byte
 	Experience   int64
 	GuessHistory []byte //blob
+	Settings     []byte
 }
 
 func SelectFullUserFromUsername(username string) (*User, error) {
@@ -34,16 +35,20 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 		&sql_user.PasswordHash,
 		&sql_user.Experience,
 		&sql_user.GuessHistory,
+        &sql_user.Settings,
 	)
 	if err != nil {
 		return nil, err
 	}
 	user := User{
-		Username:     sql_user.Username,
-		Id:           sql_user.Id,
-		Experience:   sql_user.Experience,
+		Username:   sql_user.Username,
+		Id:         sql_user.Id,
+		Experience: sql_user.Experience,
 	}
-    if err:=DecodeGob(sql_user.PasswordHash, &user.PasswordHash); err!=nil{
+	if err := DecodeGob(sql_user.PasswordHash, &user.PasswordHash); err != nil {
+		return nil, err
+	}
+    if err := DecodeGob(sql_user.Settings, &user.Settings); err != nil{
         return nil, err
     }
 	if user.Friends, err = SelectFriendsFromId(user.Id); err != nil {
@@ -110,34 +115,34 @@ func SelectOutgoingFriendRequestsFromId(id string) ([]string, error) {
 	return friend_request_list, nil
 }
 
-func SelectIdFromUsername(username string)(id string, err error){
-    row:=sqlQuerySelectIdFromUsername.QueryRow(username)
-    if err=row.Scan(&id); err!=nil{
-        return "", err
-    }
-    return id, nil
+func SelectIdFromUsername(username string) (id string, err error) {
+	row := sqlQuerySelectIdFromUsername.QueryRow(username)
+	if err = row.Scan(&id); err != nil {
+		return "", err
+	}
+	return id, nil
 }
 
-func SelectUsernameFromId(id string)(username string, err error){
-    row:=sqlQuerySelectUsernameFromId.QueryRow(id)
-    if err=row.Scan(&username); err!=nil{
-        return "", err
-    }
-    return username, nil
+func SelectUsernameFromId(id string) (username string, err error) {
+	row := sqlQuerySelectUsernameFromId.QueryRow(id)
+	if err = row.Scan(&username); err != nil {
+		return "", err
+	}
+	return username, nil
 }
 
-func UpdateUsernameWithId(id string, new_username string) error{
-    //TODO check if args are in correct order (same with authentication)
-    _, err:=sqlQueryUpdateUsernameWithId.Exec(new_username, id)
-    if err!=nil{
-        return err
-    }
-    return nil
+func UpdateUsernameWithId(id string, new_username string) error {
+	//TODO check if args are in correct order (same with authentication)
+	_, err := sqlQueryUpdateUsernameWithId.Exec(new_username, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func SelectAuthenticationFieldsFromId(id string) (password_hash *shared.HashSalt, err error) {
-    row := sqlQuerySelectAuthenticationFieldsFromId.QueryRow(id)
-    return SelectAuthenticationFieldsGivenRow(row)
+	row := sqlQuerySelectAuthenticationFieldsFromId.QueryRow(id)
+	return SelectAuthenticationFieldsGivenRow(row)
 }
 func SelectAuthenticationFieldsFromUsername(
 	username string,
@@ -148,35 +153,62 @@ func SelectAuthenticationFieldsFromUsername(
 func SelectAuthenticationFieldsGivenRow(
 	row *sql.Row,
 ) (password_hash *shared.HashSalt, err error) {
-    var password_hash_bytes []byte
-    if err := row.Scan(&password_hash_bytes); err != nil {
+	var password_hash_bytes []byte
+	if err := row.Scan(&password_hash_bytes); err != nil {
 		return nil, err
 	}
-    password_hash=&shared.HashSalt{}
-    if err := DecodeGob(password_hash_bytes, &password_hash); err!=nil{
-        return nil, err
-    }
+	password_hash = &shared.HashSalt{}
+	if err := DecodeGob(password_hash_bytes, &password_hash); err != nil {
+		return nil, err
+	}
 	return password_hash, nil
 }
 
-func UpdateAuthenticationFieldsWithId(id string, password_hash *shared.HashSalt) error{
-    password_hash_bytes, err:= EncodeGob(password_hash)
-    if err!=nil{
-        return err
-    }
-    _, err=sqlQueryUpdateAuthenticationFieldWithId.Exec(password_hash_bytes, id)
-    if err!=nil{
-        return err
-    }
-    return nil
+func UpdateAuthenticationFieldsWithId(id string, password_hash shared.HashSalt) error {
+	password_hash_bytes, err := EncodeGob(password_hash)
+	if err != nil {
+		return err
+	}
+	_, err = sqlQueryUpdateAuthenticationFieldWithId.Exec(password_hash_bytes, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-/*IMPORTANT Currently does not add friend requests */
+func SelectSettingsFromId(id string) (settings *shared.Settings, err error) {
+	row := sqlQuerySelectSettingsFromId.QueryRow(id)
+	var settings_bytes []byte
+	if err := row.Scan(&settings_bytes); err != nil {
+		return nil, err
+	}
+	settings = &shared.Settings{}
+	if err := DecodeGob(settings_bytes, settings); err != nil {
+		return nil, err
+	}
+	return settings, nil
+}
+func UpdateSettingsWithId(id string, settings shared.Settings) error {
+	settings_bytes, err := EncodeGob(settings)
+	if err != nil {
+		return err
+	}
+	_, err = sqlQueryUpdateSettingsWithId.Exec(settings_bytes, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+IMPORTANT TODO Currently does not add friend requests
+in addition doesn't work with settings yet
+*/
 func AddNewUser(user *User) error {
-    password_hash_bytes, err:=EncodeGob(user.PasswordHash)
-    if err!=nil{
-        return err
-    }
+	password_hash_bytes, err := EncodeGob(user.PasswordHash)
+	if err != nil {
+		return err
+	}
 	sql_user := SqlUser{
 		Id:           user.Id,
 		Username:     user.Username,
@@ -186,12 +218,16 @@ func AddNewUser(user *User) error {
 	if sql_user.GuessHistory, err = EncodeGob(&user.GuessHistory); err != nil {
 		return err
 	}
+    if sql_user.Settings, err = EncodeGob(&user.Settings); err != nil {
+        return err 
+    }
 	_, err = sqlQueryAddUserStatement.Exec(
 		sql_user.Id,
 		sql_user.Username,
 		sql_user.PasswordHash,
 		sql_user.Experience,
 		sql_user.GuessHistory,
+        sql_user.Settings,
 	)
 	//TODO currently making the assumption that any user sent is valid including the friends,
 	for _, friend_id := range user.Friends {
@@ -389,12 +425,12 @@ func CheckIfUsernameExists(username string) (bool, error) {
 	return false, nil
 }
 
-const max_SUBSTR_LENGTH=30//TODO idk unmagic the number
+const max_SUBSTR_LENGTH = 30 //TODO idk unmagic the number
 
 func SearchForUsernames(substring string) ([]IdUsernamePair, error) {
-    if len(substring)>max_SUBSTR_LENGTH{
-        return nil, fmt.Errorf("substring %s is too long, length %d, (max %d)", substring, len(substring), max_SUBSTR_LENGTH)
-    }
+	if len(substring) > max_SUBSTR_LENGTH {
+		return nil, fmt.Errorf("substring %s is too long, length %d, (max %d)", substring, len(substring), max_SUBSTR_LENGTH)
+	}
 	usernames, err := searchForPattern("", "%", substring)
 	if err != nil {
 		return nil, err

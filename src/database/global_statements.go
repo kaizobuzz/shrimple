@@ -1,5 +1,8 @@
 package database
-import("database/sql")
+
+import (
+	"database/sql"
+)
 
 var sqlQuerySelectFullUserFromId *sql.Stmt /*Order of Scanning arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
 const sql_string_SELECT_FULL_USER_FROM_ID = "SELECT * FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
@@ -29,13 +32,17 @@ const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_ID = "SELECT " +
 	UserFieldPasswordHash +
 	" FROM " + UserTableName + " WHERE " + UserFieldId + " = ?"
 
-var sqlQueryUpdateAuthenticationFieldWithId *sql.Stmt /*Order of Argument goes {Id, PasswordHash}*/
+var sqlQueryUpdateAuthenticationFieldWithId *sql.Stmt /*Order of Argument goes {PasswordHash, Id}*/
 const sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldPasswordHash + " = ? WHERE " + UserFieldId + " = ?"
 
+var sqlQuerySelectSettingsFromId *sql.Stmt
+const sql_string_SELECT_SETTINGS_FROM_ID = "SELECT "+UserFieldSettings+" FROM "+UserTableName + " WHERE " + UserFieldId + " = ?"
+var sqlQueryUpdateSettingsWithId *sql.Stmt/*Order of Argument goes {Settings, Id}*/
+const sql_string_UPDATE_SETTINGS_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldSettings + " = ? WHERE " + UserFieldId + " = ?"
 
 var sqlQueryAddUserStatement *sql.Stmt /*Order of Arguments goes {Id, Username, PasswordHash, Experience, GuessHistory} */
 const sql_string_ADD_USER_STATEMENT = "INSERT INTO " + UserTableName +
-	" VALUES (?, ?, ?, ?, ?)"
+	" VALUES (?, ?, ?, ?, ?, ?)"
 
 var sqlQuerySelectGuessHistoryFromUsername *sql.Stmt
 const sql_string_SELECT_GUESS_HISTORY_FROM_USERNAME = "SELECT " +
@@ -127,6 +134,14 @@ func PrepareStatements(database *sql.DB) error {
     statement_preparer.PrepareStatement(
         &sqlQueryUpdateAuthenticationFieldWithId,
         sql_string_UPDATE_AUTHENTICATION_FIELDS_WITH_ID,
+    )
+    statement_preparer.PrepareStatement(
+        &sqlQuerySelectSettingsFromId,
+        sql_string_SELECT_SETTINGS_FROM_ID,
+    )
+    statement_preparer.PrepareStatement(
+        &sqlQueryUpdateSettingsWithId,
+        sql_string_UPDATE_SETTINGS_WITH_ID,
     )
 	statement_preparer.PrepareStatement(&sqlQueryAddUserStatement, sql_string_ADD_USER_STATEMENT)
 	statement_preparer.PrepareStatement(

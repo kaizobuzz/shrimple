@@ -238,7 +238,7 @@ func updatePassword(id string, new_password string) error {
 	if err != nil {
 		return err
 	}
-	if err := database.UpdateAuthenticationFieldsWithId(id, hash); err != nil {
+	if err := database.UpdateAuthenticationFieldsWithId(id, *hash); err != nil {
 		return err
 	}
 	return nil

@@ -10,10 +10,11 @@ const (
 )
 
 type Searching uint8
+
 const (
-    None Searching = iota 
-    IdOnly
-    Name
+	None Searching = iota
+	IdOnly
+	Name
 )
 
 type Settings struct {
@@ -61,6 +62,7 @@ type User struct {
 	IncomingFriendRequests []string // list of user ids
 	OutgoingFriendRequests []string // list of user ids
 	GuessHistory           map[string]GuessHistory
+	Settings               Settings
 }
 
 type HashSalt struct {

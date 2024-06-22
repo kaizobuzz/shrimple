@@ -46,6 +46,7 @@ func CreateUser(username, password string) error {
 	for _, gamemode := range SHRIMPLE_GAMEMODES {
 		guesshistorymap[gamemode] = GuessHistory{LastDate: shared.GetCurrentDate() - 1, Guesses: make([]int, 6)}
 	}
+    settings:=shared.GetDefaultSettings()
 	id := cuid2.Generate()
 	var new_user *User = &User{
 		Username:               username,
@@ -56,6 +57,7 @@ func CreateUser(username, password string) error {
 		IncomingFriendRequests: []string{},
 		OutgoingFriendRequests: []string{},
 		GuessHistory:           guesshistorymap,
+        Settings: settings,
 	}
 	if err := database.AddNewUser(new_user); err != nil {
 		return err

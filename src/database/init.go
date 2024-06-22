@@ -14,7 +14,8 @@ const sql_string_CREATE_USER_TABLE = "CREATE TABLE if NOT EXISTS " + UserTableNa
 	UserFieldUsername + " TEXT UNIQUE, " +
 	UserFieldPasswordHash + " BLOB NOT NULL, " +
 	UserFieldExperience + " INTEGER NOT NULL, " +
-	UserFieldGuessHistory + " BLOB NOT NULL)"
+	UserFieldGuessHistory + " BLOB NOT NULL, "+
+    UserFieldSettings + " BLOB NOT NULL"+")"
 
 const sql_string_CREATE_USERNAME_INDEX = `CREATE UNIQUE INDEX if NOT EXISTS index_username ON ` + UserTableName + "(" + UserFieldUsername + ")"
 

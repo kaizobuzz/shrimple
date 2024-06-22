@@ -131,3 +131,5 @@ func SignedPassword(id string) ([]byte, error) {
 	var password_hash_bytes = *(*[_ARGON2_KEYLENGTH]byte)(password_hash.Hash)
     return SignWithServerPrivateKey(password_hash_bytes)
 }
+
+
