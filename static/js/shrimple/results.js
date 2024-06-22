@@ -64,7 +64,7 @@ async function getRemainingTime(){
 /**@param {HTMLElement} result_node*
  @param {boolean} from_end*/
 async function renderObjectsOriginally(result_node, from_end){
-    let history=from_end ? await addToHistory(Game.num_guesses) : assertNotNull(await getHistory(mode, undefined));
+    let history=from_end ? await addToHistory(Game.num_guesses) : assertNotNull(await getHistory(mode, null));
     let result=renderBarNodes(history, result_node)
     let [history_bar_nodes, lengths]=[result.nodes, result.lengths];
     result_node.appendChild(document.createTextNode("Try again in "));
