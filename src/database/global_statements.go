@@ -11,12 +11,14 @@ var sqlQuerySelectIdFromUsername *sql.Stmt
 const sql_string_SELECT_ID_FROM_USERNAME = "SELECT " + 
     UserFieldId +
     " FROM "+UserTableName+ " WHERE " + UserFieldUsername + " = ?"
-var sqlQuerySelectUsernameFromId *sql.Stmt
 
+var sqlQuerySelectUsernameFromId *sql.Stmt
 const sql_string_SELECT_USERNAME_FROM_ID = "SELECT " + 
     UserFieldUsername +
     " FROM "+UserTableName+ " WHERE " + UserFieldId + " = ?"
 
+var sqlQueryUpdateUsernameWithId *sql.Stmt
+const sql_STRING_UPDATE_USERNAME_WITH_ID = "UPDATE " + UserTableName + " SET " + UserFieldUsername + " = ? WHERE " + UserFieldId + " = ?"
 
 var sqlQuerySelectAuthenticationFieldsFromUsername *sql.Stmt /*returns {Id, Username, PasswordHash} */
 const sql_string_SELECT_AUTHENTIFICATION_FIELDS_FROM_USERNAME = "SELECT " +
@@ -109,6 +111,10 @@ func PrepareStatements(database *sql.DB) error {
     statement_preparer.PrepareStatement(
         &sqlQuerySelectIdFromUsername,
         sql_string_SELECT_ID_FROM_USERNAME,
+    )
+    statement_preparer.PrepareStatement(
+        &sqlQueryUpdateUsernameWithId,
+        sql_STRING_UPDATE_USERNAME_WITH_ID,
     )
 	statement_preparer.PrepareStatement(
 		&sqlQuerySelectAuthenticationFieldsFromUsername,

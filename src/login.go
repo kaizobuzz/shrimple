@@ -201,14 +201,14 @@ func passwordChangeSubHandler(r *http.Request) (id string, err error) {
 		log.Println(err)
 		return "", errors.New("Failed to update password")
 	}
-	return id, nil
+	return *user_id, nil
 }
 
 func passwordChangeHandler(w http.ResponseWriter, r *http.Request) {
 	//TODO not correct form
 	user_id, err := passwordChangeSubHandler(r)
 	if err != nil {
-		err := templates.UseStringTemplate("Failed to create token", templates.ErrorLoginForm, &w)
+		err := templates.UseStringTemplate(err.Error(), templates.ErrorMessage, &w)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -217,7 +217,8 @@ func passwordChangeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, err := CreateCookie(user_id)
 	if err != nil {
-		err := templates.UseStringTemplate("Failed to create token", templates.ErrorLoginForm, &w)
+        log.Println(err)
+		err := templates.UseStringTemplate("Failed to create token", templates.ErrorMessage, &w)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -225,7 +226,7 @@ func passwordChangeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.SetCookie(w, cookie)
-	err = templates.UseStringTemplate("Password changed sucessfully", templates.ErrorLoginForm, &w)
+	err = templates.UseStringTemplate("Password changed sucessfully", templates.SuccessMessage, &w)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

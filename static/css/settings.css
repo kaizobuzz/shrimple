@@ -1,0 +1,14 @@
+#main-flex{
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 0;
+}
+#sidebar-flex{
+    width: 20%;
+}
+#settings-flex {
+    width: 80%;
+}

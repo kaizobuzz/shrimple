@@ -3,11 +3,25 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
+    <link rel="stylesheet" type="text/css" href="/css/settings.css?v=1">
+    <script src="/js/redirects/authentication.js"> </script>
 </head>
 
 <body>
-        <iframe src="sidebar.html"></iframe>
-        
+    <div id="main-flex">
+        <div id="sidebar-flex">
+            <iframe src="sidebar.html"></iframe>
+        </div>
+        <div id="settings-flex">
+            <div id="change-username">
+                Name
+                <form id="change-username-form" method="post">
+                </form>
+            </div>
+            <button id="logoutbutton" onclick="checkAuth('/api/v1/logout')">Logout</button>
+        </div>
+    </div>
+
 </body>
 
 </html>

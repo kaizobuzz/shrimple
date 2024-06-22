@@ -126,6 +126,14 @@ func SelectUsernameFromId(id string)(username string, err error){
     return username, nil
 }
 
+func UpdateUsernameWithId(id string, new_username string) error{
+    //TODO check if args are in correct order (same with authentication)
+    _, err:=sqlQueryUpdateUsernameWithId.Exec(new_username, id)
+    if err!=nil{
+        return err
+    }
+    return nil
+}
 
 func SelectAuthenticationFieldsFromId(id string) (password_hash *shared.HashSalt, err error) {
     row := sqlQuerySelectAuthenticationFieldsFromId.QueryRow(id)
@@ -156,7 +164,7 @@ func UpdateAuthenticationFieldsWithId(id string, password_hash *shared.HashSalt)
     if err!=nil{
         return err
     }
-    _, err=sqlQueryUpdateAuthenticationFieldWithId.Exec(id, password_hash_bytes)
+    _, err=sqlQueryUpdateAuthenticationFieldWithId.Exec(password_hash_bytes, id)
     if err!=nil{
         return err
     }
