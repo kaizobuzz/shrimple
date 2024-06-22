@@ -1,26 +1,47 @@
 package shared
 
-type Privacy int8
+type Privacy uint8
 
 const (
 	Private Privacy = iota
+	FriendsOnly
 	Unlisted
 	Public
 )
 
+type Searching uint8
+const (
+    None Searching = iota 
+    IdOnly
+    Name
+)
+
 type Settings struct {
-	Privacy                      PrivacySettings
-	AllowReceivingFriendRequests bool
+	Privacy PrivacySettings
 }
 type PrivacySettings struct {
-	ViewUserInfo Privacy
-    ViewGuessHistory bool
+	AllowReceivingFriendRequests Searching
+	AllowBeingSearched           bool
+	ShowOnLeaderboard            bool
+	Page                         PagePrivacySettings
+}
+type PagePrivacySettings struct {
+	ViewUserInfo     Privacy
+	ViewGuessHistory bool
+	ViewExperience   bool
 }
 
 func GetDefaultSettings() Settings {
 	return Settings{
 		Privacy: PrivacySettings{
-			ViewUserInfo: Private,
+			AllowReceivingFriendRequests: IdOnly,
+			AllowBeingSearched:           false,
+			ShowOnLeaderboard:            false,
+			Page: PagePrivacySettings{
+				ViewUserInfo:     Private,
+				ViewGuessHistory: true,
+				ViewExperience:   true,
+			},
 		},
 	}
 }
