@@ -9,14 +9,62 @@
 
 <body>
     <div id="main-flex">
-        <div id="sidebar-flex">
-            <iframe src="sidebar.html"></iframe>
-        </div>
-        <div id="settings-flex">
+        <iframe src="sidebar.html" id="sidebar-flex"></iframe>
+        <div id="settings-flex" hidden>
+            <label for="allow-friend-requests">Allow friend requests </label>
+            <br>
+
+            <select name="allow-friend-requests" id="allow-friend-requests">
+                <option value="Name">Through username or id</option>
+                <option value="IdOnly">Through only id</option>
+                <option value="None">Don't allow</option>
+            </select>
+            <br>
+            <div class="description">
+                Allow receiving friend requests by username or id, by only id, or by nothing.
+            </div>
+            <br><br>
+            <label for="show-on-leaderboard">Show on leaderboard</label>
+            <input type="checkbox" id="show-on-leaderboard">
+            <div class="description">
+                Show username on shrimple leaderboard
+            </div>
+            <br><br>
+            <h3>Page settings</h3>
+            <label for="view-user-info">Page visibility</label>
+            <select name="view-user-info" id="view-user-info">
+                <option value="Public">Public</option>
+                <option value="Unlisted">Unlisted</option>
+                <option value="FriendsOnly">Friends Only</option>
+                <option value="Private"> Private</option>
+            </select>
+            <!-- needs warning on public/is this equivalent?-->
+            <div class="description">
+                Visibility for your <a href="/userinfo.html">user page</a>
+            </div>
+            <label for="allow-being-searched">Allow Username search</label>
+            <input type="checkbox" id="allow-being-searched" />
+            <br>
+            <div class="description">
+                Allow having your username searched for your page
+                <div class="warning">
+                    <b>Warning: </b>This will also give people access to your id in order to access the page, making any
+                    id only measures possibly redundant
+                </div>
+            </div>
+            <label for="show-guess-history">Show guess history</label>
+            <input type="checkbox" id="show-guess-history">
+            <div class="description">
+                Whether to show your shrimple guess history on your user page.
+            </div>
+
+
+
 
         </div>
     </div>
-
+    <script src="/js/shared/utils.js"></script>
+    <script src="/js/settings/privacy.js"></script>
 </body>
 
 </html>

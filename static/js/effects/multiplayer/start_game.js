@@ -87,11 +87,13 @@ async function getPlayerId(){
         Jsondata: DisplayName,
         });
     console.log(join_message);
+    const message_string=JSON.stringify(join_message);
     const join_response=await fetch("/api/v1/newjoin", {
             method: "POST",
-            body: JSON.stringify(join_message),
+            body: message_string,
             headers: {
-            "Content-type": JsonContentHeaderValue 
+            "Content-type": JsonContentHeaderValue,
+            //"Content-length": String(message_string.length),
             }
         })
     if (!join_response.ok){
@@ -124,7 +126,9 @@ let DisplayNameInput=assertInputElement(document.getElementById("display-name-in
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
 let OtherPlayersDiv=assertNotNull(document.getElementById("other-players"));
 assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
-let GameId=window.location.href.split("?id=")[1];
+
+const urlParams = new URLSearchParams(window.location.search);
+const GameId=assertNotNull(urlParams.get("id"));
 let CurrentKeyObject={
     game: "",
     playerkey: "",

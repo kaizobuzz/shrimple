@@ -50,15 +50,9 @@ function fillInGameValueWithPromise(promise, key){
 }
 
 function getMode(){
-    const mode_text="mode=";
-    let url=window.location.href;
-    let mode_pos=url.indexOf(mode_text)+mode_text.length;
-    if (mode_pos==-1){
-        window.location.href="shrimple.html?mode=shrimple"
-        return;
-    }
-    return url.slice(mode_pos);
-}
+    let urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("mode");
+};
 function initializeGameVariablesFromServer(){
     const [cached_game, cached_guess_results]=checkLocalStorage(); 
     if (cached_game!=null){

@@ -1,6 +1,6 @@
 //@ts-check
 /** @param {string} mode 
- * @param {string|undefined} userid 
+ * @param {string|null} userid 
  * @returns {Promise<number[]|null>}*/
 async function getHistory(mode, userid){ 
     const response=await fetch("/api/v1/getguesshistoryentry", {

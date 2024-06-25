@@ -2,6 +2,7 @@ package shared
 
 type Privacy uint8
 
+
 const (
 	Private Privacy = iota
 	FriendsOnly

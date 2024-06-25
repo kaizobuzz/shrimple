@@ -15,6 +15,7 @@ const (
 	GuessStatusCorrectGuess
 	GuessStatusOutofGuesses
 )
+const MAX_CONTENT_LENGTH=700
 
 func getGameId(r *http.Request) (*game, error) {
 	u := &url.URL{}
@@ -38,6 +39,9 @@ func getGameId(r *http.Request) (*game, error) {
 func getRequestInfo(
 	r *http.Request,
 ) (game *game, message *Message, err error, statuscode int) {
+    if r.ContentLength>MAX_CONTENT_LENGTH{
+        return nil, nil, fmt.Errorf("Content length too large: %d, (max %d)", r.ContentLength, MAX_CONTENT_LENGTH), http.StatusBadRequest
+    }
 	game, err = getGameId(r)
 	if err != nil {
 		return nil, nil, err, http.StatusGone
@@ -122,6 +126,7 @@ func AddNewEvent(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func CheckForEvents(w http.ResponseWriter, r *http.Request) {
+    log.Println(r.ContentLength)
 	game, message, err, statuscode := getRequestInfo(r)
 	if err != nil {
 		log.Println(err)

@@ -41,6 +41,7 @@ func checkAuthEqual(r *http.Request, id string) bool {
 	}
 	return *user_id == id
 }
+//side channel attack risk
 func checkAuthToView(r *http.Request, id string) (allowed bool, statuscode int){
     settings, err:=database.SelectSettingsFromId(id)
     if err!=nil{
@@ -48,6 +49,8 @@ func checkAuthToView(r *http.Request, id string) (allowed bool, statuscode int){
     }
     return checkAuthToViewWithSettings(r, id, settings)
 }
+
+//side channel attack risk
 func checkAuthToViewWithSettings(r *http.Request, id string, settings *shared.Settings) (allowed bool, statuscode int) {
 	switch settings.Privacy.Page.ViewUserInfo {
 	case shared.Private:
