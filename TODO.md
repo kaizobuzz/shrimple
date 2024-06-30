@@ -1,1 +1,1 @@
-Use iframes instead of copy pasting for replicated bars and such
+part 2 actually dont use iframes just fetch local

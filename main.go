@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	println("program started or something")
 	src.Start_Server()
 }

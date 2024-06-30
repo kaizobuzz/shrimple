@@ -12,3 +12,13 @@
 #settings-flex {
     width: 70%;
 }
+
+.soft-links{
+   text-decoration: none;
+   display: block;
+   color: #B2ADBC;
+}
+
+#fullscreen {
+    width: 100%;
+}
