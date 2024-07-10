@@ -119,7 +119,7 @@ func CreateCookie(id string) (*http.Cookie, error) {
 	if err != nil {
 		return nil, errors.New("Failed to serialize auth token")
 	}
-	fmt.Printf("\n Sent Session with json value: %s (%x)\n", json_token, json_token)
+    //fmt.Printf("\n Sent Session with json value: %s (%x)\n", json_token, json_token)
 
 	var base64_token string = base64.StdEncoding.EncodeToString(json_token)
 
