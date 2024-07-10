@@ -1,4 +1,5 @@
 //@ts-check
+
 /** @typedef PagePrivacySettings
  * @property {number} ViewUserInfo 
  * @property {boolean} ViewGuessHistory 	
@@ -94,10 +95,36 @@ async function getPrivacySettings(){
     settings_flex.hidden=false;
 }
 
+async function setPrivacySettings(){
+    const privacy_settings=/**@type PrivacySettings*/({
+        AllowReceivingFriendRequests: Searching[allow_friend_requests.value],
+        ShowOnLeaderboard: show_on_leaderboard.checked,
+        AllowBeingSearched: allow_being_searched.checked,
+        Page: {
+            ViewUserInfo: Privacy[view_user_info.value],
+            ViewGuessHistory: show_guess_history.checked,
+            ViewExperience: show_experience.checked, 
+        }
+        
+    });
+    const response=await fetch("/api/v1/changeprivacysettings", {
+        method: "POST",
+        body: JSON.stringify(privacy_settings), 
+        headers: {
+           "Content-type": "application/json; charset=UFT-8" 
+        } 
+    })
+    if (response.ok){
+        console.log(response);
+    }
+
+}
+
 const allow_friend_requests=/**@type HTMLSelectElement*/(document.getElementById("allow-friend-requests"));
 const allow_being_searched = assertInputElement(document.getElementById("allow-being-searched"))
 getPrivacySettings();
 const show_on_leaderboard = assertInputElement(document.getElementById("show-on-leaderboard"));
 const view_user_info =/**@type HTMLSelectElement*/(document.getElementById("view-user-info"));
 const show_guess_history = assertInputElement(document.getElementById("show-guess-history"));
+const show_experience = assertInputElement(document.getElementById("show-experience"));
 const settings_flex=assertNotNull(document.getElementById("settings-flex"));

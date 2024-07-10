@@ -9,7 +9,7 @@
 
 <body>
     <div id="main-flex">
-        <iframe src="sidebar.html" id="sidebar-flex"></iframe>
+        <ul id="sidebar-flex"></ul>
         <div id="settings-flex">
             <div id="change-username">
                 Name
@@ -19,6 +19,9 @@
             <button id="logoutbutton" onclick="checkAuth('/api/v1/logout')">Logout</button>
         </div>
     </div>
+    <button class="submit-button" id="save-settings" onclick="">Save settings</button>
+    <script src="/js/shared/utils.js"> </script>
+    <script src="/js/settings/sidebar.js"> </script>
 
 </body>
 

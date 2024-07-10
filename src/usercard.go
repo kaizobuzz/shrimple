@@ -10,13 +10,13 @@ import (
 func UserCardHandler(w http.ResponseWriter, r *http.Request) {
 	var id *string = LoggedInUser(r)
 	if id == nil {
-		templates.UserCard(false, "", "").Render(context.Background(), w)
+		templates.UserCard(false, "").Render(context.Background(), w)
 	} else {
 		user, err := database.SelectUsernameFromId(*id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		templates.UserCard(true, *id, user).Render(context.Background(), w)
+		templates.UserCard(true, user).Render(context.Background(), w)
 	}
 }
 

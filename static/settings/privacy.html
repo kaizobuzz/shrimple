@@ -9,9 +9,9 @@
 
 <body>
     <div id="main-flex">
-        <iframe src="sidebar.html" id="sidebar-flex"></iframe>
+        <ul id="sidebar-flex"></ul>
         <div id="settings-flex" hidden>
-            <label for="allow-friend-requests">Allow friend requests </label>
+            <label for="allow-friend-requests"><b>Allow friend requests</b> </label>
             <br>
 
             <select name="allow-friend-requests" id="allow-friend-requests">
@@ -23,15 +23,15 @@
             <div class="description">
                 Allow receiving friend requests by username or id, by only id, or by nothing.
             </div>
-            <br><br>
-            <label for="show-on-leaderboard">Show on leaderboard</label>
+            <br>
             <input type="checkbox" id="show-on-leaderboard">
+            <label for="show-on-leaderboard"><b>Show on leaderboard</b></label>
             <div class="description">
                 Show username on shrimple leaderboard
             </div>
             <br><br>
             <h3>Page settings</h3>
-            <label for="view-user-info">Page visibility</label>
+            <label for="view-user-info"><b>Page visibility</b></label><br>
             <select name="view-user-info" id="view-user-info">
                 <option value="Public">Public</option>
                 <option value="Unlisted">Unlisted</option>
@@ -40,24 +40,35 @@
             </select>
             <!-- needs warning on public/is this equivalent?-->
             <div class="description">
-                Visibility for your <a href="/userinfo.html">user page</a>
+                Visibility for your <a class="new-link" href="/userinfo.html">user page</a>
             </div>
-            <label for="allow-being-searched">Allow Username search</label>
+            <br>
             <input type="checkbox" id="allow-being-searched" />
+            <label for="allow-being-searched"><b>Allow Username search</b></label>
             <br>
             <div class="description">
                 Allow having your username searched for your page
                 <div class="warning">
-                    <b>Warning: </b>This will also give people access to your id in order to access the page, making any
-                    id only measures possibly redundant
+                    <b>Warning:</b> This will also give people access to your id in order to
+                    access the page, making any id only measures possibly redundant
                 </div>
             </div>
-            <label for="show-guess-history">Show guess history</label>
+            <br>
             <input type="checkbox" id="show-guess-history">
+            <label for="show-guess-history"><b>Show guess history</b></label>
             <div class="description">
                 Whether to show your shrimple guess history on your user page.
             </div>
+            <input type="checkbox" id="show-experience">
+            <label for="show-experience"><b>Show experience</b></label>
+            <div class="description">
+                Whether to show your shrimple experience on your user page.
+            </div>
 
+
+
+            <br><br>
+            <button class="main-buttons" id="save-settings" onclick="setPrivacySettings()">Save settings</button>
 
 
 
@@ -65,6 +76,8 @@
     </div>
     <script src="/js/shared/utils.js"></script>
     <script src="/js/settings/privacy.js"></script>
+    <script src="/js/settings/sidebar.js"> </script>
+
 </body>
 
 </html>
