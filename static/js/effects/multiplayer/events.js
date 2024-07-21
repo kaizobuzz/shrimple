@@ -1,11 +1,10 @@
 //@ts-check
 
-import { CurrentKeyObject } from "./start_game";
 import { renderEffects, displayEffectName, EffectType } from  "./../effects.js";
 import { Game } from "./../state.js";
 import {renderGuess} from "./submitchange.js";
 import {DisconnectPlayer} from "./player_leave.js";
-import { addPlayer } from "./start_game.js";
+import { addPlayer, CurrentKeyObject } from "./start_game.js";
 import { addChat } from "./chat.js";
 
 /**@typedef Message

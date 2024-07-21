@@ -7,7 +7,7 @@ import { changeSubmitFunction } from "../clamplicated/submitchange.js";
 import { initializeGameVariablesFromServer } from "./game.js";
 
 initializeGameVariablesFromServer();
-setup();
+setup(true);
 info_setup();
 let mode=getMode();
 console.log(mode);

@@ -7,7 +7,7 @@ import { PlayerInput, SubmitButton, GuessResultsDiv } from "../elements/shrimple
 import { sleep } from "../shared/utils.js";
 import { TimerStats } from "./timer.js";
 import { AutofillDisabled } from "../shared/autofill.js";
-import { OutOfGuessFunction } from "./submitchange.js";
+import { Functions } from "./submitchange.js";
 
 const PROMPT_LENGTH=3;
 const BOMB_TIMER_SECONDS=15;
@@ -56,7 +56,7 @@ async function useBomb(){
         if (time_remaining<=0){
            //TODO explode bomb 
             submitShrimpForBomb();
-            OutOfGuessFunction();
+            Functions.OutOfGuess();
             break;
         }
     }

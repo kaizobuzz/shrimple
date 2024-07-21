@@ -5,7 +5,7 @@ import { Game } from "../state.js";
 import { LivesDiv } from "../../elements/effects.js";
 import { joinAsSpectator } from "./spectator.js";
 import { getPlayerIndex, Players } from "./start_game.js";
-import { getGuessResultHtmlWithClasses } from "../../shared/submit.js";
+import { getGuessResultHtmlWithClasses, SubmitOverride, GameOverFunctions } from "../../shared/submit.js";
 import { speedUpTimerPermanent, resetTimer } from "../timer.js";
 import { Functions } from "../submitchange.js";
 import { SubmitButton } from "../../elements/shrimple.js";
@@ -71,9 +71,11 @@ function eventOnSubmit(comparisons){
         Results: Object.values(comparisons),
         Status: guess_status}));
 }
-SubmitOverride.after_submit=eventOnSubmit;
-GameOverFunctions.win_function=guessedCorrectShrimp;
-GameOverFunctions.lose_function=outOfGuesses;
+function setup(){
+    SubmitOverride.after_submit=eventOnSubmit;
+    GameOverFunctions.win_function=guessedCorrectShrimp;
+    GameOverFunctions.lose_function=outOfGuesses;
+    Functions.OutOfGuess=outOfGuesses;
+}
 let isOutOfGuesses=false;
 let isCorrectGuess=false;
-Functions.OutOfGuess=outOfGuesses;

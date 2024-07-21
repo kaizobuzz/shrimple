@@ -1,7 +1,7 @@
 //@ts-check
 const current_time_local_name="current_time"
-import { MAX_TIMER_WIDTH, TimerStats } from "../timer";
-import { GameId } from "./start_game";
+import { MAX_TIMER_WIDTH, TimerStats } from "../timer.js";
+import { GameId } from "./start_game.js";
 /**@returns {number[]} */
 export function getTimeOffset(){
     let last_time_string=window.localStorage.getItem(current_time_local_name)

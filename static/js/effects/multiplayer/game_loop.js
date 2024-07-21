@@ -5,9 +5,9 @@ import { NewEffects, CurrentEffects } from "../effects.js";
 import { sleep } from "../../shared/utils.js";
 import { decrementTimerRTA, TimerStats} from "../timer.js";
 import { FRAME_TIME, checkForGuesses, OffsetCheckingStats } from "../utils.js";
-import { getTimeOffset } from "./localstorage";
-import { receiveEvents } from "./events";
-import { StartButton } from "./start_game";
+import { getTimeOffset } from "./localstorage.js";
+import { receiveEvents } from "./events.js";
+import { StartButton } from "./start_game.js";
 export async function startGameLoop(){
     StartButton.hidden=true;
     let iterator=0;

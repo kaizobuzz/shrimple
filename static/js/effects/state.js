@@ -4,7 +4,6 @@ import { SubmitOverride } from '../shared/submit.js';
 import { LivesDiv } from '../elements/effects.js';
 import { getShrimps, getRandomShrimpServer } from './shrimps.js';
 import  {Game as base_game} from "./../shrimple/game.js";
-import { setup } from '../shared/setup.js';
 
 /**@typedef {import('./../shared/shrimp_type.js').Shrimp} Shrimp
  * @typedef {import('./../shrimple/game.js').Guess} Guess
@@ -66,7 +65,6 @@ function fillInGameValueWithPromise(promise, key){
  *@param {AnonymousPromise} waitForGameStart 
  * */
 export function initializeGameVariablesFromServer(waitForGameStart, startGameLoop){
-    setup();
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
     fillInGameValueWithPromise(getRandomShrimpServer(), "first_shrimp_name");
     fillInGameValueWithPromise(getRandomShrimpServer(), "second_shrimp_name");

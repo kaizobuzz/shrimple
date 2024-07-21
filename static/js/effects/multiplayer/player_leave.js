@@ -1,7 +1,7 @@
 //@ts-check
-import { sendEvent, MessageType } from "./events";
-import { getPlayerIndex, Players } from "./start_game";
-import { sleep } from "../../shared/utils";
+import { sendEvent, MessageType } from "./events.js";
+import { getPlayerIndex, Players } from "./start_game.js";
+import { sleep } from "../../shared/utils.js";
 
 /**@typedef {import('./start_game').Player} Player*/
 /**@param {string} player_name  

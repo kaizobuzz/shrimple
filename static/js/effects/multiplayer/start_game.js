@@ -3,6 +3,7 @@ import {sleep, assertNotNull, assertButtonElement, assertInputElement} from "./.
 import {Game, initializeGameVariablesFromServer} from "./../state.js";
 import {startGameLoop} from "./game_loop.js";
 import { redirectOut, sendEvent, ConflictReasons, receiveEvents, MessageType, http, JsonContentHeaderValue } from "./events.js";
+import { setup } from "../../shared/setup.js";
 /**@typedef {import('./events.js').Guess} Guess 
  * @typedef {import('./events.js').Message} Message
  */
@@ -125,6 +126,7 @@ async function getPlayerId(){
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
     nameChosenFilter();
 }
+setup(false);
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";
 let PlayerAccepted=false;

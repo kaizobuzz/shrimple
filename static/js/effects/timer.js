@@ -49,5 +49,5 @@ export function resetTimer(){
     TimerStats.width=MAX_TIMER_WIDTH;
 }
 
-export const TimerStats={duration: 2, width: MAX_TIMER_WIDTH};
+export const TimerStats={duration: 24, width: MAX_TIMER_WIDTH};
 let Timer=assertNotNull(document.getElementById("current-timer"));

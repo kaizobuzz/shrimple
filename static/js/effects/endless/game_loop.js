@@ -31,7 +31,7 @@ async function startGameLoop(){
         NewEffects.length=0;
     }
 }
-setup();
+setup(true);
 info_setup();
 results_setup();
 submit_change_setup();
