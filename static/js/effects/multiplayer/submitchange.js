@@ -71,7 +71,7 @@ function eventOnSubmit(comparisons){
         Results: Object.values(comparisons),
         Status: guess_status}));
 }
-function setup(){
+export function submit_change_setup(){
     SubmitOverride.after_submit=eventOnSubmit;
     GameOverFunctions.win_function=guessedCorrectShrimp;
     GameOverFunctions.lose_function=outOfGuesses;

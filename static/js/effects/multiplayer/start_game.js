@@ -4,6 +4,9 @@ import {Game, initializeGameVariablesFromServer} from "./../state.js";
 import {startGameLoop} from "./game_loop.js";
 import { redirectOut, sendEvent, ConflictReasons, receiveEvents, MessageType, http, JsonContentHeaderValue } from "./events.js";
 import { setup } from "../../shared/setup.js";
+import { submit_change_setup } from "./submitchange.js"; 
+import { chat_setup } from "./chat.js";
+
 /**@typedef {import('./events.js').Guess} Guess 
  * @typedef {import('./events.js').Message} Message
  */
@@ -126,23 +129,25 @@ async function getPlayerId(){
     //localStorage.setItem("multiplayer-key", JSON.stringify(CurrentKeyObject));
     nameChosenFilter();
 }
-setup(false);
-let MainDiv=assertNotNull(document.getElementById("main-game"));
-MainDiv.style.filter="blur(3em)";
-let PlayerAccepted=false;
-export let DisplayName="";
-let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
-let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
-let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
-let OtherPlayersDiv=assertNotNull(document.getElementById("other-players"));
-assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
-
+const DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
+const DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
+const DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
+const OtherPlayersDiv=assertNotNull(document.getElementById("other-players"));
+const MainDiv=assertNotNull(document.getElementById("main-game"));
 const urlParams = new URLSearchParams(window.location.search);
+export let DisplayName="";
 export const GameId=assertNotNull(urlParams.get("id"));
 export let CurrentKeyObject={
     game: "",
     playerkey: "",
 };
+
+setup(false);
+chat_setup();
+submit_change_setup();
+MainDiv.style.filter="blur(3em)";
+let PlayerAccepted=false;
+assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
 let CurrentKeyString=localStorage.getItem("multiplayer-key");
 if (CurrentKeyString!=null){
     CurrentKeyObject=JSON.parse(CurrentKeyString);

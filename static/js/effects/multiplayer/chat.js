@@ -20,5 +20,7 @@ export function addChat(player_name, message_content){
 }
 let ChatDiv=assertNotNull(document.getElementById("chat-messages"));
 let ChatInput=assertInputElement(document.getElementById("chat-form"));
-ChatInput.addEventListener("keydown", sendChat);
+export function chat_setup(){
+    ChatInput.addEventListener("keydown", sendChat);
+}
 
