@@ -1,9 +1,12 @@
-async function checkIfUseClamplicatedInfo(){
+//@ts-check
+import { sleep, getMode, assertNotNull } from "../shared/utils.js";
+
+export async function checkIfUseClamplicatedInfo(){
     await sleep(0.1);
-    if (mode=="clamplicated"){
+    if (getMode()=="clamplicated"){
         ClamplicatedInfo.hidden=false;
     }
 }
-let ClamplicatedInfo=document.getElementById("clam-mode-info");
-checkIfUseClamplicatedInfo();
+let ClamplicatedInfo=assertNotNull(document.getElementById("clam-mode-info"));
 
+//TODO this doesn't work like that

@@ -1,16 +1,24 @@
 //@ts-check
 
+import { CurrentKeyObject } from "./start_game";
+import { renderEffects, displayEffectName, EffectType } from  "./../effects.js";
+import { Game } from "./../state.js";
+import {renderGuess} from "./submitchange.js";
+import {DisconnectPlayer} from "./player_leave.js";
+import { addPlayer } from "./start_game.js";
+import { addChat } from "./chat.js";
+
 /**@typedef Message
  * @property {number} Type 
  * @property {string} Id
  * @property {string} Jsondata
 */
-const JsonContentHeaderValue="application/json; charset=UFT-8"
+export const JsonContentHeaderValue="application/json; charset=UFT-8"
 /**
  * @readonly 
  * @enum {string}
  */ 
-const ConflictReasons={
+export const ConflictReasons={
     DisplayNameTaken: "Display name taken",
     GameAlreadyStarted: "Game already started",
     GameNotStarted: "Game not started",
@@ -20,7 +28,7 @@ Object.freeze(ConflictReasons)
  * @readonly 
  * @enum {number}
  */
-const GuessStatus={ 
+export const GuessStatus={ 
     Normal: 0,
     CorrectGuess: 1,
     OutOfGuesses: 2,
@@ -30,7 +38,7 @@ Object.freeze(GuessStatus)
  * @readonly 
  * @enum {number}
  */
-const MessageType={
+export const MessageType={
     NewGuess: 0,
 	NewEffect: 1,      
 	PlayerList: 2,     
@@ -53,7 +61,7 @@ const MessageType={
 
 };
 Object.freeze(MessageType);
-const http={
+export const http={
     StatusConflict: 409,
     StatusGone: 410,
     StatusNoContent: 204,
@@ -65,7 +73,7 @@ Object.freeze(http)
 */
 /**@param {any} event 
  * @param {Number} message_type */
-async function sendEvent(message_type, event){ 
+export async function sendEvent(message_type, event){ 
     const message=/**@type Message */({
         Type: message_type,
         Id: CurrentKeyObject.playerkey,
@@ -94,7 +102,7 @@ async function sendEvent(message_type, event){
     let response_message=/**@type Message*/(JSON.parse(await response.text()))
     return response_message 
 }
-async function receiveEvents(){
+export async function receiveEvents(){
     const message=/**@type Message */({
         Type: MessageType.GetEvents,
         Id: CurrentKeyObject.playerkey,
@@ -158,7 +166,7 @@ async function receiveEvents(){
         }
     }
 }
-function redirectOut(){
+export function redirectOut(){
     console.log("you would be redirected here")
     //window.location.replace("/timeout.html")
 }
@@ -189,4 +197,6 @@ addEventListener("keydown", function(e){
             break;
     }
 })
+
+export let CurrentEffect=EffectType.GuessStatHide;
 

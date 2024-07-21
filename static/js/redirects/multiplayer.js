@@ -1,4 +1,5 @@
 //@ts-check
+import { assertButtonElement } from "../shared/utils"
 
 async function redirectToMultiplayer(){
     let game_id_promise=await fetch("/api/v1/getgameid") 

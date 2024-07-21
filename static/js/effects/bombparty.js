@@ -1,4 +1,14 @@
 // @ts-check
+//
+import { Game } from "./state.js";
+import { getRandomIndex, FRAME_TIME } from "./utils.js";
+import { isInputShrimpValid, SubmitOverride, disableSubmitFunctionOverride } from "../shared/submit.js";
+import { PlayerInput, SubmitButton, GuessResultsDiv } from "../elements/shrimple.js";
+import { sleep } from "../shared/utils.js";
+import { TimerStats } from "./timer.js";
+import { AutofillDisabled } from "../shared/autofill.js";
+import { OutOfGuessFunction } from "./submitchange.js";
+
 const PROMPT_LENGTH=3;
 const BOMB_TIMER_SECONDS=15;
 
@@ -46,7 +56,7 @@ async function useBomb(){
         if (time_remaining<=0){
            //TODO explode bomb 
             submitShrimpForBomb();
-            OutOfGuessFunction;
+            OutOfGuessFunction();
             break;
         }
     }
@@ -55,28 +65,28 @@ async function checkForBombs(){
     if (BombPartyActive===true){
         return;
     }
-    let timer_duration=TimerDurationSeconds;
-    TimerDurationSeconds=1000000;
+    let timer_duration=TimerStats.duration;
+    TimerStats.duration=1000000;
     const guesshtml=GuessResultsDiv.innerHTML;
-    AutofillDisabled+=1;
+    AutofillDisabled.disabled_stacks+=1;
     BombPartyActive=true;
     SubmitOverride.submit_function=submitShrimpForBomb;
     SubmitOverride.can_submit_function=canSubmitForBomb;
     while (CurrentPrompts.length>0){
         await useBomb();
     }
-    TimerDurationSeconds=timer_duration;
-    AutofillDisabled-=1;
+    TimerStats.duration=timer_duration;
+    AutofillDisabled.disabled_stacks-=1;
     BombPartyActive=false;
     disableSubmitFunctionOverride();
     GuessResultsDiv.innerHTML=guesshtml;
 }
-function startBombParty(){
+export function startBombParty(){
     CurrentPrompts.push(getBombPartyPrompt());
     checkForBombs();
 }
 
 let BombPartyActive=false;
-let BombDisabled=true;
+export let BombDisabled=true;
 /** @type {string[]}*/
 let CurrentPrompts=[];

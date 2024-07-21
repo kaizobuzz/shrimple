@@ -1,5 +1,6 @@
 //@ts-check
 
+import {assertButtonElement, assertInputElement, assertNotNull} from "../shared/utils.js";
 /** @typedef PagePrivacySettings
  * @property {number} ViewUserInfo 
  * @property {boolean} ViewGuessHistory 	
@@ -119,7 +120,9 @@ async function setPrivacySettings(){
     }
 
 }
+//<button class="main-buttons" id="save-settings">Save settings</button>
 
+assertButtonElement(document.getElementById("save-settings")).addEventListener("click", setPrivacySettings);
 const allow_friend_requests=/**@type HTMLSelectElement*/(document.getElementById("allow-friend-requests"));
 const allow_being_searched = assertInputElement(document.getElementById("allow-being-searched"))
 getPrivacySettings();

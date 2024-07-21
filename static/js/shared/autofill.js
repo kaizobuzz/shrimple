@@ -1,10 +1,18 @@
 // @ts-check
+import { PlayerInput, AutofillResults, InputContainer, InfoCheckbox } from "../elements/shrimple.js";
+import { Game } from "../shrimple/game.js";
+import {updateSubmitButton} from "./submit.js";
+import { assertNotNull } from "./utils.js";
+
+/** 
+ * @typedef {import('./../shrimple/game.js').Shrimp} Shrimp
+ */
 /**
  * @param {Shrimp} input_shrimp 
  * @param {string} key 
  * @returns {string}
  */
-function getShrimpStat(input_shrimp, key){ 
+export function getShrimpStat(input_shrimp, key){ 
     if (key=="coloration"){
         return input_shrimp.coloration.join(", ")
     }
@@ -46,7 +54,7 @@ function autofillShrimps() {
     AutofillResults.hidden=false;
     let input=PlayerInput.value.toLowerCase();
     updateSubmitButton(input);
-    if (AutofillDisabled>0){
+    if (AutofillDisabled.disabled_stacks>0){
         AutofillResults.innerHTML="";
         return;
     }
@@ -124,21 +132,18 @@ function toggleInfo(){
     }
     ShowStats=false;
 }
-let PlayerInput=assertInputElement(document.getElementById("player-guess"));
-let AutofillResults=assertNotNull(document.getElementById("autofill-results"));
-let InputContainer=assertNotNull(document.querySelector("#shrimp-search"));
-let InfoCheckbox=assertInputElement(document.getElementById("info-toggle"));
 let ShowStats=false;
-let AutofillDisabled=0;
-if (InfoCheckbox.checked){
-    ShowStats=true;
-}
+export let AutofillDisabled={disabled_stacks: 0};
 
-function initializeAutofill() {
+
+export function initializeAutofill() {
+    ShowStats=false;
+    if (InfoCheckbox.checked){
+        ShowStats=true;
+    }
     InfoCheckbox.addEventListener("input", toggleInfo);
     PlayerInput.addEventListener("input", autofillShrimps);
     PlayerInput.addEventListener("click", autofillShrimps);
     document.addEventListener("click", checkIfClickedOff);
 }
 
-initializeAutofill();

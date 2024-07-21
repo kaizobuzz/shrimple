@@ -1,8 +1,18 @@
 // @ts-check
-function get_guess_result_emojis(){
+import { MAX_GUESSES } from "../shared/utils.js";
+import { Game } from "./game.js";
+import { sleep, assertNotNull, getMode } from "../shared/utils.js";
+import { getComparisonHtmlByArray } from "../shared/comparison.js";
+import { setLocalStorage, addToHistory } from "./localstorage.js";
+import { Functions, FinalResultsText, FinalResults, ShareButton, ClipboardMessage } from "./../shared/results.js"
+import { renderBarNodes, renderBarNodeAnimation } from "../shared/display.js";
+import { getHistory } from "../shared/localstorage.js";
+import { GameOverFunctions } from "../shared/submit.js";
+
+export function get_guess_result_emojis(){
     let guess_html="";
     for (const guess of Game.guesses){
-        guess_html+=getComparisonHtmlByArray(guess).join("")+"\n"
+        guess_html+=getComparisonHtmlByArray(guess.comparisons).join("")+"\n"
     }
     return guess_html;
 }
@@ -28,7 +38,7 @@ function loseGame(){
     renderEndPopup(true);
 }
 /**@param {boolean} from_end*/
-function renderEndPopup(from_end){
+export function renderEndPopup(from_end){
     let main_text_node=document.createElement("div");
     FinalResultsText.appendChild(main_text_node);
     if (Game.won){ 
@@ -64,7 +74,7 @@ async function getRemainingTime(){
 /**@param {HTMLElement} result_node*
  @param {boolean} from_end*/
 async function renderObjectsOriginally(result_node, from_end){
-    let history=from_end ? await addToHistory(Game.num_guesses) : assertNotNull(await getHistory(mode, null));
+    let history=from_end ? await addToHistory(Game.num_guesses) : assertNotNull(await getHistory(assertNotNull(getMode()), null));
     let result=renderBarNodes(history, result_node)
     let [history_bar_nodes, lengths]=[result.nodes, result.lengths];
     result_node.appendChild(document.createTextNode("Try again in "));
@@ -80,11 +90,13 @@ async function renderObjectsOriginally(result_node, from_end){
 }
 /**@param {Text} time_node  */
 async function renderTimer(time_node){
-        while (true){
+    while (true){
         time_node.nodeValue=await getRemainingTime();
         await sleep(1);
     }
 }
-GameOverFunctions.win_function=winGame;
-GameOverFunctions.lose_function=loseGame;
-ClipboardFunction=getTextToCopy;
+export function results_setup(){
+    GameOverFunctions.win_function=winGame;
+    GameOverFunctions.lose_function=loseGame;
+    Functions.Clipboard=getTextToCopy;
+}

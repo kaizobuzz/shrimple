@@ -1,4 +1,18 @@
 //@ts-check
+import { resetGuesses } from "../submitchange.js";
+import { sendEvent, MessageType, CurrentEffect, GuessStatus } from "./events.js";
+import { Game } from "../state.js";
+import { LivesDiv } from "../../elements/effects.js";
+import { joinAsSpectator } from "./spectator.js";
+import { getPlayerIndex, Players } from "./start_game.js";
+import { getGuessResultHtmlWithClasses } from "../../shared/submit.js";
+import { speedUpTimerPermanent, resetTimer } from "../timer.js";
+import { Functions } from "../submitchange.js";
+import { SubmitButton } from "../../elements/shrimple.js";
+import { loseLife } from "./spectator.js";
+/**@typedef {import('./start_game').Guess}Guess*/
+/**@typedef {import('./../../shared/comparison').Comparisons}Comparisons*/
+
 function guessedCorrectShrimp(){
     isCorrectGuess=true;
     resetGuesses();
@@ -19,7 +33,7 @@ function outOfGuesses(){
 }
 /**@param {Guess} new_guess 
 * @param {string} player_id*/
-function renderGuess(new_guess, player_id){
+export function renderGuess(new_guess, player_id){
     let player_index=getPlayerIndex(player_id);
     if (player_index==-1){
         console.log(player_id+" not in game");
@@ -62,4 +76,4 @@ GameOverFunctions.win_function=guessedCorrectShrimp;
 GameOverFunctions.lose_function=outOfGuesses;
 let isOutOfGuesses=false;
 let isCorrectGuess=false;
-OutOfGuessFunction=outOfGuesses;
+Functions.OutOfGuess=outOfGuesses;

@@ -1,7 +1,12 @@
 //@ts-check
+import { sendEvent, MessageType } from "./events";
+import { getPlayerIndex, Players } from "./start_game";
+import { sleep } from "../../shared/utils";
+
+/**@typedef {import('./start_game').Player} Player*/
 /**@param {string} player_name  
  * @param {string} message */
-function DisconnectPlayer(player_name, message){
+export function DisconnectPlayer(player_name, message){
     let player_index=getPlayerIndex(player_name);
     if (player_index==-1){
         console.error("cant disconnect player: "+player_name+" not in player list");

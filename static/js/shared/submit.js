@@ -1,12 +1,22 @@
 // @ts-check
-const FLEX_COL_CLASS="column"
-const FLEX_ROW_CLASS="row"
-const IMGCLASS="comparison"
+export const FLEX_COL_CLASS="column"
+export const FLEX_ROW_CLASS="row"
+export const IMGCLASS="comparison"
+import {getComparisonImagesByArray, ComparisonTypes, checkAgainstShrimp} from "./comparison.js";
+import {SubmitButton, GuessResultsDiv, PlayerInput} from "./../elements/shrimple.js";
+import { Game } from "../shrimple/game.js";
+import { getShrimpStat } from "./autofill.js";
+import { MAX_GUESSES, assertNotNull } from "./utils.js";
+import { setLocalStorage } from "../shrimple/localstorage.js";
+/**
+ * @typedef {import('./comparison.js').Comparisons} Comparisons
+ * @typedef {import('./shrimp_type.js').Shrimp} Shrimp
+ */
 /**@param {Number[]} comparison_array 
  * @param {string} column_class 
  * @returns {HTMLDivElement}
  */
-function getGuessResultHtmlWithClasses(comparison_array, column_class=FLEX_COL_CLASS){
+export function getGuessResultHtmlWithClasses(comparison_array, column_class=FLEX_COL_CLASS){
     const image_links=getComparisonImagesByArray(comparison_array);
     let row_node=document.createElement("div");
     for (const image_link of image_links){
@@ -21,18 +31,18 @@ function getGuessResultHtmlWithClasses(comparison_array, column_class=FLEX_COL_C
     return row_node
 }
 /** @param {Shrimp} input_shrimp
-* @param {Comparisons} comparisons 
+* @param {number[]} comparison_array 
+* @param {Number} num_guesses 
 * @returns {HTMLDivElement[]}
 */
-function getGuessResultHtml(input_shrimp, comparisons){
+export function getGuessResultHtmlWithArray(input_shrimp, comparison_array, num_guesses){
     let nodes=[];
-    if (Game.num_guesses==0){
+    if (num_guesses==0){
         nodes.push(renderKeys(input_shrimp));
     }
-    let row_div=getGuessResultHtmlWithClasses(Object.values(comparisons), 'column');
+    let row_div=getGuessResultHtmlWithClasses(comparison_array, 'column');
     nodes.push(row_div);
     row_div.classList.add(FLEX_ROW_CLASS);
-    Game.guesses.push(Object.values(comparisons)); 
     let tooltip_col=document.createElement("div");
     row_div.appendChild(tooltip_col);
     tooltip_col.classList.add("tooltip", FLEX_COL_CLASS);
@@ -48,11 +58,24 @@ function getGuessResultHtml(input_shrimp, comparisons){
         tooltip_text.appendChild(document.createElement("br"));
     }
     return nodes;
+
+}
+/** @param {Shrimp} input_shrimp
+* @param {Comparisons} comparisons 
+* @param {Number} num_guesses 
+* @returns {HTMLDivElement[]}
+*/
+export function getGuessResultHtml(input_shrimp, comparisons, num_guesses){
+    Game.guesses.push({
+        shrimp_name: input_shrimp.name, 
+        comparisons: Object.values(comparisons)
+    });
+    return getGuessResultHtmlWithArray(input_shrimp, Object.values(comparisons), num_guesses);
 }
 /** @param {Shrimp} input_shrimp 
  * @returns {HTMLDivElement}
  */
-function renderKeys(input_shrimp){
+export function renderKeys(input_shrimp){
     let row_node=document.createElement("div");
     row_node.classList.add(FLEX_ROW_CLASS);
     for (const key of Object.keys(input_shrimp)){
@@ -68,8 +91,8 @@ function renderKeys(input_shrimp){
 function submitInput(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
     /** @type Comparisons*/
-    let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
-    const guess_html=getGuessResultHtml(input_shrimp, comparisons);
+    let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp)); 
+    const guess_html=getGuessResultHtml(input_shrimp, comparisons, Game.num_guesses);
     for (const node of guess_html){ 
         GuessResultsDiv.appendChild(node);
     }
@@ -91,19 +114,19 @@ function submitAnswer(){
     SubmitOverride.submit_function(input);
 }
 /**@param {string} input*/
-function isInputShrimpValid(input){ 
+export function isInputShrimpValid(input){ 
     if (Game.shrimp_index_by_name[input.toLowerCase()]==undefined){
         return false;
     }
     return true;
 }
 /** @param {string} input*/
-function updateSubmitButton(input){
+export function updateSubmitButton(input){
     SubmitButton.disabled=SubmitOverride.can_submit_function(input)==false;
 }
 /**@param {Comparisons} comparisons*/
-function checkAnswer(comparisons){
-    if (comparisons.name==Equal){
+export function checkAnswer(comparisons){
+    if (comparisons.name==ComparisonTypes.Equal){
         Game.num_guesses+=1;
         GameOverFunctions.win_function();
         return;
@@ -111,7 +134,7 @@ function checkAnswer(comparisons){
     addGuesses(1); 
 }
 /** @param {number} num_new_guesses */
-function addGuesses(num_new_guesses){
+export function addGuesses(num_new_guesses){
     Game.num_guesses+=num_new_guesses;
     if (Game.num_guesses>=MAX_GUESSES){
         GameOverFunctions.lose_function(); 
@@ -122,7 +145,7 @@ function addGuesses(num_new_guesses){
  *@param {Comparisons} comparisons 
  *@returns {void}
  */
-let SubmitOverride={
+export let SubmitOverride={
     /**@type NeedsComparison */
     after_submit: function(_){},
     /**@type Shrimp|null*/
@@ -130,21 +153,21 @@ let SubmitOverride={
     submit_function: submitInput,
     can_submit_function: isInputShrimpValid,
 };
-let GameOverFunctions={
+export let GameOverFunctions={
     win_function: function(){},
     lose_function: function(){},
 }
-function disableSubmitFunctionOverride(){
+export function disableSubmitFunctionOverride(){
     SubmitOverride.submit_function=submitInput;
     SubmitOverride.can_submit_function=isInputShrimpValid;
 }
-let SubmitButton = assertButtonElement(document.getElementById("input-submit"));
-let GuessResultsDiv=assertNotNull(document.getElementById("guesses"));
-SubmitButton.addEventListener("click", submitAnswer);
-addEventListener("keydown", function(e){
+export function setup(){
+    SubmitButton.addEventListener("click", submitAnswer);
+    addEventListener("keydown", function(e){
     if (e.key=="Enter"){
         if (!SubmitButton.disabled){
             submitAnswer();
         }
     }
-});
+    });
+}

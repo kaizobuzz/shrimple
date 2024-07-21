@@ -1,4 +1,12 @@
 //@ts-check
+import {sleep, assertNotNull, assertButtonElement, assertInputElement} from "./../../shared/utils.js";
+import {Game, initializeGameVariablesFromServer} from "./../state.js";
+import {startGameLoop} from "./game_loop.js";
+import { redirectOut, sendEvent, ConflictReasons, receiveEvents, MessageType, http, JsonContentHeaderValue } from "./events.js";
+/**@typedef {import('./events.js').Guess} Guess 
+ * @typedef {import('./events.js').Message} Message
+ */
+ 
 /**@typedef Player 
  * @property {Guess[]} guesses 
  * @property {string} name
@@ -45,7 +53,7 @@ async function getState(){
     }
 }
 /**@param {PlayerListItem} player */
-function addPlayer(player){
+export function addPlayer(player){
     let node=document.createElement("div");
     node.classList.add("other-player");
     node.style.transform=("translate:(0, 50%)")
@@ -67,7 +75,7 @@ function addPlayer(player){
 }
 
 /**@param {string} player_name*/
-function getPlayerIndex(player_name){
+export function getPlayerIndex(player_name){
     console.log(player_name);
     console.log(Players);
     return Players.findIndex((element)=>{
@@ -120,7 +128,7 @@ async function getPlayerId(){
 let MainDiv=assertNotNull(document.getElementById("main-game"));
 MainDiv.style.filter="blur(3em)";
 let PlayerAccepted=false;
-let DisplayName="";
+export let DisplayName="";
 let DisplayNameInputDiv=assertNotNull(document.getElementById("display-name-input-div"));
 let DisplayNameInput=assertInputElement(document.getElementById("display-name-input"));
 let DisplayNameInputResult=assertNotNull(document.getElementById("display-name-input-result"));
@@ -128,8 +136,8 @@ let OtherPlayersDiv=assertNotNull(document.getElementById("other-players"));
 assertButtonElement(document.getElementById("name-submit"))?.addEventListener("click", getPlayerId)
 
 const urlParams = new URLSearchParams(window.location.search);
-const GameId=assertNotNull(urlParams.get("id"));
-let CurrentKeyObject={
+export const GameId=assertNotNull(urlParams.get("id"));
+export let CurrentKeyObject={
     game: "",
     playerkey: "",
 };
@@ -146,8 +154,8 @@ if (CurrentKeyString!=null){
         nameChosenFilter();
     }
 }
-let Players=/**@type Player[]*/([]);
-let StartButton=assertButtonElement(document.getElementById("start-button")) 
+export let Players=/**@type Player[]*/([]);
+export let StartButton=assertButtonElement(document.getElementById("start-button")) 
 StartButton.addEventListener("click", function(){
     if (StartButton.innerText=="ready"){
         PlayerAccepted=true;
@@ -159,5 +167,7 @@ StartButton.addEventListener("click", function(){
         StartButton.innerText="ready";
     }
 });
+
+initializeGameVariablesFromServer(waitForGameStart, startGameLoop);
 
 

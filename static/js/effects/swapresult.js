@@ -1,4 +1,12 @@
 //@ts-check
+import {checkAgainstShrimp } from "./../shared/comparison";
+import { getGuessResultHtml, checkAnswer, SubmitOverride, disableSubmitFunctionOverride } from "../shared/submit.js";
+import { Game } from "./state.js";
+import { GuessResultsDiv } from "../elements/shrimple.js";
+import { assertNotNull } from "../shared/utils.js";
+import { PlayerInput, SubmitButton } from "../elements/shrimple.js";
+import { getRandomIndex } from "./utils.js";
+import { EffectType } from "./effects.js";
 /**@param {string} input  */
 function swapResultSubmit(input){
     let input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[input]];
@@ -6,7 +14,7 @@ function swapResultSubmit(input){
     for (const key of Object.keys(comparisons)){
         comparisons[key]=EffectMappings[comparisons[key]]
     }
-    let guess_html=getGuessResultHtml(input_shrimp, comparisons);
+    let guess_html=getGuessResultHtml(input_shrimp, comparisons, Game.num_guesses);
     for (const node of guess_html){
         GuessResultsDiv.appendChild(node);
     }
@@ -16,7 +24,7 @@ function swapResultSubmit(input){
     SubmitButton.disabled=true;
 }
 
-function changeMapping(){
+export function changeMapping(){
     for (let i=0; i<10; i++){
         const index_1=getRandomIndex(EffectMappings);
         const index_2=getRandomIndex(EffectMappings);
@@ -25,11 +33,11 @@ function changeMapping(){
     SubmitOverride.submit_function=swapResultSubmit;
     EffectMappingActive+=1;
 }
-function resetMapping(){
+export function resetMapping(){
     EffectMappings=Object.values(EffectType);
     EffectMappingActive-=1;
     if (EffectMappingActive==0){
-    disableSubmitFunctionOverride;
+    disableSubmitFunctionOverride();
     }
 }
 let EffectMappings=Object.values(EffectType);

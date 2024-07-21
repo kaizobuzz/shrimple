@@ -1,31 +1,35 @@
-const FRAME_TIME=0.02;
+//@ts-check
+import { Game } from "./state.js";
+import { CurrentEffects, filterCurrentEffects } from "./effects.js";
+export const FRAME_TIME=0.02;
 
-function checkForGuesses(){
-    if (CurrentLives!=Game.lives){
-        CurrentLives=Game.lives;
+export function checkForGuesses(){
+    if (OffsetCheckingStats.Lives!=Game.lives){
+        OffsetCheckingStats.Lives=Game.lives;
         for (const effect of CurrentEffects){
             effect.end_function();
         }
-        CurrentEffects=[];
+        CurrentEffects.length=0;
         return;
     }
-    if (CurrentGuesses!=Game.num_guesses){ 
-        CurrentGuesses=Game.num_guesses;
+    if (OffsetCheckingStats.Guesses!=Game.num_guesses){ 
+        OffsetCheckingStats.Guesses=Game.num_guesses;
         for (const effect of CurrentEffects){
             effect.duration_guesses-=1;
             if (effect.duration_guesses==0){
                 effect.end_function();
             }
         }
-        CurrentEffects=CurrentEffects.filter((effect) => effect.duration_guesses>0);
+        filterCurrentEffects((effect) => effect.duration_guesses>0);
     }
 }
 
-function getRandomIndex(array){
+export function getRandomIndex(array){
     return Math.floor(Math.random()*array.length);
 }
 
-/**@type number*/
-let CurrentGuesses=0;
-/**@type number*/
-let CurrentLives=0;
+
+export let OffsetCheckingStats = {
+    Guesses: 0,
+    Lives: 0,
+};

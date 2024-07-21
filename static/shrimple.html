@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
     <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
     <script src="/js/htmx.min.js"></script>
-    <script src="/js/purify.min.js"></script>
     <meta charset="UFT-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Shrimple</title>
@@ -22,8 +21,8 @@
         </a>
         <div id="settings">
             <button id="start-info-open">&nbsp?&nbsp</button>&nbsp;
-            <a id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button"
-                hx-target="this" hx-swap="innerHTML">
+            <a id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
+                hx-swap="innerHTML">
             </a>
         </div>
     </div>
@@ -84,19 +83,5 @@
         <br>
         <br>
     </div>
-    <script src="/js/shared/utils.js"></script>
-    <script src="/js/shared/localstorage.js"></script>
-    <script src="/js/shrimple/selectors.js"></script>
-    <script src="/js/shared/comparison.js"></script>
-    <script src="/js/shared/display.js"></script>
-    <script src="/js/shared/autofill.js"></script>
-    <script src="/js/shared/submit.js"></script>
-    <script src="/js/shared/info.js"></script>
-    <script src="/js/shared/results.js"></script>
-    <script src="/js/shrimple/localstorage.js"></script>
-    <script src="/js/shrimple/results.js"></script>
-    <script src="/js/clamplicated/submitchange.js"></script>
-    <script src="/js/clamplicated/results.js"></script>
-    <script src="/js/shrimple/game.js"></script>
-    <script src="/js/clamplicated/info.js"></script>
+    <script type="module" src="/js/shrimple/index.js"></script>
 </body </html>

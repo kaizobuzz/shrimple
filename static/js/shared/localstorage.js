@@ -1,8 +1,10 @@
 //@ts-check
+
+import { MAX_GUESSES } from "./utils.js";
 /** @param {string} mode 
  * @param {string|null} userid 
  * @returns {Promise<number[]|null>}*/
-async function getHistory(mode, userid){ 
+export async function getHistory(mode, userid){ 
     const response=await fetch("/api/v1/getguesshistoryentry", {
         method: "POST",
         body: JSON.stringify(

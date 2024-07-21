@@ -1,50 +1,53 @@
 //@ts-check
+//
+import { assertNotNull } from "../shared/utils.js";
+import { FRAME_TIME } from "./utils.js";
+import { submitEmptyGuess } from "./submitchange.js";
 const SPEED_UP={
     factor: 1.5,
     colour: "#d09e83" 
 }
-const MAX_TIMER_WIDTH=100;
+export const MAX_TIMER_WIDTH=100;
 
-function decrementTimer(){
-    Width-=MAX_TIMER_WIDTH/(TimerDurationSeconds/FRAME_TIME);
-    Timer.style.width=Width+"%";
-    if (Width<=0){
+export function decrementTimer(){
+    TimerStats.width-=MAX_TIMER_WIDTH/(TimerStats.duration/FRAME_TIME);
+    Timer.style.width=TimerStats.width+"%";
+    if (TimerStats.width<=0){
         submitEmptyGuess();
-        Width=MAX_TIMER_WIDTH;
+        TimerStats.width=MAX_TIMER_WIDTH;
     }
 }
 /**@param {Number} delta_time  */
 
-function decrementTimerRTA(delta_time, offset=0){
+export function decrementTimerRTA(delta_time, offset=0){
     let current_time=performance.now()+offset;
     let time_passed=(current_time-delta_time)/1000
-    Width-=MAX_TIMER_WIDTH/(TimerDurationSeconds/time_passed);
-    if (Width<=0){
+    TimerStats.width-=MAX_TIMER_WIDTH/(TimerStats.duration/time_passed);
+    if (TimerStats.width<=0){
         submitEmptyGuess();
         Timer.style.width="0%";
-        Width+=MAX_TIMER_WIDTH;
+        TimerStats.width+=MAX_TIMER_WIDTH;
     }
     else{
-        Timer.style.width=Width+"%";
+        Timer.style.width=TimerStats.width+"%";
     }
     return current_time;
 }
-function speedUpTimerOn(){
-    TimerDurationSeconds/=SPEED_UP.factor;
+export function speedUpTimerOn(){
+    TimerStats.duration/=SPEED_UP.factor;
     Timer.style.backgroundColor=SPEED_UP.colour;
 }
-function speedUpTimerOff(){
-    TimerDurationSeconds*=SPEED_UP.factor;
+export function speedUpTimerOff(){
+    TimerStats.duration*=SPEED_UP.factor;
     Timer.style.backgroundColor="";
 }
-function speedUpTimerPermanent(){
-    TimerDurationSeconds/=(SPEED_UP.factor**0.25)
+export function speedUpTimerPermanent(){
+    TimerStats.duration/=(SPEED_UP.factor**0.25)
 }
 
-function resetTimer(){
-    Width=MAX_TIMER_WIDTH;
+export function resetTimer(){
+    TimerStats.width=MAX_TIMER_WIDTH;
 }
 
-let TimerDurationSeconds=24;
-let Width=MAX_TIMER_WIDTH;
+export const TimerStats={duration: 2, width: MAX_TIMER_WIDTH};
 let Timer=assertNotNull(document.getElementById("current-timer"));

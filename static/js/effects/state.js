@@ -1,20 +1,19 @@
 //@ts-check
 
-/**
- * @typedef {Object} Shrimp
- * @property {string} name
- * @property {string} habitat
- * @property {number} length
- * @property {string[]} coloration
- * @property {number} weight 
- * @property {number} max_depth
- */
+import { SubmitOverride } from '../shared/submit.js';
+import { LivesDiv } from '../elements/effects.js';
+import { getShrimps, getRandomShrimpServer } from './shrimps.js';
+import  {Game as base_game} from "./../shrimple/game.js";
+import { setup } from '../shared/setup.js';
+
+/**@typedef {import('./../shared/shrimp_type.js').Shrimp} Shrimp
+ * @typedef {import('./../shrimple/game.js').Guess} Guess
 /**
  * @type {{
  * awaiting_promises: Promise<any>[];
  * active: boolean; 
  * num_guesses: number;
- * guesses: number[][];
+ * guesses: Guess[];
  * shrimp_list: Shrimp[];
  * first_shrimp_name: string;
  * second_shrimp_name: string;
@@ -25,8 +24,8 @@
  * lives: number
  * }}
  */
-
-let Game={
+export let Game=addFunction(base_game);
+/*    {
     awaiting_promises: [],
     current_shrimp: null,
     next_shrimp: null,
@@ -39,7 +38,14 @@ let Game={
     lives: 3,
     num_guesses: 0,
     active: false,
+}*/
+function addFunction(game){
+    game["next_shrimp"]=null;
+    game["second_shrimp_name"]=""; 
+    game["lives"]=3;
+    return game;
 }
+
 /**
  * @param {Promise<any>} promise 
  * @param {string} key 
@@ -51,7 +57,16 @@ function fillInGameValueWithPromise(promise, key){
     });
 }
 
-function initializeGameVariablesFromServer(){
+/**@callback AnonymousPromise
+ *@returns {Promise<void>}
+ */
+
+/** 
+ *@param {AnonymousPromise} startGameLoop  
+ *@param {AnonymousPromise} waitForGameStart 
+ * */
+export function initializeGameVariablesFromServer(waitForGameStart, startGameLoop){
+    setup();
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
     fillInGameValueWithPromise(getRandomShrimpServer(), "first_shrimp_name");
     fillInGameValueWithPromise(getRandomShrimpServer(), "second_shrimp_name");
@@ -74,4 +89,3 @@ function initializeGameVariablesFromServer(){
         });
     });
 }
-initializeGameVariablesFromServer();

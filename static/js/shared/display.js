@@ -1,11 +1,13 @@
 //@ts-check
+//
+import { sleep } from "./utils.js"
 /**@typedef BarNodeReturn
  *@property {HTMLDivElement[]} nodes 
  *@property {number[]} lengths*/
 /**@param {number[]} history  
  * @param {HTMLElement} base_node 
  * @returns {BarNodeReturn} */
-function renderBarNodes(history, base_node){
+export function renderBarNodes(history, base_node){
     let sum=history.reduce(function(sum, number){return sum+number}, 0) 
     let lengths=history.map(function(number){return Math.floor((number/sum)*80)})
     let history_bar_nodes=/**@type HTMLDivElement[]*/([])
@@ -35,7 +37,7 @@ function renderBarNodes(history, base_node){
 }
 /**@param {HTMLDivElement[]} history_bar_nodes 
  * @param {Number[]} lengths  */
-async function renderBarNodeAnimation(history_bar_nodes, lengths){
+export async function renderBarNodeAnimation(history_bar_nodes, lengths){
     await sleep(0.1);
     for (let i=0; i<history_bar_nodes.length; i++)
         history_bar_nodes[i].style.width=String(lengths[i])+"%";{

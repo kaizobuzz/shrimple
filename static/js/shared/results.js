@@ -1,13 +1,16 @@
 //@ts-check
 
-let FinalResults=assertNotNull(document.getElementById("final-results"));
-let FinalResultsText=assertNotNull(document.getElementById("final-results-text"));
-let ShareButton=assertButtonElement(document.getElementById("share-results"));
-let ClipboardMessage=assertNotNull(document.getElementById("clipboard-message"));
-let CloseButton=assertButtonElement(document.getElementById("results-close"));
-let OpenButton=assertButtonElement(document.getElementById("results-open"));
+import {assertNotNull, assertButtonElement, sleep} from "./utils.js";
+
+export const FinalResults=assertNotNull(document.getElementById("final-results"));
+export const FinalResultsText=assertNotNull(document.getElementById("final-results-text"));
+export const ShareButton=assertButtonElement(document.getElementById("share-results"));
+export const ClipboardMessage=assertNotNull(document.getElementById("clipboard-message"));
+export const CloseButton=assertButtonElement(document.getElementById("results-close"));
+export const OpenButton=assertButtonElement(document.getElementById("results-open"));
+export function results_setup(){
 OpenButton.addEventListener("click", async function(){
-    OpenButtonFunction();
+    Functions.Open();
     OpenButton.hidden=true;
     FinalResults.hidden=false;
     await sleep(0.05);
@@ -19,10 +22,17 @@ CloseButton.addEventListener("click", async function(){
     await sleep(0.5);
     FinalResults.hidden=true;
 });
-let ClipboardFunction=async function(){};
 ShareButton.addEventListener("click", function(){
-    ClipboardFunction();
+    Functions.Clipboard();
 });
-let OpenButtonFunction=async function(){}
+}
+const ClipboardFunction=async function(){};
+
+const OpenButtonFunction=async function(){}
+
+export const Functions = {
+    Clipboard: ClipboardFunction,
+    Open: OpenButtonFunction,
+};
 
 

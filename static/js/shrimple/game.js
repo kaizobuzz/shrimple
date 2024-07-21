@@ -1,37 +1,35 @@
 // @ts-check
-
+import {getCurrentDate, checkLocalStorage} from "./localstorage.js";
+import { getShrimps, getDailyShrimp } from "./selectors.js";
+import { SubmitOverride, getGuessResultHtmlWithArray } from "../shared/submit.js";
+import { renderEndPopup } from "./results.js";
+import { GuessResultsDiv } from "../elements/shrimple.js";
 /**
- * @typedef {Object} Shrimp
- * @property {string} name
- * @property {string} habitat
- * @property {number} length
- * @property {string[]} coloration
- * @property {number} weight 
- * @property {number} max_depth
- */
-/**
+ * @typedef Guess
+ * @property {number[]} comparisons
+ * @property {string} shrimp_name
+ * @typedef {import ('./../shared/shrimp_type.js').Shrimp} Shrimp
  * @type {{
  * awaiting_promises: Promise<any>[];
  * active: boolean; 
  * num_guesses: number;
- * guesses: number[][];
+ * guesses: Guess[];
  * shrimp_list: Shrimp[];
- * daily_shrimp_name: string;
- * daily_shrimp: ?Shrimp;
+ * first_shrimp_name: string;
+ * current_shrimp: ?Shrimp;
  * shrimp_names_lowercase: string[];
  * shrimp_index_by_name: Object.<string, number> ;
- * won: boolean;
- * date: number;
+ * won: boolean; date: number;
  * }}
  */
-let Game = {
+export let Game = {
     awaiting_promises: [],
     active: false,
     num_guesses: 0,
-    guesses: [[]],
+    guesses: [],
     shrimp_list: [], 
-    daily_shrimp_name: "",
-    daily_shrimp: null,
+    first_shrimp_name: "",
+    current_shrimp: null,
     shrimp_names_lowercase: [],
     shrimp_index_by_name: {},
     won: false,
@@ -49,25 +47,25 @@ function fillInGameValueWithPromise(promise, key){
     });
 }
 
-function getMode(){
-    let urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("mode");
-};
-function initializeGameVariablesFromServer(){
-    const [cached_game, cached_guess_results]=checkLocalStorage(); 
+
+export function initializeGameVariablesFromServer(){
+    const cached_game=checkLocalStorage(); 
     if (cached_game!=null){
         Game=JSON.parse(cached_game);
-        if (cached_guess_results!=null){
-            GuessResultsDiv.innerHTML=DOMPurify.sanitize(cached_guess_results);
-        }
-        SubmitOverride.comparison_shrimp=Game.daily_shrimp;
+        for (let i =0; i<Game.num_guesses; i++){
+            const input_shrimp=Game.shrimp_list[Game.shrimp_index_by_name[Game.guesses[i].shrimp_name.toLowerCase()]];
+            for (const node of getGuessResultHtmlWithArray(input_shrimp, Game.guesses[i].comparisons, i)){
+                GuessResultsDiv.append(node);
+            };
+        } 
+        SubmitOverride.comparison_shrimp=Game.current_shrimp;
         if (Game.num_guesses>0&&Game.active==false){
             renderEndPopup(false);
         }
         return;
     }
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
-    fillInGameValueWithPromise(getDailyShrimp(), "daily_shrimp_name")
+    fillInGameValueWithPromise(getDailyShrimp(), "first_shrimp_name")
 
     Promise.all(Game.awaiting_promises).then(() => {
         for (let index=0; index<Game.shrimp_list.length; index++) {
@@ -75,19 +73,11 @@ function initializeGameVariablesFromServer(){
             Game.shrimp_index_by_name[shrimp_lowercase] = index;
             Game.shrimp_names_lowercase.push(shrimp_lowercase)
         }
-        Game.daily_shrimp = Game.shrimp_list[Game.shrimp_index_by_name[Game.daily_shrimp_name.toLowerCase()]];
+        Game.current_shrimp = Game.shrimp_list[Game.shrimp_index_by_name[Game.first_shrimp_name.toLowerCase()]];
         console.log("DAILY SHRIMP")
-        console.log(Game.daily_shrimp)
-        SubmitOverride.comparison_shrimp=Game.daily_shrimp;
+        console.log(Game.current_shrimp)
+        SubmitOverride.comparison_shrimp=Game.current_shrimp;
         Game.active = true;
     });
 }
-let mode=getMode();
-console.log(mode);
-if (mode==Modes.Shrimple){
 
-} else if (mode==Modes.Clamplicated){
-    changeSubmitFunction();
-} else {
-}
-initializeGameVariablesFromServer();

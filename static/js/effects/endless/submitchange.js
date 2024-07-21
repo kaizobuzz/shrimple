@@ -1,4 +1,14 @@
 //@ts-check
+import { speedUpTimerPermanent, resetTimer } from "./../timer.js";
+import { renderEffects } from "./../effects.js";
+import { resetGuesses } from "../submitchange.js";
+import { Game } from "../state.js";
+import { LivesDiv } from "../../elements/effects.js";
+import { outOfLives } from "./results.js";
+import { SubmitButton } from "../../elements/shrimple.js";
+import { assertNotNull } from "../../shared/utils.js";
+import { GameOverFunctions, SubmitOverride } from "../../shared/submit.js";
+
 function guessedCorrectShrimp(){
     CorrectGuesses+=1;
     ShrimpsGuessedDiv.innerText="Correct guesses: "+CorrectGuesses;
@@ -25,9 +35,11 @@ function eventOnSubmit(){
     }
 }
 
-GameOverFunctions.win_function=guessedCorrectShrimp;
-GameOverFunctions.lose_function=outOfGuesses;
-SubmitOverride.after_submit=eventOnSubmit;
+export function setup(){
+    GameOverFunctions.win_function=guessedCorrectShrimp;
+    GameOverFunctions.lose_function=outOfGuesses;
+    SubmitOverride.after_submit=eventOnSubmit;
+}
 let ShrimpsGuessedDiv=assertNotNull(document.getElementById("correct-guesses"));
-let CorrectGuesses=0;
+export let CorrectGuesses=0;
 

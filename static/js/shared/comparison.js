@@ -1,4 +1,7 @@
 // @ts-check
+/** 
+ * @typedef {import ('./shrimp_type.js').Shrimp} Shrimp
+ */
 
 /** 
  * @typedef {Object} Comparisons
@@ -9,13 +12,15 @@
  * @property {number} weight 
  * @property {number} max_depth
 */
-const Equal=0;
-const NotEqual=1;
-const TooLarge=2;
-const TooSmall=3;
-const PartialEqual=4;
-const UnknownComparison=5;
-const HiddenComparison=6;
+export const ComparisonTypes= {
+    Equal: 0,
+    NotEqual: 1,
+    TooLarge: 2, 
+    TooSmall: 3, 
+    PartialEqual: 4,
+    UnknownComparison: 5, 
+    HiddenComparison: 6,
+};
 
 const path="img/", png=".png";
 const Images={
@@ -36,52 +41,52 @@ const Images={
  */
 function compareStatistic(guess_statistic, answer_statistic){
     if(guess_statistic == null || answer_statistic == null) {
-        return UnknownComparison;
+        return ComparisonTypes.UnknownComparison;
     }
     if(typeof(guess_statistic) != typeof(answer_statistic)){
         console.error("Can't compare guess with answer of different type!")
-        return HiddenComparison; 
+        return ComparisonTypes.HiddenComparison; 
     }
     if (typeof(guess_statistic)=='number'&&typeof(answer_statistic)=='number'){
         if (guess_statistic>answer_statistic){
-            return TooLarge 
+            return ComparisonTypes.TooLarge 
         } else if (guess_statistic<answer_statistic){
-            return TooSmall
+            return ComparisonTypes.TooSmall
         }
-        return Equal
+        return ComparisonTypes.Equal
         //TODO check if this changes stuff
     } else if(Array.isArray(guess_statistic)&&Array.isArray(answer_statistic)){ // what the heck is this why is js like this
         return compareArrayStatistic(guess_statistic, answer_statistic);
     } else if (guess_statistic==answer_statistic){
-        return Equal;
+        return ComparisonTypes.Equal;
     }
-    return NotEqual;
+    return ComparisonTypes.NotEqual;
 }
 /**@param {Number[]} comparisonarray  
  * @returns {string[]}*/
-function getComparisonImagesByArray(comparisonarray){
+export function getComparisonImagesByArray(comparisonarray){
     let resimages=[]; 
     for (const value of comparisonarray){
         switch (value){
-            case Equal:
+            case ComparisonTypes.Equal:
                 resimages.push(Images.equal);
                 break;
-            case NotEqual:
+            case ComparisonTypes.NotEqual:
                 resimages.push(Images.notequal);
                 break;
-            case TooLarge:
+            case ComparisonTypes.TooLarge:
                 resimages.push(Images.toolarge);
                 break;
-            case TooSmall:
+            case ComparisonTypes.TooSmall:
                 resimages.push(Images.toosmall);
                 break;
-            case PartialEqual:
+            case ComparisonTypes.PartialEqual:
                 resimages.push(Images.partialequal);
                 break;
-            case UnknownComparison:
+            case ComparisonTypes.UnknownComparison:
                 resimages.push(Images.unknowncomparison);
                 break;
-            case HiddenComparison:
+            case ComparisonTypes.HiddenComparison:
                 resimages.push(Images.hiddencomparison);
                 break;
             default:
@@ -94,28 +99,28 @@ function getComparisonImagesByArray(comparisonarray){
 /**@param {Comparisons} comparisons 
  * @returns {string[]}
  */
-function getComparisonImages(comparisons){
+export function getComparisonImages(comparisons){
     return getComparisonImagesByArray(Object.values(comparisons));
 }
 /**@param {number[]} comparisonarray 
  * @returns {string[]} */
-function getComparisonHtmlByArray(comparisonarray){
+export function getComparisonHtmlByArray(comparisonarray){
     let html_to_render=/**@type string[]*/([]);
     for (const value of comparisonarray){
         //html_to_render+=key+": ";
-        if(value == TooLarge) {
+        if(value == ComparisonTypes.TooLarge) {
             html_to_render.push("⬇️")
-        } else if(value == TooSmall) {
+        } else if(value == ComparisonTypes.TooSmall) {
             html_to_render.push("⬆️")
-        } else if(value == Equal) {
+        } else if(value == ComparisonTypes.Equal) {
             html_to_render.push("🟩")
-        } else if(value == PartialEqual) {
+        } else if(value == ComparisonTypes.PartialEqual) {
             html_to_render.push("🟨")
-        } else if(value == UnknownComparison) {
+        } else if(value == ComparisonTypes.UnknownComparison) {
             html_to_render.push("🟪")
-        } else if(value==HiddenComparison){ 
+        } else if(value==ComparisonTypes.HiddenComparison){ 
             html_to_render.push("⬛")
-        } else if(value == NotEqual) {
+        } else if(value == ComparisonTypes.NotEqual) {
             html_to_render.push("🟥")
         } else {
             html_to_render.push("uh there was an error")
@@ -127,7 +132,7 @@ function getComparisonHtmlByArray(comparisonarray){
  * @param {Comparisons} comparisons 
  * @returns {string[]}
  */
-function getComparisonHtml(comparisons){
+export function getComparisonHtml(comparisons){
     return getComparisonHtmlByArray(Object.values(comparisons));
 }
 /**
@@ -135,11 +140,11 @@ function getComparisonHtml(comparisons){
  * @param {Shrimp} comparison_shrimp
  * @returns {Comparisons}
  */
-function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
+export function checkAgainstShrimp(shrimp_guess, comparison_shrimp){
     let comparisons=/**@type Comparisons*/({});
     if (shrimp_guess.name===comparison_shrimp.name){
         for (const key of Object.keys(shrimp_guess)){
-            comparisons[key]=Equal;
+            comparisons[key]=ComparisonTypes.Equal;
         }
     } else{
         for (const key of Object.keys(shrimp_guess)){
@@ -168,10 +173,10 @@ function compareArrayStatistic(guess_array, answer_array){
         }
     }
     if(guess_array.length == answer_array.length && answer_array.length == num_shared){
-        return Equal;
+        return ComparisonTypes.Equal;
     } else if(num_shared > 0) {
-        return PartialEqual;
+        return ComparisonTypes.PartialEqual;
     } else {
-        return NotEqual;
+        return ComparisonTypes.NotEqual;
     }
 }

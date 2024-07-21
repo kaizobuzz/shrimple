@@ -1,18 +1,20 @@
 //@ts-check
-async function getShrimps() {
+import { Game } from "./state.js";
+import { SubmitOverride } from "../shared/submit.js";
+export async function getShrimps() {
     const response = await fetch("data/shrimps.json");
     const shrimps = (await response.json()).shrimps;
     console.log(shrimps);
     return shrimps;
 }
 
-async function getRandomShrimpServer(){
+export async function getRandomShrimpServer(){
     const response=await fetch("/api/v1/randomshrimp");
     const random_shrimp_name=await response.text();
     return random_shrimp_name;
 }
 
-function getNewRandomShrimp(){
+export function getNewRandomShrimp(){
     Game.current_shrimp=Game.next_shrimp;
     SubmitOverride.comparison_shrimp=Game.current_shrimp;
     Game.next_shrimp=null;

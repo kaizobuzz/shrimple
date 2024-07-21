@@ -1,4 +1,8 @@
 //@ts-check
+import {assertNotNull, Modes } from "../shared/utils.js";
+import {getHistory} from  "../shared/localstorage.js";
+import { renderBarNodes, renderBarNodeAnimation } from "../shared/display.js";
+
 async function startDisplay(){
     let main_history_node=assertNotNull(document.getElementById("history-results"));
     for (const mode of Object.values(Modes)){

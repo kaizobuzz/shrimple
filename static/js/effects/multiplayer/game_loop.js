@@ -1,12 +1,21 @@
 //@ts-check
-async function startGameLoop(){
+//
+import { Game } from "../state.js";
+import { NewEffects, CurrentEffects } from "../effects.js";
+import { sleep } from "../../shared/utils.js";
+import { decrementTimerRTA, TimerStats} from "../timer.js";
+import { FRAME_TIME, checkForGuesses, OffsetCheckingStats } from "../utils.js";
+import { getTimeOffset } from "./localstorage";
+import { receiveEvents } from "./events";
+import { StartButton } from "./start_game";
+export async function startGameLoop(){
     StartButton.hidden=true;
     let iterator=0;
-    CurrentLives=Game.lives;
-    CurrentGuesses=Game.num_guesses;
+    OffsetCheckingStats.Lives=Game.lives;
+    OffsetCheckingStats.Guesses=Game.num_guesses;
     let [offset, timer_width]=getTimeOffset();
     let current_time=performance.now()+offset;
-    Width=timer_width
+    TimerStats.width=timer_width
     while (Game.active){
         await sleep(FRAME_TIME)
         iterator+=1;
@@ -20,7 +29,7 @@ async function startGameLoop(){
             effect.start_function();
             CurrentEffects.push(effect);
         }
-        NewEffects=[];
+        NewEffects.length=0;
     }
 }
 
