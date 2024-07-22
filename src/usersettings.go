@@ -18,7 +18,7 @@ func checkForAuth(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusNoContent)
 }
 
-func getPrivacySettings(w http.ResponseWriter, r *http.Request){
+func getSettings(w http.ResponseWriter, r *http.Request){
     user_id:=LoggedInUser(r)
     if user_id==nil{
         w.WriteHeader(http.StatusBadRequest)
@@ -29,14 +29,15 @@ func getPrivacySettings(w http.ResponseWriter, r *http.Request){
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-    privacy_bytes, err:=json.Marshal(settings.Privacy)
+    settings_bytes, err:=json.Marshal(settings)
     if err != nil{
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-    w.Write(privacy_bytes)
+    w.Write(settings_bytes)
 }
-func changePrivacySettings(w http.ResponseWriter, r *http.Request){
+
+func changeSettings(w http.ResponseWriter, r *http.Request){
     user_id:=LoggedInUser(r)
     if user_id==nil{
         w.WriteHeader(http.StatusBadRequest)
@@ -44,24 +45,16 @@ func changePrivacySettings(w http.ResponseWriter, r *http.Request){
     }
     decoder:=json.NewDecoder(r.Body)
     decoder.DisallowUnknownFields()
-    var privacy_settings shared.PrivacySettings
-    if err:=decoder.Decode(&privacy_settings); err!=nil{
+    var settings shared.Settings
+    if err:=decoder.Decode(&settings); err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    settings, err:=database.SelectSettingsFromId(*user_id)
-    if err!=nil{
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    settings.Privacy=privacy_settings
-    if err:=database.UpdateSettingsWithId(*user_id, *settings); err!=nil{
+    if err:=database.UpdateSettingsWithId(*user_id, settings); err!=nil{
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
     w.WriteHeader(http.StatusNoContent)
     return
 }
-
-

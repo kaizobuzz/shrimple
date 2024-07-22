@@ -1,6 +1,8 @@
 //@ts-check
 
 import {assertButtonElement, assertInputElement, assertNotNull} from "../shared/utils.js";
+import { getSettings, setSettings } from "./localstorage.js";
+
 /** @typedef PagePrivacySettings
  * @property {number} ViewUserInfo 
  * @property {boolean} ViewGuessHistory 	
@@ -52,10 +54,8 @@ Object.freeze(Searching);
 Object.freeze(SearchingStrings);
 
 async function getPrivacySettings(){
-    const response=await fetch("/api/v1/privacysettings")
-    if (!response.ok){
-    }
-    const settings=/**@type PrivacySettings*/(await response.json());
+    const full_settings=await getSettings()
+    const settings=full_settings.Privacy;
 
     if (settings.AllowReceivingFriendRequests==Searching.None){
         allow_friend_requests.value=SearchingStrings.None;    
@@ -97,7 +97,8 @@ async function getPrivacySettings(){
 }
 
 async function setPrivacySettings(){
-    const privacy_settings=/**@type PrivacySettings*/({
+    const settings=await getSettings();
+    settings.Privacy={
         AllowReceivingFriendRequests: Searching[allow_friend_requests.value],
         ShowOnLeaderboard: show_on_leaderboard.checked,
         AllowBeingSearched: allow_being_searched.checked,
@@ -107,27 +108,18 @@ async function setPrivacySettings(){
             ViewExperience: show_experience.checked, 
         }
         
-    });
-    const response=await fetch("/api/v1/changeprivacysettings", {
-        method: "POST",
-        body: JSON.stringify(privacy_settings), 
-        headers: {
-           "Content-type": "application/json; charset=UFT-8" 
-        } 
-    })
-    if (response.ok){
-        console.log(response);
-    }
-
+    };
+    await setSettings(settings); 
 }
 //<button class="main-buttons" id="save-settings">Save settings</button>
 
 assertButtonElement(document.getElementById("save-settings")).addEventListener("click", setPrivacySettings);
 const allow_friend_requests=/**@type HTMLSelectElement*/(document.getElementById("allow-friend-requests"));
 const allow_being_searched = assertInputElement(document.getElementById("allow-being-searched"))
-getPrivacySettings();
 const show_on_leaderboard = assertInputElement(document.getElementById("show-on-leaderboard"));
 const view_user_info =/**@type HTMLSelectElement*/(document.getElementById("view-user-info"));
 const show_guess_history = assertInputElement(document.getElementById("show-guess-history"));
 const show_experience = assertInputElement(document.getElementById("show-experience"));
 const settings_flex=assertNotNull(document.getElementById("settings-flex"));
+getPrivacySettings();
+
