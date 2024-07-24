@@ -2,20 +2,22 @@ package database
 
 import (
 	"database/sql"
-	"os"
-    "errors"
+	"errors"
 	_ "github.com/mattn/go-sqlite3"
+	"os"
 )
 
 var Database *sql.DB
+
+var UniqueConstraintConnection *sql.Conn
 
 const sql_string_CREATE_USER_TABLE = "CREATE TABLE if NOT EXISTS " + UserTableName + " ( " +
 	UserFieldId + " TEXT PRIMARY KEY, " +
 	UserFieldUsername + " TEXT UNIQUE, " +
 	UserFieldPasswordHash + " BLOB NOT NULL, " +
 	UserFieldExperience + " INTEGER NOT NULL, " +
-	UserFieldGuessHistory + " BLOB NOT NULL, "+
-    UserFieldSettings + " BLOB NOT NULL"+")"
+	UserFieldGuessHistory + " BLOB NOT NULL, " +
+	UserFieldSettings + " BLOB NOT NULL" + ")"
 
 const sql_string_CREATE_USERNAME_INDEX = `CREATE UNIQUE INDEX if NOT EXISTS index_username ON ` + UserTableName + "(" + UserFieldUsername + ")"
 
@@ -53,23 +55,29 @@ func (s *StatementExecuter) exec(sql_string string) {
 	_, s.err = s.database.Exec(sql_string)
 }
 
-func InitializeDB(filepath string) error {
-    if _, err := os.Stat("./"+filepath); err!=nil{
-        if errors.Is(err, os.ErrNotExist){
-            f, err:=os.Create("./"+filepath)
-            if err!=nil{
-                return err
-            }
-            f.Close()
-        } else{
-            return err
-        }
-    }
+func InitializeDB(filepath string) error {	
+	if _, err := os.Stat("./" + filepath); err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			f, err := os.Create("./" + filepath)
+			if err != nil {
+				return err
+			}
+			f.Close()
+		} else {
+			return err
+		}
+	}
 	var err error
-	Database, err = sql.Open("sqlite3", "./"+filepath)
+	Database, err = sql.Open("sqlite3", "./"+filepath+"?_fk=on")
 	if err != nil {
 		return err
 	}
+	/*row := Database.QueryRow("PRAGMA foreign_keys")
+	var check int
+	if err := row.Scan(&check); err != nil {
+		return err
+	}
+	println(check)*/
 	statement_executer := StatementExecuter{database: Database}
 	statement_executer.exec(sql_string_CREATE_USER_TABLE)
 	statement_executer.exec(sql_string_CREATE_USERNAME_INDEX)

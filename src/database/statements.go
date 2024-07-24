@@ -35,7 +35,7 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 		&sql_user.PasswordHash,
 		&sql_user.Experience,
 		&sql_user.GuessHistory,
-        &sql_user.Settings,
+		&sql_user.Settings,
 	)
 	if err != nil {
 		return nil, err
@@ -48,9 +48,9 @@ func SelectFullUserGivenRow(row *sql.Row) (*User, error) {
 	if err := DecodeGob(sql_user.PasswordHash, &user.PasswordHash); err != nil {
 		return nil, err
 	}
-    if err := DecodeGob(sql_user.Settings, &user.Settings); err != nil{
-        return nil, err
-    }
+	if err := DecodeGob(sql_user.Settings, &user.Settings); err != nil {
+		return nil, err
+	}
 	if user.Friends, err = SelectFriendsFromId(user.Id); err != nil {
 		return nil, err
 	}
@@ -218,16 +218,16 @@ func AddNewUser(user *User) error {
 	if sql_user.GuessHistory, err = EncodeGob(&user.GuessHistory); err != nil {
 		return err
 	}
-    if sql_user.Settings, err = EncodeGob(&user.Settings); err != nil {
-        return err 
-    }
+	if sql_user.Settings, err = EncodeGob(&user.Settings); err != nil {
+		return err
+	}
 	_, err = sqlQueryAddUserStatement.Exec(
 		sql_user.Id,
 		sql_user.Username,
 		sql_user.PasswordHash,
 		sql_user.Experience,
 		sql_user.GuessHistory,
-        sql_user.Settings,
+		sql_user.Settings,
 	)
 	//TODO currently making the assumption that any user sent is valid including the friends,
 	for _, friend_id := range user.Friends {

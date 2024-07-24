@@ -9,6 +9,8 @@ import (
 	"shrimple/src/database"
 )
 
+type SelectionRequest func(string) ([]string, error)
+
 func getIdFromRequest(r *http.Request)(id string, err error){
     user_id:=LoggedInUser(r)
     if user_id==nil{
@@ -30,6 +32,7 @@ func getUsersForRequests(r *http.Request) (sending_id string, receiving_id strin
 	return user_id, target_id, nil
 }
 
+//TODO also needs csrf protection
 func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
 	sending_id, receiving_id, err := getUsersForRequests(r)
 	if err != nil {
@@ -43,34 +46,74 @@ func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-	//TODO thingy
+    w.WriteHeader(http.StatusNoContent)
 }
-func checkFriendRequests(w http.ResponseWriter, r *http.Request) {
+
+func getUsernameIdJsonFromIdList(ids []string)([]byte, error){
+    pairs, err:=database.GetUsernameListFromIdList(ids)
+    if err!=nil{
+        return nil, err
+    }
+    pairs_json, err:=json.Marshal(pairs)
+    if err!=nil{
+        return nil, err
+    }
+    return pairs_json, nil
+}
+
+func getUsernameIdJsonFromId(id string, request SelectionRequest)([]byte, error){
+    ids, err:=request(id)
+    if err!=nil{
+        return nil, err
+    }
+    return getUsernameIdJsonFromIdList(ids)
+}
+
+func checkIncomingFriendRequests(w http.ResponseWriter, r *http.Request) {
     id, err:=getIdFromRequest(r)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    request_ids, err:=database.SelectIncomingFriendRequestsFromId(id)
+    request_json, err:=getUsernameIdJsonFromId(id, database.SelectIncomingFriendRequestsFromId)
+    if err!=nil{
+        log.Println(err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    } 
+	w.Write(request_json)
+}
+func checkOutgoingFriendRequests(w http.ResponseWriter, r *http.Request){
+    id, err:=getIdFromRequest(r)
+    if err!=nil{
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    requests_json, err:=getUsernameIdJsonFromId(id, database.SelectOutgoingFriendRequestsFromId)
+    if err!=nil{
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+    w.Write(requests_json)
+}
+func checkFriends(w http.ResponseWriter, r *http.Request){
+    id, err:=getIdFromRequest(r)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    requests, err:=database.GetUsernameListFromIdList(request_ids)
+    friends_json, err:=getUsernameIdJsonFromId(id, database.SelectFriendsFromId)
     if err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusInternalServerError)
+        return
     }
-	userjson, err := json.Marshal(requests)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(userjson)
+    w.Write(friends_json) 
 }
+
+//TODO these probably actually need csrf protection
 func acceptFriendRequest(w http.ResponseWriter, r *http.Request) {
 	receiving_user, sending_user, err := getUsersForRequests(r)
 	if err != nil {
@@ -84,8 +127,7 @@ func acceptFriendRequest(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-	w.WriteHeader(http.StatusOK)
-	//TODO send message
+	w.WriteHeader(http.StatusNoContent)
 }
 func rejectFriendRequest(w http.ResponseWriter, r *http.Request) {
     receiving_user, sending_user, err := getUsersForRequests(r)
@@ -100,5 +142,7 @@ func rejectFriendRequest(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
+
+

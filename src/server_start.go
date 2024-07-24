@@ -28,10 +28,16 @@ func Start_Server() {
     http.HandleFunc("/api/v1/checkauth", checkForAuth)
 	http.HandleFunc("/api/v1/postguesshistoryentry", GuessHistoryEntryReciever)
 	http.HandleFunc("/api/v1/getguesshistoryentry", GetGuessHistoryEntry)
+    http.HandleFunc("/api/v1/getfriends", checkFriends)
+    http.HandleFunc("/api/v1/getfriendrequests", checkIncomingFriendRequests)
+    http.HandleFunc("/api/v1/getoutgoingfriendrequests", checkOutgoingFriendRequests)
+    http.HandleFunc("/api/v1/sendfriendrequest", sendFriendRequest)
+    http.HandleFunc("/api/v1/acceptfriendrequest", acceptFriendRequest)
+    http.HandleFunc("/api/v1/declinefriendrequest", rejectFriendRequest)
     http.HandleFunc("/api/v1/logout", LogoutHandler)
     http.HandleFunc("/api/v1/getsettings", getSettings)
     http.HandleFunc("/api/v1/changesettings", changeSettings)
-	println("Starting Server on port " + port)
+	log.Println("Starting Server on port " + port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}

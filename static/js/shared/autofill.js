@@ -71,6 +71,11 @@ function autofillShrimps() {
         let list_item=document.createElement("li");
         list_items.push(list_item);
         list_item.appendChild(document.createTextNode(shrimp.name.slice(0, pos)));
+        list_item.addEventListener("click", function(){
+            PlayerInput.value=shrimp.name;
+            updateSubmitButton(PlayerInput.value);
+            AutofillResults.hidden=true;
+        });
         let found_segment=document.createElement("mark");
         found_segment.innerText=shrimp.name.slice(pos, pos+input.length);
         list_item.appendChild(found_segment);
@@ -89,34 +94,15 @@ function autofillShrimps() {
                 shrimp_info.innerText+=", ";
             }
         }
-        let hidden_input_elem=document.createElement("input");
-        list_item.appendChild(hidden_input_elem);
-        hidden_input_elem.type="hidden";
-        hidden_input_elem.value=shrimp.name;
     }
     //console.log(html_to_render);
     AutofillResults.innerHTML="";
     for (const item of list_items){ 
         AutofillResults.appendChild(item);
     }
-    addListEners();
-}
-function addListEners(){
-    let list_items=document.querySelectorAll("li");
-    //console.log(list_items);
-    for (const list_item of list_items){
-        list_item.addEventListener("click", useAutofill);
-    }
 }
 function hideAutofill(){
     AutofillResults.hidden=true; 
-}
-function useAutofill(){
-    if (this.getElementsByTagName("input")[0]!=undefined){
-        PlayerInput.value=this.getElementsByTagName("input")[0].value;
-        updateSubmitButton(PlayerInput.value);
-        AutofillResults.hidden=true;
-    }
 }
 /**@param {Event} e  */
 function checkIfClickedOff(e){

@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"shrimple/src/database"
 	"slices"
 	"time"
@@ -84,20 +85,20 @@ func VerifySessionToken(base64_token string) (id *string, valid bool, err error)
 	bytes, err := base64.StdEncoding.Decode(json_token, []byte(base64_token))
 	json_token = json_token[:bytes]
 	if err != nil {
-		fmt.Printf("error decoding base64 in verifysessiontoken: %s", err)
+		log.Printf("error decoding base64 in verifysessiontoken: %s", err)
 		return nil, false, err
 	}
     //fmt.Printf("\n Got JSON token with value: %s (%x) \n", json_token, json_token)
 	var token Token
 	err = json.Unmarshal(json_token, &token)
 	if err != nil {
-		fmt.Printf("error unmarshalling json in verifysessiontoken: %s", err)
-		fmt.Printf("here is the slice we tried to unmarshal: %x", json_token)
+		log.Printf("error unmarshalling json in verifysessiontoken: %s", err)
+		log.Printf("here is the slice we tried to unmarshal: %x", json_token)
 	}
 
 	correct_token_signature, err := SignTokenData(token.Tokendata)
 	if err != nil {
-		fmt.Printf("Error signing token data in verifysessiontoken: %s", err)
+		log.Printf("Error signing token data in verifysessiontoken: %s", err)
 		return nil, false, err
 	}
 	correct_password_signature, err := SignedPassword(token.Tokendata.Id)
@@ -105,15 +106,15 @@ func VerifySessionToken(base64_token string) (id *string, valid bool, err error)
 		return nil, false, err
 	}
 	if token.Tokendata.Expiration.Before(time.Now()) {
-		fmt.Print("Token Expired !! ")
+		log.Print("Token Expired !! ")
 		return nil, false, nil // token expired
 	}
 	if !slices.Equal(correct_token_signature, token.Signature) {
-		fmt.Print("Token has incorrect signature!")
+		log.Print("Token has incorrect signature!")
 		return nil, false, nil
 	}
 	if !slices.Equal(correct_password_signature, token.Tokendata.Signed_password) {
-		fmt.Print("Token has incorrect password signature!")
+		log.Print("Token has incorrect password signature!")
 		return nil, false, nil
 	}
 	return &token.Tokendata.Id, true, nil

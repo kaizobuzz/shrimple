@@ -89,6 +89,7 @@ const UserSearchLimit=20
 var sqlQuerySearchForUsername *sql.Stmt /*Scanning order {Username, id} , please use EscapeLike to prevent accidental wildcards where unwanted*/
 const sql_string_SEARCH_FOR_USERNAME = "SELECT "+UserFieldUsername+", "+UserFieldId+" FROM "+UserTableName+" WHERE "+UserFieldUsername+" LIKE ? LIMIT 20"
 
+
 type StatementPreparer struct {
 	database *sql.DB
 	err      error
