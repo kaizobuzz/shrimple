@@ -40,8 +40,11 @@ func sendFriendRequest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}	
-    err=database.UpdateFriendRequests(sending_id, receiving_id, database.SentRequest)
-    if err!=nil{
+    if (sending_id==receiving_id){
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    if err:=database.UpdateFriendRequests(sending_id, receiving_id, database.SentRequest); err!=nil{
         log.Println(err)
         w.WriteHeader(http.StatusInternalServerError)
         return

@@ -8,6 +8,7 @@ import { assertNotNull, assertInputElement, assertButtonElement } from "../share
  * */
 
 async function getFriends(){
+    FriendsList.innerHTML="";
     const response = await fetch("/api/v1/getfriends")
     if (!response.ok){
         console.error(response);
@@ -43,8 +44,11 @@ async function getIncomingFriendRequests(){
                     "Content-type": "application/json; charset=UFT-8" 
                 }
             });
-            if (!accept_response.ok){
+            if (accept_response.ok){
+                node.remove();
+                getFriends()
                 //TODO display error relative to li probably
+            } else{
             }
         };
         const reject_button = document.createElement("button");
@@ -57,8 +61,10 @@ async function getIncomingFriendRequests(){
                     "Content-type": "application/json; charset=UFT-8" 
                 }
             });
-            if (!reject_response.ok){
+            if (reject_response.ok){
+                document.removeChild(node);
                 //TODO display error relative to li probably
+            } else{
             }
         };
         node.append(accept_button);
@@ -88,7 +94,9 @@ async function sendFriendRequest(){
             "Content-type": "application/json; charset=UFT-8" 
         }
     });
-    if (!response.ok){
+    if (response.ok){
+        getOutgoingFriendRequests();
+    } else{
         //TODO
     }
 }
