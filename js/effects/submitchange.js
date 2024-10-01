@@ -34,7 +34,7 @@ export function submitEmptyGuess(){
 }
 export function resetGuesses(){
     Game.current_shrimp=getNewRandomShrimp();
-    console.log(Game.current_shrimp);
+    SubmitOverride.comparison_shrimp = Game.current_shrimp;
     Game.guesses=[];
     GuessResultsDiv.innerHTML="";
     Game.num_guesses=0;
