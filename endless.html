@@ -5,10 +5,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
-    <link rel="stylesheet" type="text/css" href="/css/multiplayer.css">
-    <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
-    <script src="/js/htmx.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./shrimple/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="./shrimple/css/multiplayer.css">
+    <link rel="stylesheet" type="text/css" href="./shrimple/css/shrimple.css">
     <title>Shrimple (endless)</title>
 </head>
 
@@ -30,21 +29,21 @@
             The shrimp image under each field shows the
             correctness of the field.<br>
             <div class="row">
-                <div class="column"><img src="img/shrimpcorrect.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimpcorrect.png" /></div>
                 <div class="column">Field is correct</div>
-                <div class="column"><img src="img/shrimpincorrect.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimpincorrect.png" /></div>
                 <div class="column">Field is incorrect</div>
-                <div class="column"><img src="img/shrimptoobig.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimptoobig.png" /></div>
                 <div class="column">Field is too big</div>
             </div>
             <div class="row">
-                <div class="column"><img src="img/shrimptoosmall.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimptoosmall.png" /></div>
                 <div class="column">Field is too small</div>
-                <div class="column"><img src="img/shrimppartialequal.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimppartialequal.png" /></div>
                 <div class="column">The daily shrimp shares some elements of this field with the guess shrimp</div>
-                <div class="column"><img src="img/shrimpunknown.png" /></div>
+                <div class="column"><img src="./shrimple/img/shrimpunknown.png" /></div>
                 <div class="column">Either the guess shrimp or the daily shrimp's field is unknown</div>
-                <div class="column"><img src="img/shrimphide.png"></div>
+                <div class="column"><img src="./shrimple/img/shrimphide.png"></div>
                 <div class="column">Comparison is hidden</div>
             </div>
             <br>
@@ -115,7 +114,7 @@
         <br>
         <br>
     </div>
-    <script type="module" src="/js/effects/endless/game_loop.js"></script>
+    <script type="module" src="./shrimple/js/effects/endless/game_loop.js"></script>
 </body>
 
 </html>
