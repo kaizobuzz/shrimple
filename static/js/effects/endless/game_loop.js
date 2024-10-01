@@ -1,6 +1,8 @@
 //@ts-check
 import { OffsetCheckingStats, checkForGuesses } from "../utils.js";
-import { Game, initializeGameVariablesFromServer } from "./../state.js";
+import { initializeGameVariablesFromServer } from "./../state.js";
+
+import { Game } from "../../shrimple/game.js";
 import { sleep } from "./../../shared/utils.js";
 import { FRAME_TIME } from "./../utils.js";
 import { decrementTimer } from "./../timer.js";

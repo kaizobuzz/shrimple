@@ -4,6 +4,7 @@ import { getShrimps, getDailyShrimp } from "./selectors.js";
 import { SubmitOverride, getGuessResultHtmlWithArray } from "../shared/submit.js";
 import { renderEndPopup } from "./results.js";
 import { GuessResultsDiv } from "../elements/shrimple.js";
+import { getMode, assertNotNull } from "../shared/utils.js";
 /**
  * @typedef Guess
  * @property {number[]} comparisons
@@ -15,11 +16,11 @@ import { GuessResultsDiv } from "../elements/shrimple.js";
  * num_guesses: number;
  * guesses: Guess[];
  * shrimp_list: Shrimp[];
- * first_shrimp_name: string;
  * current_shrimp: ?Shrimp;
  * shrimp_names_lowercase: string[];
  * shrimp_index_by_name: Object.<string, number> ;
- * won: boolean; date: number;
+ * lives: number;
+ * won: boolean; 
  * }}
  */
 export let Game = {
@@ -28,12 +29,11 @@ export let Game = {
     num_guesses: 0,
     guesses: [],
     shrimp_list: [], 
-    first_shrimp_name: "",
     current_shrimp: null,
     shrimp_names_lowercase: [],
     shrimp_index_by_name: {},
+    lives: 3,
     won: false,
-    date: getCurrentDate(),
 }
 /**
  * @template T
@@ -65,17 +65,13 @@ export function initializeGameVariablesFromServer(){
         return;
     }
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
-    fillInGameValueWithPromise(getDailyShrimp(), "first_shrimp_name")
-
     Promise.all(Game.awaiting_promises).then(() => {
+        getDailyShrimp(assertNotNull(getMode()));
         for (let index=0; index<Game.shrimp_list.length; index++) {
             const shrimp_lowercase = Game.shrimp_list[index].name.toLowerCase();
             Game.shrimp_index_by_name[shrimp_lowercase] = index;
             Game.shrimp_names_lowercase.push(shrimp_lowercase)
         }
-        Game.current_shrimp = Game.shrimp_list[Game.shrimp_index_by_name[Game.first_shrimp_name.toLowerCase()]];
-        console.log("DAILY SHRIMP")
-        console.log(Game.current_shrimp)
         SubmitOverride.comparison_shrimp=Game.current_shrimp;
         Game.active = true;
     });

@@ -1,5 +1,6 @@
 //@ts-check
-import { Game } from "./state.js";
+
+import { Game } from "../shrimple/game.js";
 import { CurrentEffects, filterCurrentEffects } from "./effects.js";
 export const FRAME_TIME=0.02;
 

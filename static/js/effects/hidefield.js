@@ -3,7 +3,7 @@
 import { disableSubmitFunctionOverride, getGuessResultHtml, SubmitOverride, checkAnswer } from "../shared/submit.js";
 import { checkAgainstShrimp, ComparisonTypes } from "../shared/comparison.js";
 import { assertNotNull } from "../shared/utils.js";
-import { Game } from "./state.js";
+import { Game } from "../shrimple/game.js";
 import { GuessResultsDiv, PlayerInput, SubmitButton } from "../elements/shrimple.js";
 /**@param {string} input */
 export function submitwithHiddenFields(input){

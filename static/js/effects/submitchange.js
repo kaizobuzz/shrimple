@@ -1,6 +1,6 @@
 //@ts-check
 import { ComparisonTypes } from "../shared/comparison.js";
-import { Game } from "./state.js";
+import { Game } from "../shrimple/game.js";
 import { getGuessResultHtmlWithClasses, FLEX_ROW_CLASS, FLEX_COL_CLASS, addGuesses, SubmitOverride, renderKeys } from "../shared/submit.js";
 import { GuessResultsDiv } from "../elements/shrimple.js";
 import { getNewRandomShrimp } from "./shrimps.js";
@@ -33,7 +33,8 @@ export function submitEmptyGuess(){
     //TODO will have to change later
 }
 export function resetGuesses(){
-    getNewRandomShrimp();
+    Game.current_shrimp=getNewRandomShrimp();
+    console.log(Game.current_shrimp);
     Game.guesses=[];
     GuessResultsDiv.innerHTML="";
     Game.num_guesses=0;

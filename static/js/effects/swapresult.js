@@ -1,7 +1,8 @@
 //@ts-check
 import {checkAgainstShrimp } from "./../shared/comparison";
 import { getGuessResultHtml, checkAnswer, SubmitOverride, disableSubmitFunctionOverride } from "../shared/submit.js";
-import { Game } from "./state.js";
+
+import { Game } from "../shrimple/game.js";
 import { GuessResultsDiv } from "../elements/shrimple.js";
 import { assertNotNull } from "../shared/utils.js";
 import { PlayerInput, SubmitButton } from "../elements/shrimple.js";

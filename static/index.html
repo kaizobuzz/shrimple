@@ -3,7 +3,6 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
-    <script src="/js/htmx.min.js"></script>
 </head>
 
 <body>
@@ -11,11 +10,6 @@
         <a class="new-link" href="index.html">
             <button id="home-button">Back to homepage</button>
         </a>
-        <div id="settings">
-            <a id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button"
-                hx-target="this" hx-swap="innerHTML">
-            </a>
-        </div>
     </div>
     <div id="start-info">
         <div class="pad">
@@ -40,7 +34,7 @@
                     <button class="main-buttons">Multiplayer</button>
                 </a>
                 <br><br>
-                <a href="/endless.html"> 
+                <a href="/endless.html">
                     <button class="main-buttons">Endless</button>
                 </a>
                 <br><br>

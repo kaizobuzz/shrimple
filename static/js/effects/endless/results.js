@@ -1,6 +1,7 @@
 //@ts-check
 
-import { Game } from "./../state.js";
+
+import { Game } from "../../shrimple/game.js";
 import { ClipboardMessage, FinalResultsText, FinalResults, ShareButton, Functions } from "./../../shared/results.js";
 import { CorrectGuesses } from "./submitchange.js";
 import { sleep, assertButtonElement } from "../../shared/utils.js";

@@ -2,7 +2,7 @@
 import { sleep, getMode, assertNotNull } from "../shared/utils.js";
 
 export async function checkIfUseClamplicatedInfo(){
-    await sleep(0.1);
+    //await sleep(0.1);
     if (getMode()=="clamplicated"){
         ClamplicatedInfo.hidden=false;
     }

@@ -36,28 +36,6 @@ export async function addToHistory(num_guesses){
         history[num_guesses-1]+=1;
     }
     localStorage.setItem("guess_history"+mode, JSON.stringify(history));
-    let guess_history_entry={
-        GameMode: mode,
-        GuessDate: Game.date,
-        NumGuesses: num_guesses,
-    }    
-    const response=await fetch("/api/v1/postguesshistoryentry", {
-        method: "POST",
-        body: JSON.stringify(guess_history_entry), 
-        headers: {
-           "Content-type": "application/json; charset=UFT-8" 
-        } 
-    })
-    if (response.ok){
-        const guess_history=await response.json(); 
-        console.log("Guess history: ", guess_history);
-        const guess_history_array=Array(MAX_GUESSES).fill(0);
-        for (let i=0; i<guess_history_array.length; i++){
-            guess_history_array[i]=guess_history[i+1]??0;
-        }
-        return guess_history_array;
-    }
     return history;
-
 }
 

@@ -2,7 +2,8 @@
 import { speedUpTimerPermanent, resetTimer } from "./../timer.js";
 import { renderEffects } from "./../effects.js";
 import { resetGuesses } from "../submitchange.js";
-import { Game } from "../state.js";
+
+import { Game } from "../../shrimple/game.js";
 import { LivesDiv } from "../../elements/effects.js";
 import { outOfLives } from "./results.js";
 import { SubmitButton } from "../../elements/shrimple.js";

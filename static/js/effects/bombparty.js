@@ -1,6 +1,7 @@
 // @ts-check
 //
-import { Game } from "./state.js";
+
+import { Game } from "../shrimple/game.js";
 import { getRandomIndex, FRAME_TIME } from "./utils.js";
 import { isInputShrimpValid, SubmitOverride, disableSubmitFunctionOverride } from "../shared/submit.js";
 import { PlayerInput, SubmitButton, GuessResultsDiv } from "../elements/shrimple.js";

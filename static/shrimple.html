@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?v=1">
     <link rel="stylesheet" type="text/css" href="/css/shrimple.css">
-    <script src="/js/htmx.min.js"></script>
     <meta charset="UFT-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Shrimple</title>
@@ -21,9 +20,6 @@
         </a>
         <div id="settings">
             <button id="start-info-open">&nbsp?&nbsp</button>&nbsp;
-            <a id="usercard" hx-get="/api/v1/usercard" hx-trigger="load, click from:#login-button" hx-target="this"
-                hx-swap="innerHTML">
-            </a>
         </div>
     </div>
     <h1>Shrimple</h1>

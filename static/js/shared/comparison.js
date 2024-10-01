@@ -54,7 +54,6 @@ function compareStatistic(guess_statistic, answer_statistic){
             return ComparisonTypes.TooSmall
         }
         return ComparisonTypes.Equal
-        //TODO check if this changes stuff
     } else if(Array.isArray(guess_statistic)&&Array.isArray(answer_statistic)){ // what the heck is this why is js like this
         return compareArrayStatistic(guess_statistic, answer_statistic);
     } else if (guess_statistic==answer_statistic){
