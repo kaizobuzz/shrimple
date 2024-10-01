@@ -66,7 +66,7 @@ export function initializeGameVariablesFromServer(){
     }
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
     Promise.all(Game.awaiting_promises).then(() => {
-        getDailyShrimp(assertNotNull(getMode()));
+        Game.current_shrimp=getDailyShrimp(assertNotNull(getMode()));
         for (let index=0; index<Game.shrimp_list.length; index++) {
             const shrimp_lowercase = Game.shrimp_list[index].name.toLowerCase();
             Game.shrimp_index_by_name[shrimp_lowercase] = index;
