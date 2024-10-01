@@ -8,7 +8,7 @@ import { getRandomIndex } from "./utils.js";
 
 
 export async function getShrimps() {
-    const response = await fetch("data/shrimps.json");
+    const response = await fetch("/shrimple/data/shrimps.json");
     const shrimps = (await response.json()).shrimps;
     console.log(shrimps);
     return shrimps;
