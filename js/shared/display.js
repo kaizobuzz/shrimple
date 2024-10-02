@@ -12,7 +12,7 @@ export function renderBarNodes(history, base_node){
     const base_lengths=history.map(function(number){return (number/sum)*100})
     const maximum_base_length=Math.max(...base_lengths);
     const modifier = Math.max(1, Math.min(3, (100/maximum_base_length)/1.2));
-    const lengths=history.map(function(number){return Math.floor(number*modifier)})
+    const lengths=base_lengths.map(function(number){return Math.floor(number*modifier)})
     let history_bar_nodes=/**@type HTMLDivElement[]*/([])
     for (let i=0; i<history.length; i++){
         let history_node=document.createElement("div");
