@@ -12,7 +12,6 @@ export function getCurrentDate(){
 export function setLocalStorage(){
     const mode = getMode();
     localStorage.setItem("game"+mode, JSON.stringify(Game));
-    localStorage.setItem("guess_results"+mode, GuessResultsDiv.innerHTML); 
     localStorage.setItem("date"+mode, String(getCurrentDate()));
 }
 export function checkLocalStorage(){
