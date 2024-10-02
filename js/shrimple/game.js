@@ -53,8 +53,6 @@ export function initializeGameVariablesFromServer() {
     const cached_game = checkLocalStorage();
     if (cached_game != null) {
         Game = JSON.parse(cached_game);
-        StartInfo.hidden = true;
-        StartInfo.style.opacity = "0%";
         for (let i = 0; i < Game.num_guesses; i++) {
             const input_shrimp = Game.shrimp_list[Game.shrimp_index_by_name[Game.guesses[i].shrimp_name.toLowerCase()]];
             for (const node of getGuessResultHtmlWithArray(input_shrimp, Game.guesses[i].comparisons, i)) {
@@ -67,6 +65,8 @@ export function initializeGameVariablesFromServer() {
         }
         return;
     }
+    StartInfo.hidden = false;
+    StartInfo.style.opacity = "100%";
     fillInGameValueWithPromise(getShrimps(), "shrimp_list");
     Promise.all(Game.awaiting_promises).then(() => {
         Game.current_shrimp = getDailyShrimp(assertNotNull(getMode()));
