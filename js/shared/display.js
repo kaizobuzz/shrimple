@@ -8,8 +8,11 @@ import { sleep } from "./utils.js"
  * @param {HTMLElement} base_node 
  * @returns {BarNodeReturn} */
 export function renderBarNodes(history, base_node){
-    let sum=history.reduce(function(sum, number){return sum+number}, 0) 
-    let lengths=history.map(function(number){return Math.floor((number/sum)*80)})
+    const sum=history.reduce(function(sum, number){return sum+number}, 0) 
+    const base_lengths=history.map(function(number){return (number/sum)*100})
+    const maximum_base_length=Math.max(...base_lengths);
+    const modifier = maximum_base_length * Math.min(2, 100/maximum_base_length);
+    const lengths=history.map(function(number){return Math.floor(number*modifier)})
     let history_bar_nodes=/**@type HTMLDivElement[]*/([])
     for (let i=0; i<history.length; i++){
         let history_node=document.createElement("div");

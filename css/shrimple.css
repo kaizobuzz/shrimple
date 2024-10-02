@@ -141,10 +141,11 @@ li:hover {
     flex-direction: column;
     justify-content: space-around;
     flex-basis: 100%;
-    flex: 1;
+    flex: 0.4;
 }
 
 .container-size{
+    flex: 1.2;
     width: 24em;
 }
 .column {
