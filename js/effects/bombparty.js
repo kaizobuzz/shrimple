@@ -3,12 +3,11 @@
 
 import { Game } from "../shrimple/game.js";
 import { getRandomIndex, FRAME_TIME } from "./utils.js";
-import { isInputShrimpValid, SubmitOverride, disableSubmitFunctionOverride } from "../shared/submit.js";
+import { isInputShrimpValid, SubmitOverride, disableSubmitFunctionOverride, GameOverFunctions } from "../shared/submit.js";
 import { PlayerInput, SubmitButton, GuessResultsDiv } from "../elements/shrimple.js";
 import { sleep } from "../shared/utils.js";
 import { TimerStats } from "./timer.js";
 import { AutofillDisabled } from "../shared/autofill.js";
-import { Functions } from "./submitchange.js";
 
 const PROMPT_LENGTH=3;
 const BOMB_TIMER_SECONDS=15;
@@ -57,7 +56,7 @@ async function useBomb(){
         if (time_remaining<=0){
            //TODO explode bomb 
             submitShrimpForBomb();
-            Functions.OutOfGuess();
+            GameOverFunctions.lose_function();
             break;
         }
     }

@@ -42,7 +42,4 @@ export function resetGuesses(){
 
 export function setLocalStorage(){
 }
-export let Functions={
-    OutOfGuess: function(){},
-};
 
