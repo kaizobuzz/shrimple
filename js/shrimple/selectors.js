@@ -27,7 +27,7 @@ const cyrb53 = (str, seed = 0) => {
 };
 
 /**@param {String} prefix*/
-function hashCurrentDate(prefix){
+export function hashCurrentDate(prefix){
     return cyrb53(prefix+String(getCurrentDate())); 
 }
 

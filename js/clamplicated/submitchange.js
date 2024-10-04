@@ -6,9 +6,10 @@ import { Functions } from '../shared/results.js';
 import { checkAgainstShrimp, ComparisonTypes } from '../shared/comparison.js';
 import { assertNotNull } from '../shared/utils.js';
 import { GuessResultsDiv, PlayerInput, SubmitButton  } from '../elements/shrimple.js';
-import { setLocalStorage } from '../shrimple/localstorage.js';
+import { getCurrentDate, setLocalStorage } from '../shrimple/localstorage.js';
 import { copyClamplicatedResults } from './results.js';
 import { checkIfUseClamplicatedInfo } from './info.js';
+import { hashCurrentDate } from '../shrimple/selectors.js';
 
 
 /**@typedef {import('./../shared/comparison.js').Comparisons}  Comparisons*/
@@ -18,21 +19,19 @@ function clampicatedSubmit(input){
     /** @type Comparisons*/
     let comparisons=checkAgainstShrimp(input_shrimp, assertNotNull(SubmitOverride.comparison_shrimp));
     if (comparisons.name!=ComparisonTypes.Equal){
-        let unique_enough_seed=Math.floor(Date.now()/(1000*60*60*24));
-        let kinda_random_number=refreshRandom(unique_enough_seed);
-        for (let i=0; i<Game.num_guesses; i++){
-            kinda_random_number=refreshRandom(kinda_random_number);
-        }
-        if (kinda_random_number<3){
+        const kinda_random_number=hashCurrentDate(JSON.stringify(Game.guesses));
+        if (kinda_random_number%17<9){
             comparisons.length=ComparisonTypes.HiddenComparison;
-        } else if (kinda_random_number<6){
-            comparisons.weight=ComparisonTypes.HiddenComparison;
-        } else {
+        } 
+        if (kinda_random_number%17>6){
             comparisons.max_depth=ComparisonTypes.HiddenComparison;
         }
-        if (kinda_random_number<4){
+        if (kinda_random_number%21<14){
+            comparisons.weight=ComparisonTypes.HiddenComparison;
+        } 
+        if (kinda_random_number%39<19){
             comparisons.habitat=ComparisonTypes.HiddenComparison;
-        } else if (kinda_random_number<7){
+        } else if (kinda_random_number%41<9){
             comparisons.coloration=ComparisonTypes.HiddenComparison;
         }
     }
@@ -53,6 +52,4 @@ export function changeSubmitFunction(){
     checkIfUseClamplicatedInfo();
 }
 /**@param {number} seed  */
-function refreshRandom(seed){
-    return (seed*171717)%10;
-}
+
