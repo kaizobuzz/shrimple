@@ -111,6 +111,14 @@
             "coloration": ["orange", "pink"],
             "weight": null,
             "max_depth": 26
+        },
+        {
+            "name": "Bigclaw River Shrimp",
+            "habitat": "Freshwater",
+            "length": 30,
+            "coloration": ["yellow", "brown"],
+            "weight": 850,
+            "max_depth": null
         }
     ]
 }
