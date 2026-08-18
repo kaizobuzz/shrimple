@@ -18,7 +18,7 @@ export function get_guess_result_emojis(){
 }
 async function getTextToCopy(){
     let result=Game.won ? Game.num_guesses : "X"; 
-    let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+get_guess_result_emojis();
+    let text_to_copy="Daily Shrimple "+result+"/"+MAX_GUESSES+"\n"+get_guess_result_emojis()+"\n"+"https://kaizoplant.github.io/shrimple";
     navigator.clipboard.writeText(text_to_copy);
     ClipboardMessage.style.opacity=String(1);
     await sleep(1);
